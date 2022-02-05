@@ -14,7 +14,7 @@ class Scala3ImportWarn extends SyntacticRule("Scala3ImportWarn") {
     doc.tree.collect {
       case t: Importee.Wildcard if t.toString == "_" =>
         Patch.lint(Scala3ImportWarning(t.pos))
-    }.asPatch.atomic
+    }.asPatch
   }
 }
 

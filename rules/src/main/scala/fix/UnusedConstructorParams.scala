@@ -25,7 +25,7 @@ class UnusedConstructorParams extends SyntacticRule("UnusedConstructorParams") {
             UnusedParamWarn(a.pos)
           )
         }.asPatch
-    }.asPatch.atomic
+    }.asPatch
   }
 }
 

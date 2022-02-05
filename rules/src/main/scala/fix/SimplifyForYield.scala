@@ -37,7 +37,7 @@ class SimplifyForYield extends SyntacticRule("SimplifyForYield") {
         }
       case _ =>
         Patch.empty
-    }.asPatch.atomic
+    }.asPatch
   }
 
 }

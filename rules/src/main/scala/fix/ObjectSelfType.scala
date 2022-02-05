@@ -20,6 +20,6 @@ class ObjectSelfType extends SyntacticRule("ObjectSelfType") {
             override def severity = LintSeverity.Warning
           }
         )
-    }.asPatch.atomic
+    }.asPatch
   }
 }

@@ -70,7 +70,7 @@ class FileNameConsistent extends SyntacticRule("FileNameConsistent") {
         // another input type
         Patch.empty
     }
-  }.atomic
+  }
 }
 
 object FileNameConsistent {

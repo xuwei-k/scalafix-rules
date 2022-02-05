@@ -20,7 +20,7 @@ class ExplicitImplicitTypes extends SyntacticRule("ExplicitImplicitTypes") {
         Patch.lint(ExplicitImplicitTypesWarn(t1.pos))
       case t1: Defn.Def if t1.mods.exists(_.is[Mod.Implicit]) && t1.decltpe.isEmpty =>
         Patch.lint(ExplicitImplicitTypesWarn(t1.pos))
-    }.asPatch.atomic
+    }.asPatch
   }
 }
 

@@ -10,6 +10,6 @@ class RemoveEmptyObject extends SyntacticRule("RemoveEmptyObject") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect { case t @ Defn.Object(Nil, _, Template(Nil, Nil, _, Nil)) =>
       Patch.removeTokens(t.tokens)
-    }.asPatch.atomic
+    }.asPatch
   }
 }

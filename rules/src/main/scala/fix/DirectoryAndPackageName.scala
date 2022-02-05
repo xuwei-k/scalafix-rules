@@ -85,7 +85,7 @@ class DirectoryAndPackageName extends SyntacticRule("DirectoryAndPackageName") {
           )
         )
       }
-    }.getOrElse(Patch.empty).atomic
+    }.getOrElse(Patch.empty)
   }
 }
 

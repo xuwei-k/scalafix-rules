@@ -27,6 +27,6 @@ class DuplicateWildcardImport extends SyntacticRule("DuplicateWildcardImport") {
           }
         }
         .asPatch
-    }.asPatch.atomic
+    }.asPatch
   }
 }

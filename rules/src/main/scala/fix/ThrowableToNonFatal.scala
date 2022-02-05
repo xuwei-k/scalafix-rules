@@ -13,6 +13,6 @@ class ThrowableToNonFatal extends SemanticRule("ThrowableToNonFatal") {
           s"NonFatal(${v.syntax})"
         )
       ).asPatch
-    }.asPatch.atomic
+    }.asPatch
   }
 }

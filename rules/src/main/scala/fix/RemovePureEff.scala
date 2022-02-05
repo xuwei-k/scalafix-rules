@@ -13,6 +13,6 @@ class RemovePureEff extends SyntacticRule("RemovePureEff") {
     doc.tree.collect {
       case x @ Enumerator.Generator(_, ApplyType(Term.Select(rhs, Term.Name("pureEff")), Type.Name(_) :: Nil)) =>
         Patch.replaceTree(x, Enumerator.Val(x.pat, rhs).toString)
-    }.asPatch.atomic
+    }.asPatch
   }
 }

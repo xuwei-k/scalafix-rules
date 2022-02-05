@@ -8,6 +8,6 @@ class ScalazEitherInfix extends SemanticRule("ScalazEitherInfix") {
     doc.tree.collect {
       case x: Type.Apply if """scalaz/`\/`#""" == x.tpe.symbol.value && x.args.size == 2 =>
         Patch.replaceTree(x, s"""${x.args(0)} \\/ ${x.args(1)}""")
-    }.asPatch.atomic
+    }.asPatch
   }
 }

@@ -19,7 +19,7 @@ class Scala3Placeholder extends SyntacticRule("Scala3Placeholder") {
           ),
           Patch.replaceTree(t, "?")
         ).asPatch
-    }.asPatch.atomic
+    }.asPatch
   }
 }
 

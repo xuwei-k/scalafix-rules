@@ -30,6 +30,6 @@ class AddExplicitImplicitTypes extends SyntacticRule("AddExplicitImplicitTypes")
           case _ =>
             Patch.empty
         }
-    }.asPatch.atomic
+    }.asPatch
   }
 }

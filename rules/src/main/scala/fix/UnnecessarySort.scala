@@ -27,7 +27,7 @@ class UnnecessarySort extends SyntacticRule("UnnecessarySort") {
         Patch.lint(
           UnnecessarySortWarn(t.pos, s"maybe you can use ${map(methodName)}")
         )
-    }.asPatch.atomic
+    }.asPatch
   }
 }
 

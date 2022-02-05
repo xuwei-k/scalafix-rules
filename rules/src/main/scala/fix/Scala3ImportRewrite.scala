@@ -10,6 +10,6 @@ class Scala3ImportRewrite extends SyntacticRule("Scala3ImportRewrite") {
     doc.tree.collect {
       case t: Importee.Wildcard if t.toString == "_" =>
         Patch.replaceTree(t, "*")
-    }.asPatch.atomic
+    }.asPatch
   }
 }

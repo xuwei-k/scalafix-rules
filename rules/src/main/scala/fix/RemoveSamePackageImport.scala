@@ -30,6 +30,6 @@ class RemoveSamePackageImport extends SyntacticRule("RemoveSamePackageImport") {
             Patch.empty
           }
       }.asPatch
-    }.asPatch.atomic
+    }.asPatch
   }
 }

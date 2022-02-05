@@ -22,7 +22,7 @@ class LambdaParamParentheses extends SyntacticRule("LambdaParamParentheses") {
             LambdaParamParenthesesWarn(param.pos)
           )
         }
-    }.asPatch.atomic
+    }.asPatch
   }
 }
 

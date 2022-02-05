@@ -15,7 +15,7 @@ class NoElse extends SyntacticRule("NoElse") {
       Patch.lint(
         NoElseWarn(t.pos)
       )
-    }.asPatch.atomic
+    }.asPatch
   }
 }
 
