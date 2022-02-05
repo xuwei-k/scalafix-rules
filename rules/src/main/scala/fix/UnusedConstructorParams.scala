@@ -18,7 +18,10 @@ class UnusedConstructorParams extends SyntacticRule("UnusedConstructorParams") {
         val params = x.ctor.paramss.flatten
           .filterNot(_.mods.exists(_.is[Mod.Implicit]))
           .filterNot(_.mods.exists(_.is[Mod.ValParam]))
-        val allTokens = x.templ.tokens.map(_.text).toSet
+        val allTokens = {
+          val values = x.templ.tokens.map(_.text).toSet
+          values ++ values.filter(a => a.startsWith("`") && a.endsWith("`")).map(_.drop(1).dropRight(1))
+        }.toSet
         val maybeUnused = params.filterNot(p => allTokens(p.name.value))
         maybeUnused.map { a =>
           Patch.lint(
