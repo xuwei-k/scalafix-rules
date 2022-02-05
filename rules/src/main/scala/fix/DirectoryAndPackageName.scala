@@ -12,6 +12,52 @@ import scala.meta.inputs.Input
 import scala.meta.inputs.Position
 
 class DirectoryAndPackageName extends SyntacticRule("DirectoryAndPackageName") {
+  private[this] val keywords: Set[String] = Set(
+    "abstract",
+    "case",
+    "catch",
+    "class",
+    "def",
+    "do",
+    "else",
+    "enum",
+    "export",
+    "extends",
+    "false",
+    "final",
+    "finally",
+    "for",
+    "forSome",
+    "if",
+    "implicit",
+    "import",
+    "lazy",
+    "macro",
+    "match",
+    "ne",
+    "new",
+    "null",
+    "object",
+    "override",
+    "package",
+    "private",
+    "protected",
+    "return",
+    "sealed",
+    "super",
+    "then",
+    "this",
+    "throw",
+    "trait",
+    "try",
+    "true",
+    "type",
+    "val",
+    "var",
+    "while",
+    "with",
+    "yield",
+  ).map("`" + _ + "`")
 
   override def isLinter = true
 
@@ -60,11 +106,10 @@ class DirectoryAndPackageName extends SyntacticRule("DirectoryAndPackageName") {
         dir <- dirOpt
         if packages.nonEmpty // TODO check if empty package
         packageName = {
-          val reservedWords = Set("trait").map("`" + _ + "`")
           val x = packages
             .flatMap(_.toString.split('.'))
             .map(p =>
-              if (reservedWords(p)) { p.replace("`", "") }
+              if (keywords(p)) { p.replace("`", "") }
               else p
             )
             .mkString("/")
