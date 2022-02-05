@@ -5,30 +5,37 @@ lazy val V = _root_.scalafix.sbt.BuildInfo
 lazy val rulesCrossVersions = Seq(V.scala213, V.scala212)
 lazy val scala3Version = "3.1.1"
 
-inThisBuild(
-  Seq(
-    pomExtra := (
-      <developers>
-      <developer>
-        <id>xuwei-k</id>
-        <name>Kenji Yoshida</name>
-        <url>https://github.com/xuwei-k</url>
-      </developer>
-    </developers>
-    <scm>
-      <url>git@github.com:xuwei-k/scalafix-rules.git</url>
-      <connection>scm:git:git@github.com:xuwei-k/scalafix-rules.git</connection>
-    </scm>
-    ),
-    description := "scalafix rules",
-    organization := "com.github.xuwei-k",
-    homepage := Some(url("https://github.com/xuwei-k/scalafix-rules")),
-    licenses := List(
-      "MIT License" -> url("https://opensource.org/licenses/mit-license")
-    ),
-    semanticdbEnabled := true,
-    semanticdbVersion := scalafixSemanticdb.revision,
+val commonSettings = Def.settings(
+  scalacOptions ++= {
+    if (scalaBinaryVersion.value == "3") {
+      Nil
+    } else {
+      Seq(
+        "-Xsource:3",
+      )
+    }
+  },
+  pomExtra := (
+    <developers>
+    <developer>
+      <id>xuwei-k</id>
+      <name>Kenji Yoshida</name>
+      <url>https://github.com/xuwei-k</url>
+    </developer>
+  </developers>
+  <scm>
+    <url>git@github.com:xuwei-k/scalafix-rules.git</url>
+    <connection>scm:git:git@github.com:xuwei-k/scalafix-rules.git</connection>
+  </scm>
   ),
+  description := "scalafix rules",
+  organization := "com.github.xuwei-k",
+  homepage := Some(url("https://github.com/xuwei-k/scalafix-rules")),
+  licenses := List(
+    "MIT License" -> url("https://opensource.org/licenses/mit-license")
+  ),
+  semanticdbEnabled := true,
+  semanticdbVersion := scalafixSemanticdb.revision,
 )
 
 releaseProcess := Seq[ReleaseStep](
@@ -45,10 +52,13 @@ releaseProcess := Seq[ReleaseStep](
   pushChanges
 )
 
+commonSettings
+
 publish / skip := true
 
 lazy val rules = projectMatrix
   .settings(
+    commonSettings,
     moduleName := "scalafix-rules",
     publishTo := sonatypePublishToBundle.value,
     libraryDependencies += "ch.epfl.scala" %% "scalafix-core" % V.scalafixVersion,
@@ -89,6 +99,7 @@ lazy val rules = projectMatrix
 
 lazy val input = projectMatrix
   .settings(
+    commonSettings,
     publish / skip := true
   )
   .defaultAxes(VirtualAxis.jvm)
@@ -96,6 +107,7 @@ lazy val input = projectMatrix
 
 lazy val output = projectMatrix
   .settings(
+    commonSettings,
     publish / skip := true
   )
   .defaultAxes(VirtualAxis.jvm)
@@ -104,11 +116,13 @@ lazy val output = projectMatrix
 lazy val testsAggregate = Project("tests", file("target/testsAggregate"))
   .aggregate(tests.projectRefs: _*)
   .settings(
+    commonSettings,
     publish / skip := true,
   )
 
 lazy val tests = projectMatrix
   .settings(
+    commonSettings,
     publish / skip := true,
     libraryDependencies += "ch.epfl.scala" % "scalafix-testkit" % V.scalafixVersion % Test cross CrossVersion.full,
     scalafixTestkitOutputSourceDirectories :=
