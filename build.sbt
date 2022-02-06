@@ -97,9 +97,14 @@ lazy val rules = projectMatrix
   .defaultAxes(VirtualAxis.jvm)
   .jvmPlatform(rulesCrossVersions)
 
+lazy val inputOutputCommon = Def.settings(
+  libraryDependencies += "org.atnos" %% "eff" % "5.23.0"
+)
+
 lazy val input = projectMatrix
   .settings(
     commonSettings,
+    inputOutputCommon,
     publish / skip := true
   )
   .defaultAxes(VirtualAxis.jvm)
@@ -108,6 +113,7 @@ lazy val input = projectMatrix
 lazy val output = projectMatrix
   .settings(
     commonSettings,
+    inputOutputCommon,
     publish / skip := true
   )
   .defaultAxes(VirtualAxis.jvm)

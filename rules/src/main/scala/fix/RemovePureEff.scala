@@ -10,9 +10,14 @@ import scala.meta.Term.ApplyType
 
 class RemovePureEff extends SyntacticRule("RemovePureEff") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
-    doc.tree.collect {
-      case x @ Enumerator.Generator(_, ApplyType(Term.Select(rhs, Term.Name("pureEff")), Type.Name(_) :: Nil)) =>
-        Patch.replaceTree(x, Enumerator.Val(x.pat, rhs).toString)
+    doc.tree.collect { case x1: Term.ForYield =>
+      x1.enums
+        .drop(1)
+        .collect {
+          case x @ Enumerator.Generator(_, ApplyType(Term.Select(rhs, Term.Name("pureEff")), Type.Name(_) :: Nil)) =>
+            Patch.replaceTree(x, Enumerator.Val(x.pat, rhs).toString)
+        }
+        .asPatch
     }.asPatch
   }
 }
