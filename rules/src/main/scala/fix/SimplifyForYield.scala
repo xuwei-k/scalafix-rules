@@ -6,6 +6,7 @@ import scalafix.v1.SyntacticRule
 import scala.meta.Enumerator.Generator
 import scala.meta.Pat
 import scala.meta.Term
+import scala.meta.Token
 
 class SimplifyForYield extends SyntacticRule("SimplifyForYield") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
@@ -31,7 +32,17 @@ class SimplifyForYield extends SyntacticRule("SimplifyForYield") {
 
         (generatorAndRhs, bodyNameOpt) match {
           case (Some((generator, rhs)), Some(body)) if generator == body =>
-            Patch.replaceTree(x1, rhs.toString)
+            if (
+              x1.parent.toList
+                .flatMap(_.tokens)
+                .takeWhile(_.pos.start == x1.tokens.head.pos.start)
+                .lastOption
+                .exists(_.is[Token.LeftParen])
+            ) {
+              Patch.replaceTree(x1, s"(${rhs})")
+            } else {
+              Patch.replaceTree(x1, rhs.toString)
+            }
           case _ =>
             Patch.empty
         }
