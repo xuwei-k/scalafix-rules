@@ -6,3 +6,9 @@
 ```scala
 ThisBuild / scalafixDependencies += "com.github.xuwei-k" %% "scalafix-rules" % "<version>"
 ```
+
+or
+
+```
+sbt > scalafixAll dependency:SomeRuleName@com.github.xuwei-k:scalafix-rules:version
+```
