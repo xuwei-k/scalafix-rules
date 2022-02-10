@@ -101,6 +101,13 @@ lazy val rules = projectMatrix
   .jvmPlatform(rulesCrossVersions)
 
 lazy val inputOutputCommon = Def.settings(
+  libraryDependencies ++= {
+    if (scalaBinaryVersion.value == "2.13") {
+      Seq("io.circe" %% "circe-generic-extras" % "0.14.1")
+    } else {
+      Nil
+    }
+  },
   libraryDependencies += "org.atnos" %% "eff" % "5.23.0"
 )
 
@@ -108,6 +115,15 @@ lazy val input = projectMatrix
   .settings(
     commonSettings,
     inputOutputCommon,
+    scalacOptions ++= {
+      if (scalaBinaryVersion.value == "2.13") {
+        Seq(
+          "-Ymacro-annotations"
+        )
+      } else {
+        Nil
+      }
+    },
     publish / skip := true
   )
   .defaultAxes(VirtualAxis.jvm)
