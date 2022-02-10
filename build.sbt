@@ -15,6 +15,9 @@ val commonSettings = Def.settings(
       )
     }
   },
+  scalacOptions ++= Seq(
+    "-deprecation",
+  ),
   pomExtra := (
     <developers>
     <developer>
