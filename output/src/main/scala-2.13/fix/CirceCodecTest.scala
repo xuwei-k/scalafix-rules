@@ -42,4 +42,25 @@ val bar = Option(9)
 }
 
 
+case class CirceCodecTest5[A, B](a: A, b: B, i: Int)
 
+object CirceCodecTest5 {
+implicit def codec[A, B](implicit A: Codec[A], B: Codec[B]): Codec.AsObject[CirceCodecTest5[A, B]] = deriveCodec[CirceCodecTest5[A, B]]
+
+}
+
+
+case class CirceCodecTest6[A <: List[Int]](a1: A, a2: A)
+
+object CirceCodecTest6 {
+implicit def encoder[A <: List[Int]](implicit A: Encoder[A]): Encoder.AsObject[CirceCodecTest6[A]] = deriveEncoder[CirceCodecTest6[A]]
+
+}
+
+
+case class CirceCodecTest7[A](a: A)
+
+object CirceCodecTest7 {
+implicit def decoder[A](implicit A: Decoder[A]): Decoder[CirceCodecTest7[A]] = deriveDecoder[CirceCodecTest7[A]]
+
+}

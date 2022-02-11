@@ -49,13 +49,27 @@ class CirceCodec extends SyntacticRule("CirceCodec") {
             val className = clazz.name.value
 
             val instance = {
-              t match {
-                case CirceCodec.Both =>
-                  s"implicit val codec: Codec.AsObject[${className}] = deriveCodec[${className}]\n"
-                case CirceCodec.Encoder =>
-                  s"implicit val encoder: Encoder.AsObject[${className}] = deriveEncoder[${className}]\n"
-                case CirceCodec.Decoder =>
-                  s"implicit val decoder: Decoder[${className}] = deriveDecoder[${className}]\n"
+              clazz.tparams match {
+                case Nil =>
+                  t match {
+                    case CirceCodec.Both =>
+                      s"implicit val codec: Codec.AsObject[${className}] = deriveCodec[${className}]\n"
+                    case CirceCodec.Encoder =>
+                      s"implicit val encoder: Encoder.AsObject[${className}] = deriveEncoder[${className}]\n"
+                    case CirceCodec.Decoder =>
+                      s"implicit val decoder: Decoder[${className}] = deriveDecoder[${className}]\n"
+                  }
+                case tparams =>
+                  val nameWithTypeParams = className + "[" + tparams.map(_.name).mkString(", ") + "]"
+                  def params(t: String) = tparams.map(a => s"${a.name}: $t[${a.name}]").mkString(", ")
+                  t match {
+                    case CirceCodec.Both =>
+                      s"implicit def codec[${tparams.mkString(", ")}](implicit ${params("Codec")}): Codec.AsObject[${nameWithTypeParams}] = deriveCodec[$nameWithTypeParams]\n"
+                    case CirceCodec.Encoder =>
+                      s"implicit def encoder[${tparams.mkString(", ")}](implicit ${params("Encoder")}): Encoder.AsObject[${nameWithTypeParams}] = deriveEncoder[${nameWithTypeParams}]\n"
+                    case CirceCodec.Decoder =>
+                      s"implicit def decoder[${tparams.mkString(", ")}](implicit ${params("Decoder")}): Decoder[${nameWithTypeParams}] = deriveDecoder[${nameWithTypeParams}]\n"
+                  }
               }
             }
 
