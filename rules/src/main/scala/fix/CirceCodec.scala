@@ -48,30 +48,30 @@ class CirceCodec extends SyntacticRule("CirceCodec") {
 
             val className = clazz.name.value
 
-            val instance = {
+            val instance = "\n\n  implicit " + {
               clazz.tparams match {
                 case Nil =>
                   t match {
                     case CirceCodec.Both =>
-                      s"implicit val codec: Codec.AsObject[${className}] = deriveCodec[${className}]\n"
+                      s"val codec: Codec.AsObject[${className}] = deriveCodec[${className}]"
                     case CirceCodec.Encoder =>
-                      s"implicit val encoder: Encoder.AsObject[${className}] = deriveEncoder[${className}]\n"
+                      s"val encoder: Encoder.AsObject[${className}] = deriveEncoder[${className}]"
                     case CirceCodec.Decoder =>
-                      s"implicit val decoder: Decoder[${className}] = deriveDecoder[${className}]\n"
+                      s"val decoder: Decoder[${className}] = deriveDecoder[${className}]"
                   }
                 case tparams =>
                   val nameWithTypeParams = className + "[" + tparams.map(_.name).mkString(", ") + "]"
                   def params(t: String) = tparams.map(a => s"${a.name}: $t[${a.name}]").mkString(", ")
                   t match {
                     case CirceCodec.Both =>
-                      s"implicit def codec[${tparams.mkString(", ")}](implicit ${params("Codec")}): Codec.AsObject[${nameWithTypeParams}] = deriveCodec[$nameWithTypeParams]\n"
+                      s"def codec[${tparams.mkString(", ")}](implicit ${params("Codec")}): Codec.AsObject[${nameWithTypeParams}] = deriveCodec[$nameWithTypeParams]"
                     case CirceCodec.Encoder =>
-                      s"implicit def encoder[${tparams.mkString(", ")}](implicit ${params("Encoder")}): Encoder.AsObject[${nameWithTypeParams}] = deriveEncoder[${nameWithTypeParams}]\n"
+                      s"def encoder[${tparams.mkString(", ")}](implicit ${params("Encoder")}): Encoder.AsObject[${nameWithTypeParams}] = deriveEncoder[${nameWithTypeParams}]"
                     case CirceCodec.Decoder =>
-                      s"implicit def decoder[${tparams.mkString(", ")}](implicit ${params("Decoder")}): Decoder[${nameWithTypeParams}] = deriveDecoder[${nameWithTypeParams}]\n"
+                      s"def decoder[${tparams.mkString(", ")}](implicit ${params("Decoder")}): Decoder[${nameWithTypeParams}] = deriveDecoder[${nameWithTypeParams}]"
                   }
               }
-            }
+            } + "\n"
 
             List(
               (
@@ -80,9 +80,9 @@ class CirceCodec extends SyntacticRule("CirceCodec") {
                   Patch.removeTokens(annotation.tokens),
                   objectOpt match {
                     case Some(obj) =>
-                      Patch.addLeft(obj.templ.stats.head, instance)
+                      Patch.addRight(obj.templ.stats.last, instance)
                     case None =>
-                      Patch.addRight(clazz, s"\n\nobject ${className} {\n${instance}\n}")
+                      Patch.addRight(clazz, s"\n\nobject ${className} {${instance}\n}")
                   }
                 ).asPatch
               )
@@ -111,21 +111,21 @@ class CirceCodec extends SyntacticRule("CirceCodec") {
           val types = result.map(_._1).toSet
           List(
             if (types(CirceCodec.Encoder)) {
-              List("import io.circe.Encoder", "import io.circe.generic.semiauto.deriveEncoder")
+              List("Encoder", "generic.semiauto.deriveEncoder")
             } else {
               Nil
             },
             if (types(CirceCodec.Decoder)) {
-              List("import io.circe.Decoder", "import io.circe.generic.semiauto.deriveDecoder")
+              List("Decoder", "generic.semiauto.deriveDecoder")
             } else {
               Nil
             },
             if (types(CirceCodec.Both)) {
-              List("import io.circe.Codec", "import io.circe.generic.semiauto.deriveCodec")
+              List("Codec", "generic.semiauto.deriveCodec")
             } else {
               Nil
             },
-          ).flatten.sorted.mkString("\n", "\n", "\n")
+          ).flatten.map("import io.circe." + _).sorted.mkString("\n", "\n", "\n")
         }
 
         Seq(
