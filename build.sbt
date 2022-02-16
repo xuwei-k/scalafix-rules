@@ -101,6 +101,7 @@ lazy val rules = projectMatrix
   .jvmPlatform(rulesCrossVersions)
 
 lazy val inputOutputCommon = Def.settings(
+  libraryDependencies += "org.scala-lang.modules" %% "scala-collection-compat" % "2.6.0",
   libraryDependencies ++= {
     if (scalaBinaryVersion.value == "2.13") {
       Seq("io.circe" %% "circe-generic-extras" % "0.14.1")

@@ -9,12 +9,14 @@ import scala.meta.Term
 import scala.meta.Position
 
 object UnnecessarySort {
-  val map: Map[String, String] = Map(
-    "head" -> "minBy",
+  val scala213Methods: Map[String, String] = Map(
     "headOption" -> "minByOption",
-    "last" -> "maxBy",
     "lastOption" -> "maxByOption"
   )
+  val map: Map[String, String] = Map(
+    "head" -> "minBy",
+    "last" -> "maxBy",
+  ) ++ scala213Methods
 }
 
 class UnnecessarySort extends SyntacticRule("UnnecessarySort") {
