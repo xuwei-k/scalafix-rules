@@ -14,8 +14,8 @@ class AddLambdaParamParentheses extends SyntacticRule("AddLambdaParamParentheses
           Patch.empty
         } else {
           Seq(
-            Patch.addLeft(param, s"("),
-            Patch.addRight(param, s")")
+            Patch.addLeft(param, "("),
+            Patch.addRight(param, ")")
           ).asPatch
         }
     }.asPatch
