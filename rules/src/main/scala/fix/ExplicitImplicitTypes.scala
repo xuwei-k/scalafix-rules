@@ -16,6 +16,7 @@ import scala.meta.Defn
 import scala.meta.Mod
 import scala.meta.Pkg
 import scala.meta.Template
+import scala.meta.Term
 import scala.meta.Tree
 import scala.meta.inputs.Position
 
@@ -63,6 +64,8 @@ class ExplicitImplicitTypes(config: ExplicitImplicitTypesConfig) extends Syntact
             case _: Defn.Var => false
             case _: Defn.Def => false
             case _: Ctor.Secondary => false
+            case _: Term.Function => false
+            case _: Term.Block => false
             case _: Template => true
             case _: Defn.Class => true
             case _: Defn.Object => true

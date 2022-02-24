@@ -43,4 +43,15 @@ class ExplicitImplicitTypesTest {
     implicit lazy val d3 = 2
     3
   }
+
+  { (a: Int) =>
+    implicit def d1 = 3 // assert: ExplicitImplicitTypes
+    implicit val d2 = 4
+    a
+  }
+
+  locally {
+    implicit def a1 = 3 // assert: ExplicitImplicitTypes
+    implicit val a2 = 4
+  }
 }
