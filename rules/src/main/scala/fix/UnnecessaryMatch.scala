@@ -20,12 +20,14 @@ class UnnecessaryMatch extends SyntacticRule("UnnecessaryMatch") {
         Patch.replaceTree(f, Term.PartialFunction(cases).toString)
       case Term.Apply(
             _,
-            Term.Block(List(
-              f @ Term.Function(
-                Term.Param(_, Term.Name(p1), _, _) :: Nil,
-                Term.Match(Term.Name(p2), cases)
+            Term.Block(
+              List(
+                f @ Term.Function(
+                  Term.Param(_, Term.Name(p1), _, _) :: Nil,
+                  Term.Match(Term.Name(p2), cases)
+                )
               )
-            )) :: Nil
+            ) :: Nil
           ) if p1 == p2 && cases.forall(_.collect { case Term.Name(n) if n == p2 => () }.isEmpty) =>
         Patch.replaceTree(f, Term.PartialFunction(cases).toString)
     }
