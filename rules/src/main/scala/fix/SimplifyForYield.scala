@@ -31,7 +31,7 @@ class SimplifyForYield extends SyntacticRule("SimplifyForYield") {
         }
 
         (generatorAndRhs, bodyNameOpt) match {
-          case (Some((generator, rhs)), Some(body)) if generator == body =>
+          case (Some(generator, rhs), Some(body)) if generator == body =>
             if (
               x1.parent.toList
                 .flatMap(_.tokens)

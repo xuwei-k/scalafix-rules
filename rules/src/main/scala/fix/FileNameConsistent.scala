@@ -43,12 +43,12 @@ class FileNameConsistent extends SyntacticRule("FileNameConsistent") {
     val names = defs.map(_.name).distinct
     scalaSourceOpt match {
       case Some(src) =>
-        if ((src.name == "package") && (packageObjects.size == 1) && names.isEmpty) {
+        if (src.name == "package" && packageObjects.size == 1 && names.isEmpty) {
           // correct
           // - file name is "package.scala"
           // - and only package object
           Patch.empty
-        } else if ((names.size == 1) || (packageObjects.size == 1)) {
+        } else if (names.size == 1 || packageObjects.size == 1) {
           if (names.contains(src.name)) {
             // correct
             Patch.empty

@@ -5,7 +5,7 @@ rule = ExplicitImplicitTypes
  */
 class ExplicitImplicitTypesTest {
   def this(x: Int) = {
-    this()
+    this
     implicit def d1 = 2 // assert: ExplicitImplicitTypes
     implicit val d2 = 2
     implicit lazy val d3 = 2

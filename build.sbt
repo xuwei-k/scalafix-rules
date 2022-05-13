@@ -20,7 +20,7 @@ val commonSettings = Def.settings(
     "-language:higherKinds",
     "-feature",
   ),
-  pomExtra := (
+  pomExtra :=
     <developers>
     <developer>
       <id>xuwei-k</id>
@@ -31,8 +31,7 @@ val commonSettings = Def.settings(
   <scm>
     <url>git@github.com:xuwei-k/scalafix-rules.git</url>
     <connection>scm:git:git@github.com:xuwei-k/scalafix-rules.git</connection>
-  </scm>
-  ),
+  </scm>,
   description := "scalafix rules",
   organization := "com.github.xuwei-k",
   homepage := Some(url("https://github.com/xuwei-k/scalafix-rules")),
