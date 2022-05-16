@@ -16,59 +16,64 @@ class FileNameConsistent extends SyntacticRule("FileNameConsistent") {
   override def isLinter = true
 
   override def fix(implicit doc: SyntacticDocument): Patch = {
-    val defs = doc.tree.collect {
-      case x: Defn.Trait if x.isTopLevel =>
+    if (scala.util.Properties.isWin) {
+      // TODO https://github.com/xuwei-k/scalafix-rules/issues/34
+      Patch.empty
+    } else {
+      val defs = doc.tree.collect {
+        case x: Defn.Trait if x.isTopLevel =>
+          TemplateDef(x, x.name.value)
+        case x: Defn.Class if x.isTopLevel =>
+          TemplateDef(x, x.name.value)
+        case x: Defn.Object if x.isTopLevel =>
+          TemplateDef(x, x.name.value)
+      }
+      val packageObjects = doc.tree.collect { case x: Pkg.Object =>
         TemplateDef(x, x.name.value)
-      case x: Defn.Class if x.isTopLevel =>
-        TemplateDef(x, x.name.value)
-      case x: Defn.Object if x.isTopLevel =>
-        TemplateDef(x, x.name.value)
-    }
-    val packageObjects = doc.tree.collect { case x: Pkg.Object =>
-      TemplateDef(x, x.name.value)
-    }
-    val scalaSourceOpt = PartialFunction.condOpt(doc.input) {
-      case f: Input.File =>
-        ScalaSource(
-          fullPath = f.path.toString,
-          name = f.path.toFile.getName.replace(".scala", "")
-        )
-      case f: Input.VirtualFile =>
-        ScalaSource(
-          fullPath = f.path,
-          name = f.path.split('/').lastOption.getOrElse("").replace(".scala", "")
-        )
-    }
+      }
+      val scalaSourceOpt = PartialFunction.condOpt(doc.input) {
+        case f: Input.File =>
+          ScalaSource(
+            fullPath = f.path.toString,
+            name = f.path.toFile.getName.replace(".scala", "")
+          )
+        case f: Input.VirtualFile =>
+          ScalaSource(
+            fullPath = f.path,
+            name = f.path.split('/').lastOption.getOrElse("").replace(".scala", "")
+          )
+      }
 
-    val names = defs.map(_.name).distinct
-    scalaSourceOpt match {
-      case Some(src) =>
-        if ((src.name == "package") && (packageObjects.size == 1) && names.isEmpty) {
-          // correct
-          // - file name is "package.scala"
-          // - and only package object
-          Patch.empty
-        } else if ((names.size == 1) || (packageObjects.size == 1)) {
-          if (names.contains(src.name)) {
+      val names = defs.map(_.name).distinct
+      scalaSourceOpt match {
+        case Some(src) =>
+          if ((src.name == "package") && (packageObjects.size == 1) && names.isEmpty) {
             // correct
+            // - file name is "package.scala"
+            // - and only package object
             Patch.empty
-          } else {
-            Patch.lint(
-              FileNameConsistentWaring(
-                names = names,
-                path = src.fullPath,
-                position = defs.headOption.getOrElse(packageObjects.head).tree.pos
+          } else if ((names.size == 1) || (packageObjects.size == 1)) {
+            if (names.contains(src.name)) {
+              // correct
+              Patch.empty
+            } else {
+              Patch.lint(
+                FileNameConsistentWaring(
+                  names = names,
+                  path = src.fullPath,
+                  position = defs.headOption.getOrElse(packageObjects.head).tree.pos
+                )
               )
-            )
+            }
+          } else {
+            // if there are some toplevel trait, class, object
+            // TODO
+            Patch.empty
           }
-        } else {
-          // if there are some toplevel trait, class, object
-          // TODO
+        case _ =>
+          // another input type
           Patch.empty
-        }
-      case _ =>
-        // another input type
-        Patch.empty
+      }
     }
   }
 }
