@@ -118,7 +118,7 @@ lazy val inputOutputCommon = Def.settings(
       Nil
     }
   },
-  libraryDependencies += "org.atnos" %% "eff" % "6.0.0"
+  libraryDependencies += "org.atnos" %% "eff" % "6.0.1"
 )
 
 lazy val input = projectMatrix
