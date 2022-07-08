@@ -103,7 +103,7 @@ lazy val rules = projectMatrix
   .jvmPlatform(rulesCrossVersions)
 
 lazy val inputOutputCommon = Def.settings(
-  libraryDependencies += "org.scala-lang.modules" %% "scala-collection-compat" % "2.7.0",
+  libraryDependencies += "org.scala-lang.modules" %% "scala-collection-compat" % "2.8.0",
   libraryDependencies ++= {
     if (scalaBinaryVersion.value != "3") {
       Seq(compilerPlugin("org.typelevel" %% "kind-projector" % "0.13.2" cross CrossVersion.full))
