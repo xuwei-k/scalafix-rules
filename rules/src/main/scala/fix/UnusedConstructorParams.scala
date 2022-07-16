@@ -17,6 +17,7 @@ class UnusedConstructorParams extends SyntacticRule("UnusedConstructorParams") {
       case x: Defn.Class if !x.mods.exists(_.is[Mod.Case]) =>
         val params = x.ctor.paramss.flatten
           .filterNot(_.mods.exists(_.is[Mod.Implicit]))
+          .filterNot(_.mods.exists(_.is[Mod.VarParam]))
           .filterNot(_.mods.exists(_.is[Mod.ValParam]))
         val allTokens = {
           val values = x.templ.tokens.map(_.text).toSet

@@ -7,3 +7,4 @@ class A2(x: Int)
 
 class A3(`type`: Int) extends A1(`type`)
 
+class A4(var x: Int)
