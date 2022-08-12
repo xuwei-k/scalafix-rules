@@ -10,7 +10,7 @@ import scala.meta.tokens.Token
 
 class UnnecessaryCase extends SyntacticRule("UnnecessaryCase") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
-    doc.tree.collect { case t @ Term.PartialFunction(Case(Pat.Var(_), None, _) :: Nil) =>
+    doc.tree.collect { case t @ Term.PartialFunction(Case(Pat.Var(_) | Pat.Wildcard(), None, _) :: Nil) =>
       t.tokens.find(_.is[Token.KwCase]).fold(Patch.empty)(Patch.removeToken)
     }.asPatch
   }
