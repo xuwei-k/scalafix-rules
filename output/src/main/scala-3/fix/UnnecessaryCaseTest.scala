@@ -13,4 +13,5 @@ class UnnecessaryCaseTest {
   List(4).foreach {  a => a }
   List(5).map {  a => a }
   List(6).collect {  a => a }
+  List(7).collect {  _ => 7 }
 }
