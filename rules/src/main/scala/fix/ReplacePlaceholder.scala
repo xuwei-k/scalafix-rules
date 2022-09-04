@@ -19,6 +19,13 @@ class ReplacePlaceholder extends SyntacticRule("ReplacePlaceholder") {
             case Term.Name(a3) if a3 == a1 => ()
           }.isEmpty) =>
         Patch.replaceTree(t, s"_.${method}(${x.mkString(", ")})")
+      case t @ Term.Function(
+            Term.Param(mods, Term.Name(a1), None, _) :: Nil,
+            Term.ApplyInfix(Term.Select(Term.Name(a2), method), op, Nil, x :: Nil)
+          ) if a1 == a2 && !mods.exists(_.is[Mod.Implicit]) && x.collect {
+            case Term.Name(a3) if a3 == a1 => ()
+          }.isEmpty =>
+        Patch.replaceTree(t, s"_.${method} ${op} ${x}")
     }
   }.asPatch
 }
