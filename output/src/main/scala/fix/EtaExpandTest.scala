@@ -8,4 +8,5 @@ abstract class EtaExpandTest {
   def x2: Int = a1((c1, c2) => a3(c2, c1))
   def x3: List[Int] = List(9).map(List(2).apply)
   def x4: List[Int] = List(9).map(x => List(x).apply(x))
+  def x5: List[Int] = List.empty[Int].map(c1 => a3(3, c1))
 }

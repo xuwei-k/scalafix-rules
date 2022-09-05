@@ -12,7 +12,7 @@ class EtaExpand extends SyntacticRule("EtaExpand") {
       case t @ Term.Function(
             params,
             Term.Apply(method, args)
-          ) if params.nonEmpty =>
+          ) if params.nonEmpty && (params.lengthCompare(args.size) == 0) =>
         val paramNames = params.map(_.name.value)
         val argNames = args.collect { case Term.Name(x) => x }
         if (
