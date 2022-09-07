@@ -118,6 +118,7 @@ lazy val inputOutputCommon = Def.settings(
       Nil
     }
   },
+  libraryDependencies += "com.typesafe.slick" %% "slick" % "3.4.0" cross CrossVersion.for3Use2_13 exclude ("org.scala-lang.modules", "scala-collection-compat_2.13"),
   libraryDependencies += "org.atnos" %% "eff" % "6.0.1"
 )
 
