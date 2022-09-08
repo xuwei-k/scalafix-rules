@@ -1,9 +1,9 @@
 /*
-rule = SlickFilterOpt
+rule = SlickFilter
  */
 package fix
 
-abstract class SlickFilterOptTest {
+abstract class SlickFilterTest {
 
   case class X(a1: Int, a2: String, a3: java.sql.Timestamp)
 
@@ -59,7 +59,7 @@ abstract class SlickFilterOptTest {
       }
     }.result
 
-  def f5(a1: Option[Int], a2: Option[String], a3: Option[java.sql.Timestamp]): DBIO[Seq[X]] =
+  def f5(a1: Option[Int], a2: Option[String], a3: Option[java.sql.Timestamp], a4: Boolean): DBIO[Seq[X]] =
     query.filter { x =>
       (a1 match {
         case Some(value) =>
@@ -73,6 +73,17 @@ abstract class SlickFilterOptTest {
           case _ =>
             true: Rep[Boolean]
         }
+      ) && (
+        if (a4 && Nil.nonEmpty) {
+          x.a1 === 5
+        } else {
+          true: Rep[Boolean]
+        }
+      ) && (
+        if (a4 && Nil.isEmpty)
+          true: Rep[Boolean]
+        else
+          x.a1 === 8
       ) && (
         a3 match {
           case Some(value) =>
@@ -103,20 +114,22 @@ abstract class SlickFilterOptTest {
     }.result
 
   def f7(a1: Int, a2: Option[String], a3: java.sql.Timestamp): DBIO[Seq[X]] =
-    query.filter { x =>
-      (
-        x.a1 === a1
-      ) && (
-        a2 match {
-          case Some(value) =>
-            x.a2 === value
-          case _ =>
-            true: Rep[Boolean]
-        }
-      ) && (
-        x.a3 === a3
+    query
+      .filter(x =>
+        (
+          x.a1 === a1
+        ) && (
+          a2 match {
+            case Some(value) =>
+              x.a2 === value
+            case _ =>
+              true: Rep[Boolean]
+          }
+        ) && (
+          x.a3 === a3
+        )
       )
-    }.result
+      .result
 
   def f8(a1: Option[Int], a2: Option[String], a3: Option[java.sql.Timestamp]): DBIO[Seq[(X, X)]] =
     query
