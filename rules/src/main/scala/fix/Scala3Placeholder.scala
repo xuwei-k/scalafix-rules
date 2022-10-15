@@ -12,7 +12,7 @@ import scalafix.lint.LintSeverity
 class Scala3Placeholder extends SyntacticRule("Scala3Placeholder") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
-      case t @ Type.Placeholder(Bounds(None, None)) if t.toString == "_" =>
+      case t @ Type.Wildcard(Bounds(None, None)) if t.toString == "_" =>
         Seq(
           Patch.lint(
             Scala3PlaceholderWarn(t.pos)
