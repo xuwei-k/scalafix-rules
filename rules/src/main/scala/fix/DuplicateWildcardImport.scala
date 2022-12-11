@@ -6,6 +6,7 @@ import metaconfig.generic.Surface
 import scala.meta.Import
 import scala.meta.Pkg
 import scala.meta.Source
+import scala.meta.Token
 import scalafix.Patch
 import scalafix.v1.Configuration
 import scalafix.v1.Rule
@@ -60,7 +61,12 @@ class DuplicateWildcardImport(conf: DuplicateWildcardImportConfig) extends Synta
             val s = x.toString
             isWildcard(s) || exclude.exists(s contains _)
           }.map { x =>
-            Patch.removeTokens(x.tokens)
+            Seq(
+              Patch.removeTokens(x.tokens),
+              Patch.removeTokens(
+                doc.tree.tokens.dropWhile(_.pos.start < x.tokens.last.pos.end).headOption.filter(_.is[Token.LF])
+              )
+            ).asPatch
           }
         }
         .asPatch
