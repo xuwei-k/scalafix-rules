@@ -3,8 +3,10 @@ package fix
 import scalafix.Patch
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
+import scala.meta.Enumerator
 import scala.meta.Lit
 import scala.meta.Name
+import scala.meta.Pat
 import scala.meta.Term
 
 class ReplaceFill extends SyntacticRule("ReplaceFill") {
@@ -52,6 +54,28 @@ class ReplaceFill extends SyntacticRule("ReplaceFill") {
           ) if param.is[Name.Anonymous] || body.collect {
             case Name(n) if n == param.value => ()
           }.isEmpty =>
+        Patch.replaceTree(t, s"${tpe}.fill(${size}){$body}")
+      case t @ Term.ForYield(
+            List(
+              Enumerator.Generator(
+                Pat.Var(n @ Term.Name(_)),
+                ToUntil(size, tpe)
+              )
+            ),
+            body
+          ) if body.collect {
+            case Name(x) if x == n.value => ()
+          }.isEmpty =>
+        Patch.replaceTree(t, s"${tpe}.fill(${size}){$body}")
+      case t @ Term.ForYield(
+            List(
+              Enumerator.Generator(
+                Pat.Wildcard(),
+                ToUntil(size, tpe)
+              )
+            ),
+            body
+          ) =>
         Patch.replaceTree(t, s"${tpe}.fill(${size}){$body}")
     }.asPatch
   }

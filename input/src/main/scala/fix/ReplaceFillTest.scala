@@ -18,6 +18,9 @@ object ReplaceFillTest {
   def x10: Array[String] = (6 until 32).toArray.map(b => Random.nextString(5))
   def x11: Iterator[String] = (-2 to 49).iterator.map(_ => Random.nextString(8))
   def x12: Iterator[String] = (0 until 111).iterator.map(b => Random.nextString(9))
+  def x13: Seq[String] = for (i <- 1 to 10) yield Random.nextString(9876)
+  def x14: List[String] = for (i <- (1 until 20).toList) yield Random.nextString(112233)
+  def x15: Vector[String] = for (_ <- (-33 until 20).toVector) yield Random.nextString(7654)
 
   def y1: Seq[String] = (6 until 32).map(s => Random.nextString(s))
 }
