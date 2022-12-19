@@ -9,7 +9,7 @@ object SameParamOverloadingTest {
 
   abstract class A1 {
     def x1[A: ClassTag](a: A): Int // assert: SameParamOverloading
-    def x1[A](b: A): Int // assert: SameParamOverloading
+    def x1[A](b: A): String // assert: SameParamOverloading
   }
 
   trait A2 {

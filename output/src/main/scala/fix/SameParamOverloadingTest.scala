@@ -6,7 +6,7 @@ object SameParamOverloadingTest {
 
   abstract class A1 {
     def x1[A: ClassTag](a: A): Int 
-    def x1[A](b: A): Int 
+    def x1[A](b: A): String 
   }
 
   trait A2 {
