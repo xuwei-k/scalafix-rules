@@ -20,7 +20,7 @@ class StringFormatToInterpolation extends SyntacticRule("StringFormatToInterpola
           Patch.replaceTree(t, "s\"${" + args.head + "}\"")
         } else {
           val buf = new java.lang.StringBuilder("s\"")
-          str.split("%s").zipWithIndex.foreach { case (s, i) =>
+          str.split("%s", -1).zipWithIndex.foreach { case (s, i) =>
             buf.append(s)
             if (i < args.length) {
               buf.append("${")

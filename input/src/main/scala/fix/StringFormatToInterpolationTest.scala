@@ -8,6 +8,10 @@ class StringFormatToInterpolationTest {
 
   " %s a1 %s a2 %s a3".format(2, Nil, false)
 
+  "%s%s".format(2, "x")
+
+  "%s%s%sa".format(9, 8, 7)
+
   "%s x %s".format(5, true)
 
   "%s".format(Some(9))

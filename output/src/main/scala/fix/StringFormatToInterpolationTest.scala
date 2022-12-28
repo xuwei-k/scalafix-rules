@@ -5,6 +5,10 @@ class StringFormatToInterpolationTest {
 
   s" ${2} a1 ${Nil} a2 ${false} a3"
 
+  s"${2}${"x"}"
+
+  s"${9}${8}${7}a"
+
   s"${5} x ${true}"
 
   s"${Some(9)}"
