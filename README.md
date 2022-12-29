@@ -12,3 +12,9 @@ or
 ```
 sbt > scalafixAll dependency:SomeRuleName@com.github.xuwei-k:scalafix-rules:version
 ```
+
+or
+
+```
+sbt > scalafixAll https://raw.githubusercontent.com/xuwei-k/scalafix-rules/main/rules/src/main/scala/fix/SomeRuleName.scala
+```
