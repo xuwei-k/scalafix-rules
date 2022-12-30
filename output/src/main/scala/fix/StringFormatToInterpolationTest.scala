@@ -1,6 +1,8 @@
 package fix
 
 class StringFormatToInterpolationTest {
+  s""" "${1} ${2}" """
+
   s"x ${true} y"
 
   "a b c".format(9)
