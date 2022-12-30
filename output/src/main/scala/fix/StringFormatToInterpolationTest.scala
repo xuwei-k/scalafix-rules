@@ -1,6 +1,8 @@
 package fix
 
 class StringFormatToInterpolationTest {
+  (1 to 5).map("a %s" format _)
+
   s""" "${1} ${2}" """
 
   s"x ${true} y"

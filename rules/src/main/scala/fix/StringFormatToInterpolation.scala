@@ -27,7 +27,10 @@ private object StringFormatToInterpolation {
           (s, args)
       }
       .collect {
-        case (s, args) if args.nonEmpty && args.lengthCompare(s.value.sliding(2).count(_ == "%s")) == 0 =>
+        case (s, args)
+            if args.nonEmpty &&
+              args.lengthCompare(s.value.sliding(2).count(_ == "%s")) == 0 &&
+              !args.exists(_.is[Term.Placeholder]) =>
           (s.syntax.startsWith("\"\"\""), s.value, args)
       }
   }
