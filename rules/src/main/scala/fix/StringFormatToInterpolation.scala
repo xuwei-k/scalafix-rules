@@ -35,21 +35,17 @@ private object StringFormatToInterpolation {
 class StringFormatToInterpolation extends SyntacticRule("StringFormatToInterpolation") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect { case t @ StringFormatToInterpolation.Extract(str, args) =>
-      if (str == "%s") {
-        Patch.replaceTree(t, "s\"${" + args.head + "}\"")
-      } else {
-        val buf = new java.lang.StringBuilder("s\"")
-        str.split("%s", -1).zipWithIndex.foreach { case (s, i) =>
-          buf.append(s)
-          if (i < args.length) {
-            buf.append("${")
-            buf.append(args(i))
-            buf.append("}")
-          }
+      val buf = new java.lang.StringBuilder("s\"")
+      str.split("%s", -1).zipWithIndex.foreach { case (s, i) =>
+        buf.append(s)
+        if (i < args.length) {
+          buf.append("${")
+          buf.append(args(i))
+          buf.append("}")
         }
-        buf.append("\"")
-        Patch.replaceTree(t, buf.toString)
       }
+      buf.append("\"")
+      Patch.replaceTree(t, buf.toString)
     }.asPatch
   }
 }
