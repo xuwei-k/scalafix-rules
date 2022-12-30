@@ -4,6 +4,8 @@ rule = StringFormatToInterpolation
 package fix
 
 class StringFormatToInterpolationTest {
+  "x %s y" format true
+
   "a b c".format(9)
 
   " %s a1 %s a2 %s a3".format(2, Nil, false)
