@@ -34,4 +34,5 @@ object ImplicitValueClassTest {
     println(a)
   }
 
+  implicit class ByName(a: => Int)
 }

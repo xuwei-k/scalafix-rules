@@ -5,13 +5,14 @@ import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
 import scala.meta.Mod.ValParam
 import scala.meta.Ctor
-import scala.meta.Term
 import scala.meta.Defn
 import scala.meta.Mod
 import scala.meta.Pkg
 import scala.meta.Source
 import scala.meta.Template
+import scala.meta.Term
 import scala.meta.Tree
+import scala.meta.Type
 
 class ImplicitValueClass extends SyntacticRule("ImplicitValueClass") {
 
@@ -25,7 +26,8 @@ class ImplicitValueClass extends SyntacticRule("ImplicitValueClass") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
       case c @ Defn.Class(_, _, _, Ctor.Primary(_, _, List(List(p1))), Template(Nil, Nil, _, stats))
-          if c.mods.exists(_.is[Mod.Implicit]) && stats.forall(_.is[Defn.Def]) && parentIsTopLevelObject(c) =>
+          if c.mods.exists(_.is[Mod.Implicit]) && stats
+            .forall(_.is[Defn.Def]) && parentIsTopLevelObject(c) && !p1.decltpe.forall(_.is[Type.ByName]) =>
         Seq(
           {
             if (p1.mods.exists(_.is[ValParam])) {
