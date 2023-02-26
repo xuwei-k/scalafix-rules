@@ -35,4 +35,21 @@ object ImplicitValueClassTest {
   }
 
   implicit class ByName(a: => Int)
+
+  object X1 {
+    object X2 {
+      object X3 {
+        implicit class Z(a: Int) {
+          def b = a
+        }
+      }
+    }
+    class Y1 {
+      object Y2 {
+        implicit class Z(a: Int) {
+          def b = a
+        }
+      }
+    }
+  }
 }
