@@ -4,12 +4,12 @@ rule = NamedParamOrder
 package fix
 
 object NamedParamOrderTest {
-  def foo(x1: Int, x2: Int, x3: Int): Int = x1
+  def foo(`class`: Int, `type`: Int, x: Int): Int = x
 
-  val x1 = foo(
-    x3 = 3,
-    x1 = 1,
-    x2 = 2,
+  val z = foo(
+    x = 3,
+    `class` = 1,
+    `type` = 2,
   )
 
   scala.math.max(y = 2, x = 1)

@@ -17,7 +17,7 @@ class NamedParamOrder extends SemanticRule("NamedParamOrder") {
       case t: Term.Apply if t.args.nonEmpty =>
         val named = t.args.collect {
           case Term.Assign(k: Term.Name, v) if getPatch(v).isEmpty =>
-            k.value -> v
+            k -> v
         }
         if (t.args.lengthCompare(named.size) == 0) {
           t.fun.symbol.info.flatMap { i =>
@@ -25,19 +25,19 @@ class NamedParamOrder extends SemanticRule("NamedParamOrder") {
               .condOpt(i.signature) { case m: MethodSignature =>
                 m.parameterLists.headOption.flatMap { define =>
                   val defNames = define.map(_.displayName)
-                  val callNames = named.map(_._1)
+                  val callNames = named.map(_._1.value)
                   if (
                     (defNames.lengthCompare(named.size) == 0) &&
                     (defNames.toSet == callNames.toSet) &&
                     (defNames != callNames)
                   ) {
-                    val map = named.toMap
-                    val result = defNames.map(k => k -> map(k))
+                    val map = named.map { case (k, v) => k.value -> (k, v) }.toMap
+                    val result = defNames.map(map)
                     Some(
                       t.args
                         .zip(result)
                         .map { case (oldParam, (k, v)) =>
-                          Patch.replaceTree(oldParam, s"${k} = ${v}")
+                          Patch.replaceTree(oldParam, s"${k.syntax} = ${v}")
                         }
                         .asPatch
                     )
