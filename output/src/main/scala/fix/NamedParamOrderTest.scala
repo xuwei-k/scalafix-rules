@@ -12,4 +12,10 @@ object NamedParamOrderTest {
   scala.math.max(x = 1, y = 2)
 
   "a".sliding(size = 1, step = 2)
+
+  Tuple3(_1 = 1, _2 = 2, _3 = 3)
+
+  class A1(x1: Int, x2: String)
+
+  def z2 = new A1(x1 = 1, x2 = "2")
 }
