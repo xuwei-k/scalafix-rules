@@ -1,6 +1,7 @@
 package fix
 
 import scala.meta.Term
+import scala.meta.Tree
 import scalafix.Patch
 import scalafix.v1.MethodSignature
 import scalafix.v1.SemanticDocument
@@ -9,38 +10,47 @@ import scalafix.v1.XtensionTreeScalafix
 
 class NamedParamOrder extends SemanticRule("NamedParamOrder") {
   override def fix(implicit doc: SemanticDocument): Patch = {
-    doc.tree.collect { case t: Term.Apply =>
-      val named = t.args.collect { case Term.Assign(k: Term.Name, v) =>
-        k.value -> v
-      }
-      if (t.args.size == named.size) {
-        t.fun.symbol.info.flatMap { i =>
-          PartialFunction.condOpt(i.signature) { case m: MethodSignature =>
-            m.parameterLists.headOption.map { define =>
-              val defNames = define.map(_.displayName)
-              val callNames = named.map(_._1)
-              if (
-                (defNames.size == named.size) &&
-                (defNames.toSet == callNames.toSet) &&
-                (defNames != callNames)
-              ) {
-                val map = named.toMap
-                val result = defNames.map(k => k -> map(k))
-                t.args
-                  .zip(result)
-                  .map { case (oldParam, (k, v)) =>
-                    Patch.replaceTree(oldParam, s"${k} = ${v}")
+    getPatch(doc.tree).asPatch
+  }
+  private[this] def getPatch(t: Tree)(implicit doc: SemanticDocument): List[Patch] = {
+    t.collect {
+      case t: Term.Apply if t.args.nonEmpty =>
+        val named = t.args.collect {
+          case Term.Assign(k: Term.Name, v) if getPatch(v).isEmpty =>
+            k.value -> v
+        }
+        if (t.args.lengthCompare(named.size) == 0) {
+          t.fun.symbol.info.flatMap { i =>
+            PartialFunction
+              .condOpt(i.signature) { case m: MethodSignature =>
+                m.parameterLists.headOption.flatMap { define =>
+                  val defNames = define.map(_.displayName)
+                  val callNames = named.map(_._1)
+                  if (
+                    (defNames.lengthCompare(named.size) == 0) &&
+                    (defNames.toSet == callNames.toSet) &&
+                    (defNames != callNames)
+                  ) {
+                    val map = named.toMap
+                    val result = defNames.map(k => k -> map(k))
+                    Some(
+                      t.args
+                        .zip(result)
+                        .map { case (oldParam, (k, v)) =>
+                          Patch.replaceTree(oldParam, s"${k} = ${v}")
+                        }
+                        .asPatch
+                    )
+                  } else {
+                    None
                   }
-                  .asPatch
-              } else {
-                Patch.empty
+                }
               }
-            }.asPatch
+              .flatten
           }
-        }.asPatch
-      } else {
-        Patch.empty
-      }
-    }.asPatch
+        } else {
+          None
+        }
+    }.flatten
   }
 }
