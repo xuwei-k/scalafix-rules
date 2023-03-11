@@ -14,7 +14,7 @@ class NamedParamOrder extends SemanticRule("NamedParamOrder") {
   }
   private[this] def getPatch(t: Tree)(implicit doc: SemanticDocument): List[Patch] = {
     t.collect {
-      case t: Term.Apply if t.args.nonEmpty =>
+      case t: Term.Apply if t.args.nonEmpty && !doc.comments.hasComment(t) =>
         val named = t.args.collect {
           case Term.Assign(k: Term.Name, v) if getPatch(v).isEmpty =>
             k -> v
