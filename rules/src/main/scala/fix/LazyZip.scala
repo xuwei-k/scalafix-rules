@@ -27,29 +27,21 @@ class LazyZip extends SyntacticRule("LazyZip") {
             ),
             fun :: Nil
           ) =>
-        fun match {
-          case f: Term.Function if f.params.size <= 1 =>
-            Patch.empty
-          case Term.Block(List(f: Term.Function)) if f.params.size <= 1 =>
-            Patch.empty
-          case _: Term.AnonymousFunction =>
-            Patch.empty
-          case _ =>
+        PartialFunction
+          .condOpt(fun) { case f: Term.PartialFunction =>
             Seq(
               PartialFunction
-                .condOpt(fun) {
-                  case Term.PartialFunction(
-                        List(
-                          pfCase @ Case(
-                            Pat.Tuple(
-                              List(
-                                Pat.Var(_: Term.Name),
-                                Pat.Var(_: Term.Name)
-                              )
-                            ),
-                            None,
-                            _
-                          )
+                .condOpt(f.cases) {
+                  case List(
+                        pfCase @ Case(
+                          Pat.Tuple(
+                            List(
+                              Pat.Var(_: Term.Name),
+                              Pat.Var(_: Term.Name)
+                            )
+                          ),
+                          None,
+                          _
                         )
                       ) =>
                     Patch.removeTokens(pfCase.tokens.find(_.is[Token.KwCase]))
@@ -57,7 +49,8 @@ class LazyZip extends SyntacticRule("LazyZip") {
                 .asPatch,
               Patch.replaceTree(zip, "lazyZip")
             ).asPatch
-        }
+          }
+          .asPatch
     }.asPatch
   }
 }
