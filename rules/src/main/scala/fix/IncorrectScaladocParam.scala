@@ -4,6 +4,7 @@ import scala.meta.Decl
 import scalafix.Patch
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
+import scala.meta.Ctor
 import scala.meta.Defn
 import scala.meta.Term
 import scala.meta.Tree
@@ -22,6 +23,14 @@ class IncorrectScaladocParam extends SyntacticRule("IncorrectScaladocParam") {
         p(t, t.paramss)
       case t: Decl.Def =>
         p(t, t.paramss)
+      case t: Defn.Macro =>
+        p(t, t.paramss)
+      case t: Ctor.Secondary =>
+        p(t, t.paramss)
+      case t: Defn.Enum =>
+        p(t, t.ctor.paramss)
+      case t: Defn.EnumCase =>
+        p(t, t.ctor.paramss)
     }.asPatch
   }
 
