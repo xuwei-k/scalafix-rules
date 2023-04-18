@@ -119,7 +119,7 @@ lazy val inputOutputCommon = Def.settings(
     }
   },
   libraryDependencies += "com.typesafe.slick" %% "slick" % "3.4.1" cross CrossVersion.for3Use2_13 exclude ("org.scala-lang.modules", "scala-collection-compat_2.13"),
-  libraryDependencies += "org.atnos" %% "eff" % "6.0.2"
+  libraryDependencies += "org.atnos" %% "eff" % "6.0.3"
 )
 
 lazy val input = projectMatrix
