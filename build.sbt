@@ -67,6 +67,7 @@ lazy val rules = projectMatrix
     moduleName := "scalafix-rules",
     publishTo := sonatypePublishToBundle.value,
     libraryDependencies += "ch.epfl.scala" %% "scalafix-core" % V.scalafixVersion,
+    libraryDependencies += "org.scalatest" %% "scalatest-funsuite" % "3.2.15" % Test,
     Compile / doc / scalacOptions ++= {
       val hash = sys.process.Process("git rev-parse HEAD").lineStream_!.head
       if (scalaBinaryVersion.value != "3") {

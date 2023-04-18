@@ -16,6 +16,9 @@ import scalafix.lint.LintSeverity
 
 class IncorrectScaladocParam extends SyntacticRule("IncorrectScaladocParam") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
+    fix0(doc).map(Patch.lint).asPatch
+  }
+  private[fix] def fix0(implicit doc: SyntacticDocument): List[Diagnostic] = {
     doc.tree.collect {
       case t: Defn.Class =>
         p(t, t.ctor.paramss)
@@ -31,54 +34,46 @@ class IncorrectScaladocParam extends SyntacticRule("IncorrectScaladocParam") {
         p(t, t.ctor.paramss)
       case t: Defn.EnumCase =>
         p(t, t.ctor.paramss)
-    }.asPatch
+    }.flatten
   }
 
-  private def p(t: Tree, paramss: List[List[Term.Param]])(implicit doc: SyntacticDocument): Patch = {
+  private def p(t: Tree, paramss: List[List[Term.Param]])(implicit doc: SyntacticDocument): List[Diagnostic] = {
     val names = paramss.flatMap(_.map(_.name.value.trim)).toSet
 
-    doc.comments
-      .leading(t)
-      .map { x =>
-        x.docTokens.toList.flatten.map { c =>
-          PartialFunction
-            .condOpt(c.kind) { case DocToken.Param =>
-              c.name
-            }
-            .flatten
-            .map(_.trim)
-            .map { paramName =>
-              if (names(paramName)) {
-                Patch.empty
-              } else {
-                PartialFunction
-                  .condOpt(x.value.linesIterator.zipWithIndex.collect {
-                    case (str, i) if str.contains(s" ${paramName} ") => (str.length, i)
-                  }.toList) { case List((len, index)) =>
-                    Patch.lint(
-                      Diagnostic(
-                        id = "",
-                        message = "incorrect @param",
-                        position = {
-                          val line = x.pos.startLine + index
-                          Position.Range(
-                            input = doc.input,
-                            startLine = line,
-                            startColumn = 0,
-                            endLine = line,
-                            endColumn = len
-                          )
-                        },
-                        severity = LintSeverity.Warning
-                      )
+    doc.comments.leading(t).toList.flatMap { x =>
+      x.docTokens.toList.flatten.flatMap { c =>
+        PartialFunction
+          .condOpt(c.kind) { case DocToken.Param =>
+            c.name
+          }
+          .flatten
+          .map(_.trim)
+          .flatMap { paramName =>
+            if (names(paramName)) {
+              None
+            } else {
+              PartialFunction.condOpt(x.value.linesIterator.zipWithIndex.collect {
+                case (str, i) if str.contains(s" ${paramName} ") => (str.length, i)
+              }.toList) { case List((len, index)) =>
+                Diagnostic(
+                  id = "",
+                  message = "incorrect @param",
+                  position = {
+                    val line = x.pos.startLine + index
+                    Position.Range(
+                      input = doc.input,
+                      startLine = line,
+                      startColumn = 0,
+                      endLine = line,
+                      endColumn = len
                     )
-                  }
-                  .asPatch
+                  },
+                  severity = LintSeverity.Warning
+                )
               }
             }
-            .asPatch
-        }.asPatch
+          }
       }
-      .asPatch
+    }
   }
 }
