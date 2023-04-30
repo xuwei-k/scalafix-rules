@@ -9,6 +9,11 @@ import scalafix.Patch
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
 
+/**
+ * @see [[https://nrinaudo.github.io/scala-best-practices/adts/product_with_serializable.html]]
+ * @see [[https://typelevel.org/blog/2018/05/09/product-with-serializable.html]]
+ * @see [[https://github.com/scala/bug/issues/9173]]
+ */
 class ExtendsProductWithSerializable extends SyntacticRule("ExtendsProductWithSerializable") {
   private[this] def emptyConstructor(ctor: Ctor.Primary): Boolean = {
     ctor.mods.isEmpty && ctor.name.value.isEmpty && ctor.paramss.isEmpty
