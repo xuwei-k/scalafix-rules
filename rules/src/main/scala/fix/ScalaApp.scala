@@ -11,6 +11,9 @@ import scala.meta.Pkg
 import scala.meta.Template
 import scala.meta.Type
 
+/**
+ * @see [[https://docs.scala-lang.org/scala3/book/methods-main-methods.html]]
+ */
 class ScalaApp extends SyntacticRule("ScalaApp") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
