@@ -12,11 +12,11 @@ import scala.meta.Mod
 class RedundantCaseClassVal extends SyntacticRule("RedundantCaseClassVal") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
-      case c @ Defn.Class(
+      case c @ Defn.Class.After_4_6_0(
             _,
             _,
             _,
-            Ctor.Primary(
+            Ctor.Primary.After_4_6_0(
               _,
               _,
               params1 :: _

@@ -14,7 +14,10 @@ class RemovePureEff extends SyntacticRule("RemovePureEff") {
       x1.enums
         .drop(1)
         .collect {
-          case x @ Enumerator.Generator(_, ApplyType(Term.Select(rhs, Term.Name("pureEff")), Type.Name(_) :: Nil)) =>
+          case x @ Enumerator.Generator(
+                _,
+                ApplyType.Initial(Term.Select(rhs, Term.Name("pureEff")), Type.Name(_) :: Nil)
+              ) =>
             Patch.replaceTree(x, Enumerator.Val(x.pat, rhs).toString)
         }
         .asPatch

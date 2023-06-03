@@ -41,7 +41,7 @@ class CirceCodec extends SyntacticRule("CirceCodec") {
     doc.tree.collect { case src: Source =>
       val result = src.collect { case clazz: Defn.Class =>
         clazz.mods.collect {
-          case annotation @ Annot(Init(Type.Name("JsonCodec"), _, CirceCodec.TypeClass(t))) =>
+          case annotation @ Annot(Init.Initial(Type.Name("JsonCodec"), _, CirceCodec.TypeClass(t))) =>
             val objectOpt = src.collect {
               case obj: Defn.Object if obj.name.value == clazz.name.value => obj
             }.headOption
@@ -49,7 +49,7 @@ class CirceCodec extends SyntacticRule("CirceCodec") {
             val className = clazz.name.value
 
             val instance = "\n\n  implicit " + {
-              clazz.tparams match {
+              clazz.tparamClause.values match {
                 case Nil =>
                   t match {
                     case CirceCodec.Both =>

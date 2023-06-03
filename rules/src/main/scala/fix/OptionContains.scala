@@ -15,11 +15,11 @@ import scala.meta.Term.ApplyInfix
 class OptionContains extends SyntacticRule("OptionContains") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
-      case t @ Term.Match(
+      case t @ Term.Match.After_4_4_5(
             expr,
             List(
               Case(
-                Pat.Extract(Term.Name("Some"), Pat.Var(Term.Name(a1)) :: Nil),
+                Pat.Extract.Initial(Term.Name("Some"), Pat.Var(Term.Name(a1)) :: Nil),
                 None,
                 body
               ),
@@ -28,13 +28,14 @@ class OptionContains extends SyntacticRule("OptionContains") {
                 None,
                 Lit.Boolean(false)
               )
-            )
+            ),
+            _
           ) =>
         PartialFunction
           .condOpt(body) {
-            case ApplyInfix(Term.Name(a2), Term.Name("=="), Nil, b :: Nil) if a1 == a2 =>
+            case ApplyInfix.Initial(Term.Name(a2), Term.Name("=="), Nil, b :: Nil) if a1 == a2 =>
               b
-            case ApplyInfix(b, Term.Name("=="), Nil, Term.Name(a2) :: Nil) if a1 == a2 =>
+            case ApplyInfix.Initial(b, Term.Name("=="), Nil, Term.Name(a2) :: Nil) if a1 == a2 =>
               b
           }
           .map { b =>

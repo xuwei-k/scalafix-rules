@@ -2,10 +2,10 @@ package fix
 
 import scala.meta.Decl
 import scala.meta.Defn
+import scala.meta.Member
 import scala.meta.Mod
 import scala.meta.Stat
 import scala.meta.Template
-import scala.meta.Term
 import scalafix.Diagnostic
 import scalafix.Patch
 import scalafix.lint.LintSeverity
@@ -15,10 +15,10 @@ import scalafix.v1.SyntacticRule
 object SameParamOverloading {
   private sealed abstract class Method extends Product with Serializable {
     def value: Stat
-    def paramss: List[List[Term.Param]]
+    def paramClauseGroups: List[Member.ParamClauseGroup]
     def noImplicitParams: Option[List[Method.Param]] =
-      paramss.headOption.filter(!_.forall(_.mods.exists(_.is[Mod.Implicit]))).map { a =>
-        a.map { x =>
+      paramClauseGroups.headOption.map(_.paramClauses).filter(!_.forall(_.mod.exists(_.is[Mod.Implicit]))).map { a =>
+        a.flatMap(_.values).map { x =>
           Method.Param(
             paramType = x.decltpe.map(_.structure)
           )
@@ -29,10 +29,10 @@ object SameParamOverloading {
     case class Param(paramType: Option[String])
 
     final case class Defn(value: scala.meta.Defn.Def) extends Method {
-      def paramss: List[List[Term.Param]] = value.paramss
+      def paramClauseGroups = value.paramClauseGroups
     }
     final case class Decl(value: scala.meta.Decl.Def) extends Method {
-      def paramss: List[List[Term.Param]] = value.paramss
+      def paramClauseGroups = value.paramClauseGroups
     }
   }
 }

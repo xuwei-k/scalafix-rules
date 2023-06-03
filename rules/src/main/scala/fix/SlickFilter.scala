@@ -16,7 +16,7 @@ object SlickFilter {
   private object CaseSome {
     def unapply(c: Case): Option[(String, Term)] = PartialFunction.condOpt(c) {
       case Case(
-            Pat.Extract(
+            Pat.Extract.Initial(
               Term.Name("Some"),
               Pat.Var(Term.Name(a)) :: Nil
             ),
@@ -31,7 +31,7 @@ object SlickFilter {
     def unapply(x: Term): Boolean = PartialFunction.cond(x) {
       case Term.Ascribe(
             Lit.Boolean(true),
-            Type.Apply(
+            Type.Apply.Initial(
               Type.Name("Rep"),
               Type.Name("Boolean") :: Nil
             )
@@ -53,9 +53,9 @@ object SlickFilter {
 
   private object ReplaceFilterOpt {
     def unapply(x: Tree): Option[ReplaceFilterOpt] = PartialFunction.condOpt(x) {
-      case Term.Match(expr, CaseSome(s, body) :: CaseNone() :: Nil) =>
+      case Term.Match.After_4_4_5(expr, CaseSome(s, body) :: CaseNone() :: Nil, _) =>
         ReplaceFilterOpt(expr, s, body)
-      case Term.Match(expr, CaseNone() :: CaseSome(s, body) :: Nil) =>
+      case Term.Match.After_4_4_5(expr, CaseNone() :: CaseSome(s, body) :: Nil, _) =>
         ReplaceFilterOpt(expr, s, body)
     }
   }
@@ -64,13 +64,13 @@ object SlickFilter {
 
   private object ReplaceFilterIf {
     def unapply(x: Tree): Option[ReplaceFilterIf] = PartialFunction.condOpt(x) {
-      case Term.If(cond, TrueRepBoolean(), expr) =>
+      case Term.If.After_4_4_0(cond, TrueRepBoolean(), expr, _) =>
         ReplaceFilterIf(cond, expr, true)
-      case Term.If(cond, Block(TrueRepBoolean() :: Nil), expr) =>
+      case Term.If.After_4_4_0(cond, Block(TrueRepBoolean() :: Nil), expr, _) =>
         ReplaceFilterIf(cond, expr, true)
-      case Term.If(cond, expr, TrueRepBoolean()) =>
+      case Term.If.After_4_4_0(cond, expr, TrueRepBoolean(), _) =>
         ReplaceFilterIf(cond, expr, false)
-      case Term.If(cond, expr, Block(TrueRepBoolean() :: Nil)) =>
+      case Term.If.After_4_4_0(cond, expr, Block(TrueRepBoolean() :: Nil), _) =>
         ReplaceFilterIf(cond, expr, false)
     }
   }
@@ -80,7 +80,7 @@ object SlickFilter {
   private object InfixAndValues {
     def unapply(x: Term): Option[List[Term]] = {
       PartialFunction.condOpt(x) {
-        case ApplyInfix(left, Term.Name("&&"), Nil, right :: Nil) =>
+        case ApplyInfix.Initial(left, Term.Name("&&"), Nil, right :: Nil) =>
           unapply(left).toList.flatten ++ unapply(right).toList.flatten
         case _ =>
           x :: Nil
@@ -92,9 +92,9 @@ object SlickFilter {
     def unapply(t: Term): Option[(String, Term, String, Boolean)] = PartialFunction.condOpt(t) {
       case Term.PartialFunction(Case(p1, None, x) :: Nil) =>
         (p1.toString, x, "case ", true)
-      case Term.Block(Term.Function(p1 :: Nil, x) :: Nil) =>
+      case Term.Block(Term.Function.Initial(p1 :: Nil, x) :: Nil) =>
         (p1.toString, x, "", true)
-      case Term.Function(p1 :: Nil, x) =>
+      case Term.Function.Initial(p1 :: Nil, x) =>
         (p1.toString, x, "", false)
     }
   }
@@ -105,7 +105,7 @@ class SlickFilter extends SyntacticRule("SlickFilter") {
 
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
-      case t @ Term.Apply(
+      case t @ Term.Apply.Initial(
             Term.Select(obj, Term.Name("filter")),
             Func(p1, InfixAndValues(values), caseOpt, block) :: Nil
           ) if obj.collect {

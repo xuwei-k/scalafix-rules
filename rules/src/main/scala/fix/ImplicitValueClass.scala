@@ -36,7 +36,13 @@ class ImplicitValueClass extends SyntacticRule("ImplicitValueClass") {
 
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
-      case c @ Defn.Class(_, _, _, Ctor.Primary(_, _, List(p1 :: Nil)), Template(Nil, Nil, _, stats))
+      case c @ Defn.Class.After_4_6_0(
+            _,
+            _,
+            _,
+            Ctor.Primary.Initial(_, _, List(p1 :: Nil)),
+            Template.Initial(Nil, Nil, _, stats)
+          )
           if c.mods.exists(_.is[Mod.Implicit]) && stats.forall(_.is[Defn.Def]) && allParentIsObject(c) && !p1.decltpe
             .forall(_.is[Type.ByName]) =>
         Seq(

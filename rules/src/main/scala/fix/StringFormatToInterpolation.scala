@@ -10,14 +10,14 @@ private object StringFormatToInterpolation {
   private object Extract {
     def unapply(t: Term): Option[(Boolean, String, List[Term])] = PartialFunction
       .condOpt(t) {
-        case Term.ApplyInfix(
+        case Term.ApplyInfix.Initial(
               s: Lit.String,
               Term.Name("format"),
               Nil,
               args
             ) =>
           (s, args)
-        case Term.Apply(
+        case Term.Apply.Initial(
               Term.Select(
                 s: Lit.String,
                 Term.Name("format")

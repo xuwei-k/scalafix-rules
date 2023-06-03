@@ -9,9 +9,9 @@ import scala.meta.Term
 class EtaExpand extends SyntacticRule("EtaExpand") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
-      case t @ Term.Function(
+      case t @ Term.Function.Initial(
             params,
-            Term.Apply(method, args)
+            Term.Apply.Initial(method, args)
           ) if params.nonEmpty && (params.lengthCompare(args.size) == 0) && params.forall(_.decltpe.isEmpty) =>
         val paramNames = params.map(_.name.value)
         val argNames = args.collect { case Term.Name(x) => x }

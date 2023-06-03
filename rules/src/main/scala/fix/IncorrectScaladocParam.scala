@@ -21,24 +21,24 @@ class IncorrectScaladocParam extends SyntacticRule("IncorrectScaladocParam") {
   private[fix] def fix0(implicit doc: SyntacticDocument): List[Diagnostic] = {
     doc.tree.collect {
       case t: Defn.Class =>
-        p(t, t.ctor.paramss)
+        p(t, t.ctor.paramClauses)
       case t: Defn.Def =>
-        p(t, t.paramss)
+        p(t, t.paramClauses)
       case t: Decl.Def =>
-        p(t, t.paramss)
+        p(t, t.paramClauses)
       case t: Defn.Macro =>
-        p(t, t.paramss)
+        p(t, t.paramClauses)
       case t: Ctor.Secondary =>
-        p(t, t.paramss)
+        p(t, t.paramClauses)
       case t: Defn.Enum =>
-        p(t, t.ctor.paramss)
+        p(t, t.ctor.paramClauses)
       case t: Defn.EnumCase =>
-        p(t, t.ctor.paramss)
+        p(t, t.ctor.paramClauses)
     }.flatten
   }
 
-  private def p(t: Tree, paramss: List[List[Term.Param]])(implicit doc: SyntacticDocument): List[Diagnostic] = {
-    val names = paramss.flatMap(_.map(_.name.value.trim)).toSet
+  private def p(t: Tree, paramsClauses: Seq[Term.ParamClause])(implicit doc: SyntacticDocument): List[Diagnostic] = {
+    val names = paramsClauses.flatMap(_.values.map(_.name.value.trim)).toSet
 
     doc.comments.leading(t).toList.flatMap { x =>
       x.docTokens.toList.flatten.flatMap { c =>

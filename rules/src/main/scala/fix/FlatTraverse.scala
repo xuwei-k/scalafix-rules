@@ -8,9 +8,9 @@ import scala.meta.Term
 class FlatTraverse extends SyntacticRule("FlatTraverse") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
-      case t @ Term.Apply(
+      case t @ Term.Apply.Initial(
             Term.Select(
-              Term.Apply(
+              Term.Apply.Initial(
                 Term.Select(
                   qual,
                   Term.Name("traverse")

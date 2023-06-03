@@ -16,7 +16,7 @@ import scalafix.v1.SyntacticRule
  */
 class ExtendsProductWithSerializable extends SyntacticRule("ExtendsProductWithSerializable") {
   private[this] def emptyConstructor(ctor: Ctor.Primary): Boolean = {
-    ctor.mods.isEmpty && ctor.name.value.isEmpty && ctor.paramss.isEmpty
+    ctor.mods.isEmpty && ctor.name.value.isEmpty && ctor.paramClauses.isEmpty
   }
 
   override def fix(implicit doc: SyntacticDocument): Patch = {
@@ -24,13 +24,13 @@ class ExtendsProductWithSerializable extends SyntacticRule("ExtendsProductWithSe
       case t: Defn.Class
           if t.mods.exists(_.is[Mod.Sealed]) && t.mods.exists(
             _.is[Mod.Abstract]
-          ) && !t.mods.exists(_.is[Mod.Case]) && t.templ.inits.isEmpty && t.tparams.isEmpty =>
+          ) && !t.mods.exists(_.is[Mod.Case]) && t.templ.inits.isEmpty && t.tparamClause.isEmpty =>
         if (emptyConstructor(t.ctor)) {
           t.name -> t.name
         } else {
           t.name -> t.ctor
         }
-      case t: Defn.Trait if t.mods.exists(_.is[Mod.Sealed]) && t.templ.inits.isEmpty && t.tparams.isEmpty =>
+      case t: Defn.Trait if t.mods.exists(_.is[Mod.Sealed]) && t.templ.inits.isEmpty && t.tparamClause.isEmpty =>
         if (emptyConstructor(t.ctor)) {
           t.name -> t.name
         } else {

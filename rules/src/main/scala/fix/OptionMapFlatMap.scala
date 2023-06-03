@@ -14,7 +14,7 @@ class OptionMapFlatMap extends SyntacticRule("OptionMapFlatMap") {
   private object CaseSome {
     def unapply(c: Case): Boolean = PartialFunction.cond(c) {
       case Case(
-            Pat.Extract(Term.Name("Some"), Pat.Var(Term.Name(a1)) :: Nil),
+            Pat.Extract.Initial(Term.Name("Some"), Pat.Var(Term.Name(a1)) :: Nil),
             None,
             _
           ) =>
@@ -35,9 +35,9 @@ class OptionMapFlatMap extends SyntacticRule("OptionMapFlatMap") {
 
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
-      case t @ Term.Match(_, CaseSome() :: NoneToNone() :: Nil) =>
+      case t @ Term.Match.After_4_4_5(_, CaseSome() :: NoneToNone() :: Nil, _) =>
         Patch.lint(OptionMapFlatMapWarn(t.pos))
-      case t @ Term.Match(_, NoneToNone() :: CaseSome() :: Nil) =>
+      case t @ Term.Match.After_4_4_5(_, NoneToNone() :: CaseSome() :: Nil, _) =>
         Patch.lint(OptionMapFlatMapWarn(t.pos))
       case t @ Term.PartialFunction(CaseSome() :: NoneToNone() :: Nil) =>
         Patch.lint(OptionMapFlatMapWarn(t.pos))

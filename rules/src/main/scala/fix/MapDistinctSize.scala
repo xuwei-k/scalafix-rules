@@ -10,7 +10,7 @@ class MapDistinctSize extends SyntacticRule("MapDistinctSize") {
     doc.tree.collect {
       case t @ Term.Select(
             Term.Select(
-              Term.Apply(
+              Term.Apply.Initial(
                 Term.Select(
                   x,
                   Term.Name("map")

@@ -11,9 +11,9 @@ class OptionMatchToRight extends SyntacticRule("OptionMatchToRight") {
   private object SomeToRight {
     def unapply(c: Case): Boolean = PartialFunction.cond(c) {
       case Case(
-            Pat.Extract(Term.Name("Some"), Pat.Var(Term.Name(a1)) :: Nil),
+            Pat.Extract.Initial(Term.Name("Some"), Pat.Var(Term.Name(a1)) :: Nil),
             None,
-            Term.Apply(Term.Name("Right"), Term.Name(a2) :: Nil)
+            Term.Apply.Initial(Term.Name("Right"), Term.Name(a2) :: Nil)
           ) if a1 == a2 =>
         true
 
@@ -25,7 +25,7 @@ class OptionMatchToRight extends SyntacticRule("OptionMatchToRight") {
       case Case(
             Term.Name("None") | Pat.Wildcard(),
             None,
-            Term.Apply(Term.Name("Left"), leftArg :: Nil)
+            Term.Apply.Initial(Term.Name("Left"), leftArg :: Nil)
           ) =>
         leftArg
     }
@@ -33,9 +33,9 @@ class OptionMatchToRight extends SyntacticRule("OptionMatchToRight") {
 
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
-      case t @ Term.Match(expr, SomeToRight() :: NoneToLeft(leftArg) :: Nil) =>
+      case t @ Term.Match.After_4_4_5(expr, SomeToRight() :: NoneToLeft(leftArg) :: Nil, _) =>
         Patch.replaceTree(t, s"${expr}.toRight(${leftArg})")
-      case t @ Term.Match(expr, NoneToLeft(leftArg) :: SomeToRight() :: Nil) =>
+      case t @ Term.Match.After_4_4_5(expr, NoneToLeft(leftArg) :: SomeToRight() :: Nil, _) =>
         Patch.replaceTree(t, s"${expr}.toRight(${leftArg})")
     }
   }.asPatch

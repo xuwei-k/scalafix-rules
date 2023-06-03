@@ -10,9 +10,9 @@ import scalafix.v1.SyntacticRule
 object OptionWhenUnless {
   private object SomeValue {
     def unapply(x: Term): Option[Term] = PartialFunction.condOpt(x) {
-      case Block(Term.Apply(Term.Name("Some"), value :: Nil) :: Nil) =>
+      case Block(Term.Apply.Initial(Term.Name("Some"), value :: Nil) :: Nil) =>
         value
-      case Term.Apply(Term.Name("Some"), value :: Nil) =>
+      case Term.Apply.Initial(Term.Name("Some"), value :: Nil) =>
         value
     }
   }
@@ -34,9 +34,9 @@ class OptionWhenUnless extends SyntacticRule("OptionWhenUnless") {
 
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
-      case t @ If(condition, SomeValue(value), NoneValue()) =>
+      case t @ If.After_4_4_0(condition, SomeValue(value), NoneValue(), _) =>
         Patch.replaceTree(t, s"Option.when(${condition})($value)")
-      case t @ If(condition, NoneValue(), SomeValue(value)) =>
+      case t @ If.After_4_4_0(condition, NoneValue(), SomeValue(value), _) =>
         Patch.replaceTree(t, s"Option.unless(${condition})($value)")
     }.asPatch
   }

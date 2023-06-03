@@ -12,20 +12,21 @@ import scala.meta.tokens.Token
 class OptionOrElse extends SyntacticRule("OptionOrElse") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
-      case t @ Term.Match(
+      case t @ Term.Match.After_4_4_5(
             expr,
             List(
               Case(
-                Pat.Extract(Term.Name("Some"), Pat.Var(Term.Name(a1)) :: Nil),
+                Pat.Extract.Initial(Term.Name("Some"), Pat.Var(Term.Name(a1)) :: Nil),
                 None,
-                Term.Apply(Term.Name("Some"), Term.Name(a2) :: Nil)
+                Term.Apply.Initial(Term.Name("Some"), Term.Name(a2) :: Nil)
               ),
               Case(
                 Pat.Wildcard() | Term.Name("None"),
                 None,
                 alternative
               )
-            )
+            ),
+            _
           ) if a1 == a2 =>
         val (open, close) = {
           alternative match {

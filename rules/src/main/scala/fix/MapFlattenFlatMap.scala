@@ -10,7 +10,7 @@ class MapFlattenFlatMap extends SyntacticRule("MapFlattenFlatMap") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
       case t1 @ Term.Select(
-            t2 @ Term.Apply(
+            t2 @ Term.Apply.Initial(
               Term.Select(_, map @ Term.Name("map")),
               _ :: Nil
             ),

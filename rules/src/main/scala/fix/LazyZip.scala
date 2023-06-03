@@ -14,9 +14,9 @@ import scalafix.v1.SyntacticRule
 class LazyZip extends SyntacticRule("LazyZip") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
-      case Term.Apply(
+      case Term.Apply.Initial(
             Term.Select(
-              Term.Apply(
+              Term.Apply.Initial(
                 Term.Select(
                   _,
                   zip @ Term.Name("zip")

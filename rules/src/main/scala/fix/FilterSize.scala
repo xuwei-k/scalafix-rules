@@ -9,7 +9,7 @@ class FilterSize extends SyntacticRule("FilterSize") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
       case t @ Term.Select(
-            Term.Apply(
+            Term.Apply.Initial(
               Term.Select(
                 obj,
                 Term.Name("filter")

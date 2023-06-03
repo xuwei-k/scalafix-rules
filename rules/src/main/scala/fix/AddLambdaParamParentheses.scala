@@ -9,7 +9,7 @@ import scala.meta.Token
 class AddLambdaParamParentheses extends SyntacticRule("AddLambdaParamParentheses") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
-      case t1 @ Term.Function(param :: Nil, _) if param.decltpe.nonEmpty && param.mods.isEmpty =>
+      case t1 @ Term.ParamClause(param :: Nil, _) if param.decltpe.nonEmpty && param.mods.isEmpty =>
         if (t1.tokens.find(_.is[Token.LeftParen]).exists(_.pos.start <= param.pos.start)) {
           Patch.empty
         } else {

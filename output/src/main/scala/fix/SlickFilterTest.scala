@@ -51,9 +51,7 @@ abstract class SlickFilterTest {
     query.filterOpt(a1) { (x, value) => x.a1 === value }.filter{ x => x.a2 === a2 }.filterOpt(a3) { (x, value) => x.a3 === value }.result
 
   def f7(a1: Int, a2: Option[String], a3: java.sql.Timestamp): DBIO[Seq[X]] =
-    query.filter( x => (
-          x.a1 === a1
-        ) ).filterOpt(a2) { (x, value) => x.a2 === value }.filter( x => x.a3 === a3 )
+    query.filter( x => x.a1 === a1 ).filterOpt(a2) { (x, value) => x.a2 === value }.filter( x => x.a3 === a3 )
       .result
 
   def f8(a1: Option[Int], a2: Option[String], a3: Option[java.sql.Timestamp]): DBIO[Seq[(X, X)]] =

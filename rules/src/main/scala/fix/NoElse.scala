@@ -11,7 +11,7 @@ import scala.meta.inputs.Position
 
 class NoElse extends SyntacticRule("NoElse") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
-    doc.tree.collect { case t @ Term.If(_, _, Lit.Unit()) =>
+    doc.tree.collect { case t @ Term.If.After_4_4_0(_, _, Lit.Unit(), _) =>
       Patch.lint(
         NoElseWarn(t.pos)
       )

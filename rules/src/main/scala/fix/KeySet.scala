@@ -31,7 +31,7 @@ class KeySet extends SemanticRule("KeySet") {
   override def fix(implicit doc: SemanticDocument): Patch = {
     doc.tree.collect {
       case t @ Term.Select(
-            Term.Apply(
+            Term.Apply.Initial(
               Term.Select(map, Term.Name("map")),
               List(
                 Term.AnonymousFunction(

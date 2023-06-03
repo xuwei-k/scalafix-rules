@@ -16,9 +16,9 @@ object NamedParamOrder {
 
     def unapply(t: Term): Option[(String, Tree, List[Term])] = PartialFunction.condOpt(t) {
       case x: Term.Apply =>
-        ("apply", x.fun, x.args)
+        ("apply", x.fun, x.argClause.values)
       case x: Term.New =>
-        ("<init>", x.init.tpe, x.init.argss.headOption.getOrElse(Nil))
+        ("<init>", x.init.tpe, x.init.argClauses.headOption.map(_.values).getOrElse(Nil))
     }
   }
 }

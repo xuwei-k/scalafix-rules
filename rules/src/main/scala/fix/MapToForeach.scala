@@ -11,7 +11,7 @@ class MapToForeach extends SyntacticRule("MapToForeach") {
     doc.tree.collect {
       case t: Template =>
         t.stats.collect {
-          case Term.Apply(
+          case Term.Apply.Initial(
                 Term.Select(_, method @ Term.Name("map")),
                 _ :: Nil
               ) =>
@@ -19,7 +19,7 @@ class MapToForeach extends SyntacticRule("MapToForeach") {
         }.asPatch
       case Term.Block(xs :+ _) =>
         xs.collect {
-          case Term.Apply(
+          case Term.Apply.Initial(
                 Term.Select(_, method @ Term.Name("map")),
                 _ :: Nil
               ) =>

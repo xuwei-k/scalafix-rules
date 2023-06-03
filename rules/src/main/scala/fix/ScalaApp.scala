@@ -16,7 +16,7 @@ import scala.meta.Type
 class ScalaApp extends SyntacticRule("ScalaApp") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
-      case x1 @ Defn.Object(_, _, Template(_, (app @ Init(Type.Name("App"), _, _)) :: tail, _, stats))
+      case x1 @ Defn.Object(_, _, Template.Initial(_, (app @ Init.Initial(Type.Name("App"), _, _)) :: tail, _, stats))
           if x1.parent.exists(_.is[Pkg]) || x1.parent.isEmpty =>
         val (classes, newBody) = stats.partition(s => s.is[Defn.Trait] || s.is[Defn.Class] || s.is[Defn.Object])
 

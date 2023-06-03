@@ -15,7 +15,7 @@ object EitherFold {
   private object RightValue {
     def unapply(value: Case): Option[Fun] = PartialFunction.condOpt(value) {
       case Case(
-            Pat.Extract(Term.Name("Right"), a1 :: Nil),
+            Pat.Extract.Initial(Term.Name("Right"), a1 :: Nil),
             None,
             a2
           ) if a2.collectFirst { case ExtractMatch(_, _) => () }.isEmpty =>
@@ -26,7 +26,7 @@ object EitherFold {
   private object LeftValue {
     def unapply(value: Case): Option[Fun] = PartialFunction.condOpt(value) {
       case Case(
-            Pat.Extract(Term.Name("Left"), a1 :: Nil),
+            Pat.Extract.Initial(Term.Name("Left"), a1 :: Nil),
             None,
             a2
           ) if a2.collectFirst { case ExtractMatch(_, _) => () }.isEmpty =>
@@ -76,9 +76,10 @@ object EitherFold {
 
   private object ExtractMatch {
     def unapply(t: Term.Match): Option[(Term, Functions)] = PartialFunction.condOpt(t) {
-      case Term.Match(
+      case Term.Match.After_4_4_5(
             expr,
-            ExtractFunctions(f)
+            ExtractFunctions(f),
+            _
           ) =>
         expr -> f
     }

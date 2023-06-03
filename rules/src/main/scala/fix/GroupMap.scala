@@ -9,10 +9,10 @@ class GroupMap extends SyntacticRule("GroupMap") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
       case t @ Term.Select(
-            Term.Apply(
+            Term.Apply.Initial(
               Term.Select(
                 Term.Select(
-                  Term.Apply(
+                  Term.Apply.Initial(
                     Term.Select(
                       obj,
                       Term.Name("groupBy")
@@ -25,7 +25,7 @@ class GroupMap extends SyntacticRule("GroupMap") {
               ),
               List(
                 Term.AnonymousFunction(
-                  Term.Apply(
+                  Term.Apply.Initial(
                     Term.Select(
                       Term.Placeholder(),
                       Term.Name("map")

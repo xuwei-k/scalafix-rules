@@ -12,19 +12,19 @@ private object CompareSameValue {
     private[this] val values = Set("==", "!=", "equals", "===", "eq", "ne")
 
     def unapply(t: Term): Option[(Term, Term)] = PartialFunction.condOpt(t) {
-      case Term.Apply(
+      case Term.Apply.After_4_6_0(
             Term.Select(
               a1,
               Term.Name(op)
             ),
-            a2 :: Nil
+            Term.ArgClause(a2 :: _, _)
           ) if values(op) =>
         (a1, a2)
-      case Term.ApplyInfix(
+      case Term.ApplyInfix.After_4_6_0(
             a1,
             Term.Name(op),
             _,
-            a2 :: Nil
+            Term.ArgClause(a2 :: Nil, _)
           ) if values(op) =>
         (a1, a2)
     }

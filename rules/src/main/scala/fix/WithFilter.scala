@@ -8,12 +8,15 @@ import scala.meta.Term
 class WithFilter extends SyntacticRule("WithFilter") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
-      case Term.Apply(
+      case Term.Apply.After_4_6_0(
             Term.Select(
-              Term.Apply(Term.Select(_, filter @ Term.Name("filter")), _ :: Nil),
+              Term.Apply.After_4_6_0(
+                Term.Select(_, filter @ Term.Name("filter")),
+                Term.ArgClause(_ :: Nil, _)
+              ),
               Term.Name("map" | "flatMap" | "foreach")
             ),
-            _ :: Nil
+            Term.ArgClause(_ :: Nil, _)
           ) =>
         Patch.replaceTree(filter, "withFilter")
     }.asPatch

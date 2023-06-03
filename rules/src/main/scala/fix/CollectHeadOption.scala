@@ -9,9 +9,9 @@ class CollectHeadOption extends SyntacticRule("CollectHeadOption") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
       case t @ Term.Select(
-            Term.Apply(
+            Term.Apply.After_4_6_0(
               Term.Select(obj, Term.Name("collect")),
-              func :: Nil
+              Term.ArgClause(func :: Nil, _)
             ),
             Term.Name("headOption")
           ) =>

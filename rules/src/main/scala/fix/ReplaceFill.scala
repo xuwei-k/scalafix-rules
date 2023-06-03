@@ -24,9 +24,9 @@ class ReplaceFill extends SyntacticRule("ReplaceFill") {
 
     object Size {
       def unapply(x: Term): Option[Int] = PartialFunction.condOpt(x) {
-        case Term.ApplyInfix(Lit.Int(x1), Term.Name("to"), _, Lit.Int(x2) :: Nil) =>
+        case Term.ApplyInfix.Initial(Lit.Int(x1), Term.Name("to"), _, Lit.Int(x2) :: Nil) =>
           x2 - x1 + 1
-        case Term.ApplyInfix(Lit.Int(x1), Term.Name("until"), _, Lit.Int(x2) :: Nil) =>
+        case Term.ApplyInfix.Initial(Lit.Int(x1), Term.Name("until"), _, Lit.Int(x2) :: Nil) =>
           x2 - x1
       }
     }
@@ -45,14 +45,14 @@ class ReplaceFill extends SyntacticRule("ReplaceFill") {
 
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
-      case t @ Term.Apply(
+      case t @ Term.Apply.After_4_6_0(
             Term.Select(
               ToUntil(size, tpe),
               Term.Name("map")
             ),
-            Term.Function(Term.Param(_, param, _, _) :: Nil, body) :: Nil
+            Term.ArgClause(Term.Function.After_4_6_0(Term.ParamClause(param :: Nil, _), body) :: Nil, _),
           ) if param.is[Name.Anonymous] || body.collect {
-            case Name(n) if n == param.value => ()
+            case Name(n) if n == param.name.value => ()
           }.isEmpty =>
         Patch.replaceTree(t, s"${tpe}.fill(${size}){$body}")
       case t @ Term.ForYield(

@@ -17,7 +17,10 @@ class ReuseInstances extends SyntacticRule("ReuseInstances") {
             x2
           ) if x1.syntax == x2.syntax && x2.collectFirst { case _: Term.Apply => () }.isDefined =>
         x2 match {
-          case Term.Apply(Term.Name("Left" | "Right"), _ :: Nil) =>
+          case Term.Apply.After_4_6_0(
+                Term.Name("Left" | "Right"),
+                Term.ArgClause(_ :: Nil, _)
+              ) =>
             Patch.empty
           case _ =>
             val bindName = "x"
