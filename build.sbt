@@ -154,6 +154,7 @@ lazy val testsAggregate = Project("tests", file("target/testsAggregate"))
   .aggregate(tests.projectRefs: _*)
   .settings(
     commonSettings,
+    scalaVersion := V.scala212,
     publish / skip := true,
   )
 
@@ -193,3 +194,5 @@ lazy val tests = projectMatrix
   )
   .dependsOn(rules)
   .enablePlugins(ScalafixTestkitPlugin)
+
+scalaVersion := V.scala212
