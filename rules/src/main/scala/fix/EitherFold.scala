@@ -89,9 +89,15 @@ class EitherFold extends SyntacticRule("EitherFold") {
   import EitherFold._
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect { case t @ ExtractMatch(expr, f) =>
+      val e = expr match {
+        case _: Term.Ascribe if !expr.tokens.headOption.exists(_.is[Token.LeftParen]) =>
+          s"(${expr})"
+        case _ =>
+          expr.toString
+      }
       Patch.replaceTree(
         t,
-        s"${expr}.fold(${f.left.asString}, ${f.right.asString})"
+        s"${e}.fold(${f.left.asString}, ${f.right.asString})"
       )
     }.asPatch
   }
