@@ -27,13 +27,18 @@ class AddExplicitImplicitTypes extends SyntacticRule("AddExplicitImplicitTypes")
               case _ => // TODO if there is type params
                 Patch.empty
             }
-          case Term.NewAnonymous(Template(Nil, List(Init(tpe @ Type.Name(_), _, Nil)), _, Nil)) =>
-            Patch.replaceTree(
-              t1,
-              t1.copy(
-                decltpe = Some(tpe)
-              ).toString
-            )
+          case t2: Term.NewAnonymous =>
+            t2.templ.inits.map(_.tpe) match {
+              case (tpe @ Type.Name(_)) :: Nil =>
+                Patch.replaceTree(
+                  t1,
+                  t1.copy(
+                    decltpe = Some(tpe)
+                  ).toString
+                )
+              case _ =>
+                Patch.empty
+            }
           case _ =>
             Patch.empty
         }
