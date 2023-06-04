@@ -34,13 +34,13 @@ class RemoveUselessParamComments extends SyntacticRule("RemoveUselessParamCommen
           case (DocToken.Param, Some(x1), Some(x2)) if x1 == x2 =>
             PartialFunction.condOpt(x.value.linesIterator.zipWithIndex.collect {
               case (str, i) if str.contains(s" ${x1} ") => i
-            }.toList) { case List(index) =>
+            }.toList) { case index :: Nil =>
               index
             }
           case (DocToken.Param, Some(x1), _) if x1.contains("@param") && x1.contains('\n') =>
             PartialFunction.condOpt(x.value.linesIterator.zipWithIndex.collect {
               case (str, i) if str.contains(s" ${x1.dropRight("@param".length + 1)}") => i
-            }.toList) { case List(index) =>
+            }.toList) { case index :: Nil =>
               index
             }
         }.flatten.toSet

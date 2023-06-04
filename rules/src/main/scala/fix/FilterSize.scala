@@ -14,7 +14,7 @@ class FilterSize extends SyntacticRule("FilterSize") {
                 obj,
                 Term.Name("filter")
               ),
-              List(f)
+              f :: Nil
             ),
             Term.Name("size" | "length")
           ) =>

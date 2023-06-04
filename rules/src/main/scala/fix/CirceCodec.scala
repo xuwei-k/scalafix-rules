@@ -28,9 +28,9 @@ object CirceCodec {
       PartialFunction.condOpt(args) {
         case Nil =>
           CirceCodec.Both
-        case List(List(Term.Assign(Term.Name("encodeOnly"), Lit.Boolean(true)))) =>
+        case List(Term.Assign(Term.Name("encodeOnly"), Lit.Boolean(true)) :: Nil) =>
           CirceCodec.Encoder
-        case List(List(Term.Assign(Term.Name("decodeOnly"), Lit.Boolean(true)))) =>
+        case List(Term.Assign(Term.Name("decodeOnly"), Lit.Boolean(true)) :: Nil) =>
           CirceCodec.Decoder
       }
   }
@@ -97,12 +97,11 @@ class CirceCodec extends SyntacticRule("CirceCodec") {
 
         val annotationImport = src.collect {
           case i @ Import(
-                List(
-                  Importer(
-                    Select(Select(Term.Name("io"), Term.Name("circe")), Term.Name("generic")),
-                    List(Importee.Name(Indeterminate("JsonCodec")))
-                  )
+                Importer(
+                  Select(Select(Term.Name("io"), Term.Name("circe")), Term.Name("generic")),
+                  List(Importee.Name(Indeterminate("JsonCodec")))
                 )
+                :: Nil
               ) =>
             Patch.removeTokens(i.tokens)
         }.asPatch

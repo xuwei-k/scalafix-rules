@@ -83,7 +83,7 @@ object SlickFilter {
         case ApplyInfix(left, Term.Name("&&"), Nil, right :: Nil) =>
           unapply(left).toList.flatten ++ unapply(right).toList.flatten
         case _ =>
-          List(x)
+          x :: Nil
       }
     }
   }

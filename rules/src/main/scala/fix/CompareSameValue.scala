@@ -17,14 +17,14 @@ private object CompareSameValue {
               a1,
               Term.Name(op)
             ),
-            List(a2)
+            a2 :: Nil
           ) if values(op) =>
         (a1, a2)
       case Term.ApplyInfix(
             a1,
             Term.Name(op),
             _,
-            List(a2)
+            a2 :: Nil
           ) if values(op) =>
         (a1, a2)
     }

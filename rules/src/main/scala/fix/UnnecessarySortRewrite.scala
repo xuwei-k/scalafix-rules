@@ -50,12 +50,12 @@ class UnnecessarySortRewrite(config: UnnecessarySortRewriteConfig) extends Synta
     doc.tree.collect { case src: Source =>
       val result = src.collect {
         case t @ Term.Select(
-              Term.Apply(Term.Select(x1, Term.Name("sortBy")), List(x2)),
+              Term.Apply(Term.Select(x1, Term.Name("sortBy")), x2 :: Nil),
               Term.Name(methodName)
             ) if UnnecessarySort.map.contains(methodName) =>
           val patch1 = Patch.replaceTree(
             t,
-            Term.Apply(Term.Select(x1, Term.Name(UnnecessarySort.map(methodName))), List(x2)).toString,
+            Term.Apply(Term.Select(x1, Term.Name(UnnecessarySort.map(methodName))), x2 :: Nil).toString,
           )
 
           config.rewriteConfig match {

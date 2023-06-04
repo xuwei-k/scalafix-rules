@@ -69,8 +69,8 @@ object EitherFold {
 
   private object ExtractFunctions {
     def unapply(cases: List[Case]): Option[Functions] = PartialFunction.condOpt(cases) {
-      case List(LeftValue(l), RightValue(r)) => Functions(l, r)
-      case List(RightValue(r), LeftValue(l)) => Functions(l, r)
+      case LeftValue(l) :: RightValue(r) :: Nil => Functions(l, r)
+      case RightValue(r) :: LeftValue(l) :: Nil => Functions(l, r)
     }
   }
 

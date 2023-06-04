@@ -25,7 +25,7 @@ class UnnecessarySort extends SyntacticRule("UnnecessarySort") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
       case t @ Term.Select(
-            Term.Apply(Term.Select(_, Term.Name("sortBy")), List(_)),
+            Term.Apply(Term.Select(_, Term.Name("sortBy")), _ :: Nil),
             Term.Name(methodName)
           ) if UnnecessarySort.map.contains(methodName) =>
         Patch.lint(
