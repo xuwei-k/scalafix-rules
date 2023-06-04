@@ -5,7 +5,6 @@ import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
 import scala.meta.tokens.Token
 import scala.meta.Defn
-import scala.meta.Defn.Trait
 import scala.meta.Init
 import scala.meta.Pkg
 import scala.meta.Template
