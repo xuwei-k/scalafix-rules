@@ -9,6 +9,10 @@ import scala.meta.Term
 import scala.meta.Token
 import scala.meta.Position
 
+/**
+ * unnecessary since Scala 2.13.11
+ * [[https://github.com/scala/scala/pull/10320]]
+ */
 class LambdaParamParentheses extends SyntacticRule("LambdaParamParentheses") {
   override def isLinter = true
 
