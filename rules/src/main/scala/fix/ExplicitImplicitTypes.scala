@@ -37,6 +37,9 @@ object ExplicitImplicitTypesConfig {
 /**
   * @note There is similar wart in wartremover but SyntacticRule is faster
   * [[https://github.com/wartremover/wartremover/blob/317508c9e46cdabf755aec01f6b591a0d8c8acf9/core/src/main/scala/wartremover/warts/ExplicitImplicitTypes.scala#L14-L16]]
+  *
+  * unnecessary since Scala 2.13.11
+  * [[https://github.com/scala/scala/pull/10083]]
   */
 class ExplicitImplicitTypes(config: ExplicitImplicitTypesConfig) extends SyntacticRule("ExplicitImplicitTypes") {
   def this() = this(ExplicitImplicitTypesConfig.default)
