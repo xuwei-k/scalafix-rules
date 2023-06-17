@@ -10,7 +10,7 @@ import scala.meta.Term
 import scala.meta.Term.ApplyInfix
 
 /**
- * [[https://github.com/scala/scala/blob/v2.13.10/src/library/scala/Option.scala#L367-L373]]
+ * [[https://github.com/scala/scala/blob/v2.13.11/src/library/scala/Option.scala#L367-L373]]
  */
 class OptionContains extends SyntacticRule("OptionContains") {
   override def fix(implicit doc: SyntacticDocument): Patch = {

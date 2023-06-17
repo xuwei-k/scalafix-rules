@@ -9,7 +9,7 @@ import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
 
 /**
-  * [[https://github.com/scala/scala/blob/v2.13.10/src/library/scala/collection/LazyZipOps.scala]]
+  * [[https://github.com/scala/scala/blob/v2.13.11/src/library/scala/collection/LazyZipOps.scala]]
   */
 class LazyZip extends SyntacticRule("LazyZip") {
   override def fix(implicit doc: SyntacticDocument): Patch = {

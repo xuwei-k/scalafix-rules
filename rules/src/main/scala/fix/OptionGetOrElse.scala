@@ -10,7 +10,7 @@ import scala.meta.Term.Block
 import scala.meta.tokens.Token
 
 /**
- * [[https://github.com/scala/scala/blob/v2.13.10/src/library/scala/Option.scala#L190-L196]]
+ * [[https://github.com/scala/scala/blob/v2.13.11/src/library/scala/Option.scala#L190-L196]]
  */
 class OptionGetOrElse extends SyntacticRule("OptionGetOrElse") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
