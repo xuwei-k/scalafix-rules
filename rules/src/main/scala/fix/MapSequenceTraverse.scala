@@ -4,6 +4,8 @@ import scalafix.Patch
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
 import scala.meta.Term
+import scala.meta.tokens.Token.LeftBrace
+import scala.meta.tokens.Token.RightBrace
 
 class MapSequenceTraverse extends SyntacticRule("MapSequenceTraverse") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
@@ -18,7 +20,10 @@ class MapSequenceTraverse extends SyntacticRule("MapSequenceTraverse") {
             ),
             Term.Name("sequence")
           ) =>
-        Patch.replaceTree(t, s"${qual}.traverse(${arg})")
+        (arg.tokens.headOption, arg.tokens.lastOption) match {
+          case (Some(LeftBrace()), Some(RightBrace())) => Patch.replaceTree(t, s"${qual}.traverse${arg}")
+          case _ => Patch.replaceTree(t, s"${qual}.traverse(${arg})")
+        }
     }
   }.asPatch
 }
