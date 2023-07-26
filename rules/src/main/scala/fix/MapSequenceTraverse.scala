@@ -3,7 +3,6 @@ package fix
 import scalafix.Patch
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
-
 import scala.meta.Term
 import scala.meta.tokens.Token.{LeftBrace, RightBrace}
 
