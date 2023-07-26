@@ -4,7 +4,8 @@ import scalafix.Patch
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
 import scala.meta.Term
-import scala.meta.tokens.Token.{LeftBrace, RightBrace}
+import scala.meta.tokens.Token.LeftBrace
+import scala.meta.tokens.Token.RightBrace
 
 class MapSequenceTraverse extends SyntacticRule("MapSequenceTraverse") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
