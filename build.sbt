@@ -120,7 +120,7 @@ lazy val inputOutputCommon = Def.settings(
     }
   },
   libraryDependencies += "com.typesafe.slick" %% "slick" % "3.5.0-M4",
-  libraryDependencies += "org.atnos" %% "eff" % "6.0.3"
+  libraryDependencies += "org.atnos" %% "eff" % "7.0.0"
 )
 
 lazy val input = projectMatrix
