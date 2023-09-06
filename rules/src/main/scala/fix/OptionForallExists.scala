@@ -11,8 +11,8 @@ import scala.meta.Term.Block
 import scala.meta.tokens.Token
 
 /**
- * [[https://github.com/scala/scala/blob/v2.13.11/src/library/scala/Option.scala#L396-L402]]
- * [[https://github.com/scala/scala/blob/v2.13.11/src/library/scala/Option.scala#L411-L417]]
+ * [[https://github.com/scala/scala/blob/v2.13.12/src/library/scala/Option.scala#L396-L402]]
+ * [[https://github.com/scala/scala/blob/v2.13.12/src/library/scala/Option.scala#L411-L417]]
  */
 class OptionForallExists extends SyntacticRule("OptionForallExists") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
