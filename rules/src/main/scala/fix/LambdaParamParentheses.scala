@@ -32,5 +32,5 @@ class LambdaParamParentheses extends SyntacticRule("LambdaParamParentheses") {
 
 case class LambdaParamParenthesesWarn(override val position: Position) extends Diagnostic {
   override def message = "add parentheses or remove explicit types for prepare Scala 3"
-  override def severity = LintSeverity.Warning
+  override def severity: LintSeverity = LintSeverity.Warning
 }

@@ -21,5 +21,5 @@ class NoElse extends SyntacticRule("NoElse") {
 
 case class NoElseWarn(override val position: Position) extends Diagnostic {
   override def message = "add `else`"
-  override def severity = LintSeverity.Warning
+  override def severity: LintSeverity = LintSeverity.Warning
 }

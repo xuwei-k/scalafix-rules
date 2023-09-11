@@ -169,5 +169,5 @@ class DirectoryAndPackageName(config: DirectoryAndPackageNameConfig) extends Syn
 case class DirectoryPackageWarn(path: String, packageName: String, override val position: Position) extends Diagnostic {
   override def message = s"inconsistent package and directory\n${path}\n${packageName}"
 
-  override def severity = LintSeverity.Warning
+  override def severity: LintSeverity = LintSeverity.Warning
 }

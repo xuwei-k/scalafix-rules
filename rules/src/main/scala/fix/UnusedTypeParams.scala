@@ -39,5 +39,5 @@ class UnusedTypeParams extends SyntacticRule("UnusedTypeParams") {
 
 class UnusedTypeParamsWarn(override val position: Position) extends Diagnostic {
   override def message = "maybe unused type param"
-  override def severity = LintSeverity.Warning
+  override def severity: LintSeverity = LintSeverity.Warning
 }

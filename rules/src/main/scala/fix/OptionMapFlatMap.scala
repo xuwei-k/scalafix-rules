@@ -49,5 +49,5 @@ class OptionMapFlatMap extends SyntacticRule("OptionMapFlatMap") {
 
 case class OptionMapFlatMapWarn(override val position: Position) extends Diagnostic {
   override def message = "maybe you can use Option#map or flatMap"
-  override def severity = LintSeverity.Warning
+  override def severity: LintSeverity = LintSeverity.Warning
 }

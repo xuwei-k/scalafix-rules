@@ -87,5 +87,5 @@ class ExplicitImplicitTypes(config: ExplicitImplicitTypesConfig) extends Syntact
 
 case class ExplicitImplicitTypesWarn(override val position: Position) extends Diagnostic {
   override def message = "add explicit types for implicit values"
-  override def severity = LintSeverity.Warning
+  override def severity: LintSeverity = LintSeverity.Warning
 }

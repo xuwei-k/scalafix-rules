@@ -39,5 +39,5 @@ class UnnecessarySort extends SyntacticRule("UnnecessarySort") {
 }
 
 case class UnnecessarySortWarn(override val position: Position, message: String) extends Diagnostic {
-  override def severity = LintSeverity.Warning
+  override def severity: LintSeverity = LintSeverity.Warning
 }

@@ -17,7 +17,7 @@ class ObjectSelfType extends SyntacticRule("ObjectSelfType") {
           new Diagnostic {
             override def position = obj.templ.self.pos
             override def message = "objects must not have a self type"
-            override def severity = LintSeverity.Warning
+            override def severity: LintSeverity = LintSeverity.Warning
           }
         )
     }.asPatch

@@ -25,5 +25,5 @@ class Scala3Placeholder extends SyntacticRule("Scala3Placeholder") {
 
 case class Scala3PlaceholderWarn(override val position: Position) extends Diagnostic {
   override def message: String = "use ? instead of _"
-  override def severity = LintSeverity.Warning
+  override def severity: LintSeverity = LintSeverity.Warning
 }

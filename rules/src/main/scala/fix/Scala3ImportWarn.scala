@@ -20,5 +20,5 @@ class Scala3ImportWarn extends SyntacticRule("Scala3ImportWarn") {
 
 case class Scala3ImportWarning(override val position: Position) extends Diagnostic {
   override def message: String = "use `*` instead of `_` for wildcard import"
-  override def severity = LintSeverity.Warning
+  override def severity: LintSeverity = LintSeverity.Warning
 }

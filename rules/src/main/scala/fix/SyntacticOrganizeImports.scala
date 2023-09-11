@@ -59,5 +59,5 @@ case class SyntacticOrganizeImportsWarn(
   override val position: Position,
   override val message: String
 ) extends Diagnostic {
-  override def severity = LintSeverity.Warning
+  override def severity: LintSeverity = LintSeverity.Warning
 }
