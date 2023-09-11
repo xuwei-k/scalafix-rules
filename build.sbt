@@ -15,6 +15,14 @@ val commonSettings = Def.settings(
       )
     }
   },
+  scalacOptions ++= {
+    scalaBinaryVersion.value match {
+      case "2.13" =>
+        Seq("-Wconf:msg=constructor modifiers are assumed by synthetic:info")
+      case _ =>
+        Nil
+    }
+  },
   scalacOptions ++= Seq(
     "-deprecation",
     "-language:higherKinds",
@@ -104,6 +112,14 @@ lazy val rules = projectMatrix
   .jvmPlatform(rulesCrossVersions)
 
 lazy val inputOutputCommon = Def.settings(
+  scalacOptions ++= {
+    scalaBinaryVersion.value match {
+      case "2.13" =>
+        Seq("-Wconf:cat=scala3-migration:info")
+      case _ =>
+        Nil
+    }
+  },
   libraryDependencies += "org.scala-lang.modules" %% "scala-collection-compat" % "2.11.0",
   libraryDependencies ++= {
     if (scalaBinaryVersion.value != "3") {
