@@ -27,4 +27,8 @@ class StringFormatToInterpolationTest {
   "%s b".format(Some(4))
 
   "%s %s %s".format(1, None)
+
+  """%s \ """.format("x")
+
+  "%s \\ ".format("x")
 }
