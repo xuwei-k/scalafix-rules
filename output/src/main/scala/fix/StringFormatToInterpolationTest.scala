@@ -28,4 +28,6 @@ class StringFormatToInterpolationTest {
   """%s \ """.format("x")
 
   "%s \\ ".format("x")
+
+  " %s \" ".format("x")
 }

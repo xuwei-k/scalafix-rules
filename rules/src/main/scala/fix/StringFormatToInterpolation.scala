@@ -31,6 +31,7 @@ private object StringFormatToInterpolation {
             if args.nonEmpty &&
               args.lengthCompare(s.value.sliding(2).count(_ == "%s")) == 0 &&
               s.value.forall(_ != '\\') && // TODO support backslash
+              (s.value.forall(_ != '"') || s.syntax.startsWith("\"\"\"")) && // TODO support double-quote
               !args.exists(_.is[Term.Placeholder]) =>
           (s.syntax.startsWith("\"\"\""), s.value, args)
       }
