@@ -135,7 +135,7 @@ lazy val inputOutputCommon = Def.settings(
       Nil
     }
   },
-  libraryDependencies += "com.typesafe.slick" %% "slick" % "3.5.0-M4",
+  libraryDependencies += "com.typesafe.slick" %% "slick" % "3.5.0-M5",
   libraryDependencies += "org.atnos" %% "eff-core" % "7.0.1"
 )
 
