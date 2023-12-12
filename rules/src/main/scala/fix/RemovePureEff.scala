@@ -19,6 +19,32 @@ class RemovePureEff extends SyntacticRule("RemovePureEff") {
                 ApplyType.Initial(Term.Select(rhs, Term.Name("pureEff")), Type.Name(_) :: Nil)
               ) =>
             Patch.replaceTree(x, Enumerator.Val(x.pat, rhs).toString)
+          case x @ Enumerator.Generator(
+                _,
+                Term.Apply.After_4_6_0(
+                  Term.ApplyType.After_4_6_0(
+                    Term.Select(
+                      Term.Name("Eff"),
+                      Term.Name("pure")
+                    ),
+                    Type.ArgClause(_ :: _ :: Nil)
+                  ),
+                  Term.ArgClause(arg :: Nil, None)
+                )
+              ) =>
+            Patch.replaceTree(x, Enumerator.Val(x.pat, arg).toString)
+
+          case x @ Enumerator.Generator(
+                _,
+                Term.Apply.After_4_6_0(
+                  Term.Select(
+                    Term.Name("Eff"),
+                    Term.Name("pure")
+                  ),
+                  Term.ArgClause(arg :: Nil, None)
+                )
+              ) =>
+            Patch.replaceTree(x, Enumerator.Val(x.pat, arg).toString)
         }
         .asPatch
     }.asPatch
