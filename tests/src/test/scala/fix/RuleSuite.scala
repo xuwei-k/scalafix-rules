@@ -6,7 +6,6 @@ import scala.util.Properties
 
 class RuleSuite extends AbstractSemanticRuleSuite with AnyFunSuiteLike {
   private[this] val excludeWindows: Set[String] = Set(
-    "FileNameConsistentTest",
     "FlatMapCollectTest",
     "DuplicateWildcardImportTest",
     "UnnecessarySortTest",
