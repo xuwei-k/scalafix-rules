@@ -10,15 +10,17 @@ import scalafix.v1.Configuration
 import scalafix.v1.Rule
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
+import java.io.File
+import java.util.Locale
 import scala.meta.Pkg
 import scala.meta.Term
 import scala.meta.Tree
 import scala.meta.inputs.Input
-import scala.meta.inputs.Position
 
 case class DirectoryAndPackageNameConfig(
   baseDirectory: Seq[String],
-  keyword: Seq[String]
+  keyword: Seq[String],
+  severity: LintSeverity
 )
 
 object DirectoryAndPackageNameConfig {
@@ -82,14 +84,27 @@ object DirectoryAndPackageNameConfig {
       "while",
       "with",
       "yield",
-    )
+    ),
+    severity = LintSeverity.Warning
   )
 
   implicit val surface: Surface[DirectoryAndPackageNameConfig] =
     metaconfig.generic.deriveSurface[DirectoryAndPackageNameConfig]
 
-  implicit val decoder: ConfDecoder[DirectoryAndPackageNameConfig] =
+  implicit val decoder: ConfDecoder[DirectoryAndPackageNameConfig] = {
+    implicit val instance: metaconfig.ConfDecoder[scalafix.lint.LintSeverity] = { conf =>
+      conf.as[String].map(_.toUpperCase(Locale.ROOT)).map {
+        case "ERROR" =>
+          LintSeverity.Error
+        case "INFO" =>
+          LintSeverity.Info
+        case _ =>
+          LintSeverity.Warning
+      }
+    }
+
     metaconfig.generic.deriveDecoder(default)
+  }
 }
 
 class DirectoryAndPackageName(config: DirectoryAndPackageNameConfig) extends SyntacticRule("DirectoryAndPackageName") {
@@ -118,18 +133,25 @@ class DirectoryAndPackageName(config: DirectoryAndPackageNameConfig) extends Syn
         x
       }.headOption
 
-    val scalaSourceOpt = PartialFunction.condOpt(doc.input) {
-      case f: Input.VirtualFile =>
-        f.path
-      case f: Input.File =>
-        f.path.toString
-    }
+    val scalaSourceOpt = PartialFunction
+      .condOpt(doc.input) {
+        case f: Input.VirtualFile =>
+          f.path
+        case f: Input.File =>
+          f.path.toString
+      }
+      .map { path =>
+        File.separatorChar match {
+          case '/' =>
+            path
+          case c =>
+            path.replace(c, '/')
+        }
+      }
 
     {
       for {
         path <- scalaSourceOpt
-        // TODO Windows
-        if !scala.util.Properties.isWin
         dirOpt = config.baseDirectory.find { dir =>
           path.contains(dir)
         }.map { dir =>
@@ -155,19 +177,14 @@ class DirectoryAndPackageName(config: DirectoryAndPackageNameConfig) extends Syn
         if packageName != dir
       } yield {
         Patch.lint(
-          DirectoryPackageWarn(
-            path = path,
-            packageName = packageName,
-            position = packages.last.pos
+          Diagnostic(
+            id = "",
+            message = s"inconsistent package and directory\n${path}\n${packageName}",
+            position = packages.last.pos,
+            severity = config.severity
           )
         )
       }
     }.getOrElse(Patch.empty)
   }
-}
-
-case class DirectoryPackageWarn(path: String, packageName: String, override val position: Position) extends Diagnostic {
-  override def message = s"inconsistent package and directory\n${path}\n${packageName}"
-
-  override def severity: LintSeverity = LintSeverity.Warning
 }

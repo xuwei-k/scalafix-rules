@@ -111,6 +111,23 @@ lazy val rules = projectMatrix
   .defaultAxes(VirtualAxis.jvm)
   .jvmPlatform(rulesCrossVersions)
 
+lazy val rules212 = rules
+  .jvm(V.scala212)
+  .enablePlugins(ScriptedPlugin)
+  .settings(
+    Test / test := (Test / test).dependsOn(scripted.toTask("")).value,
+    scriptedBufferLog := false,
+    scriptedLaunchOpts += ("-Dscalafix-rules.version=" + version.value),
+    scriptedLaunchOpts += ("-Dscalafix.version=" + _root_.scalafix.sbt.BuildInfo.scalafixVersion),
+    sbtTestDirectory := (LocalRootProject / baseDirectory).value / "sbt-test",
+    scriptedLaunchOpts ++= {
+      import scala.collection.JavaConverters.*
+      val javaVmArgs: List[String] =
+        java.lang.management.ManagementFactory.getRuntimeMXBean.getInputArguments.asScala.toList
+      javaVmArgs.filter(a => Seq("-Xmx", "-Xms", "-XX", "-Dsbt.log.noformat").exists(a.startsWith))
+    }
+  )
+
 lazy val inputOutputCommon = Def.settings(
   scalacOptions ++= {
     scalaBinaryVersion.value match {
