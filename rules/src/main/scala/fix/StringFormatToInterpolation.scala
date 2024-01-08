@@ -48,7 +48,7 @@ class StringFormatToInterpolation extends SyntacticRule("StringFormatToInterpola
           new java.lang.StringBuilder("s\"")
         }
       str.split("%s", -1).zipWithIndex.foreach { case (s, i) =>
-        buf.append(s)
+        buf.append(s.replace("\n", "\\n"))
         if (i < args.length) {
           buf.append("${")
           buf.append(args(i))
