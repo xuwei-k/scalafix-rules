@@ -152,12 +152,6 @@ class DirectoryAndPackageName(config: DirectoryAndPackageNameConfig) extends Syn
     {
       for {
         path <- scalaSourceOpt
-        dirOpt = config.baseDirectory.find { dir =>
-          path.contains(dir)
-        }.map { dir =>
-          path.split(dir).last.split('/').init.mkString("/")
-        }
-        dir <- dirOpt
         if packages.nonEmpty // TODO check if empty package
         packageName = {
           val x = packages
@@ -166,20 +160,26 @@ class DirectoryAndPackageName(config: DirectoryAndPackageNameConfig) extends Syn
               if (keywords(p)) { p.replace("`", "") }
               else p
             )
-            .mkString("/")
           packageObjectOpt match {
             case Some(value) =>
-              x + "/" + value.name.value
+              x :+ value.name.value
             case None =>
               x
           }
         }
-        if packageName != dir
+        if config.baseDirectory.find { dir =>
+          path.contains(dir)
+        }.exists { fullDir =>
+          val splitedDir = path.split(fullDir).last.split('/').init.toList
+          packageName != splitedDir
+        } || {
+          path.split('/').init.toList.takeRight(packageName.size) != packageName
+        }
       } yield {
         Patch.lint(
           Diagnostic(
             id = "",
-            message = s"inconsistent package and directory\n${path}\n${packageName}",
+            message = s"inconsistent package and directory\n${path}\n${packageName.mkString("/")}",
             position = packages.last.pos,
             severity = config.severity
           )
