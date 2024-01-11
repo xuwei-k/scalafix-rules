@@ -69,6 +69,35 @@ commonSettings
 
 publish / skip := true
 
+lazy val resourceGenSettings = Def.settings(
+  Compile / resourceGenerators += Def.task {
+    val rules = (Compile / compile).value
+      .asInstanceOf[sbt.internal.inc.Analysis]
+      .apis
+      .internal
+      .collect {
+        case (className, analyzed) if analyzed.api.classApi.structure.parents.collect { case p: xsbti.api.Projection =>
+              p.id
+            }.exists(Set("SyntacticRule", "SemanticRule")) =>
+          className
+      }
+      .toList
+      .sorted
+    assert(rules.nonEmpty)
+    val output = (Compile / resourceManaged).value / "META-INF" / "services" / "scalafix.v1.Rule"
+    IO.writeLines(output, rules)
+    Seq(output)
+  }.taskValue,
+)
+
+lazy val myRuleRule = project.settings(
+  commonSettings,
+  scalaVersion := V.scala212,
+  libraryDependencies += "ch.epfl.scala" %% "scalafix-core" % V.scalafixVersion,
+  resourceGenSettings,
+  publish / skip := true
+)
+
 lazy val rules = projectMatrix
   .settings(
     commonSettings,
@@ -89,24 +118,7 @@ lazy val rules = projectMatrix
         Nil
       }
     },
-    Compile / resourceGenerators += Def.task {
-      val rules = (Compile / compile).value
-        .asInstanceOf[sbt.internal.inc.Analysis]
-        .apis
-        .internal
-        .collect {
-          case (className, analyzed) if analyzed.api.classApi.structure.parents.collect {
-                case p: xsbti.api.Projection => p.id
-              }.exists(Set("SyntacticRule", "SemanticRule")) =>
-            className
-        }
-        .toList
-        .sorted
-      assert(rules.nonEmpty)
-      val output = (Compile / resourceManaged).value / "META-INF" / "services" / "scalafix.v1.Rule"
-      IO.writeLines(output, rules)
-      Seq(output)
-    }.taskValue,
+    resourceGenSettings,
   )
   .defaultAxes(VirtualAxis.jvm)
   .jvmPlatform(rulesCrossVersions)
@@ -114,8 +126,11 @@ lazy val rules = projectMatrix
 lazy val rules212 = rules
   .jvm(V.scala212)
   .enablePlugins(ScriptedPlugin)
+  .enablePlugins(ScalafixPlugin)
+  .dependsOn(myRuleRule % ScalafixConfig)
   .settings(
     Test / test := (Test / test).dependsOn(scripted.toTask("")).value,
+    Compile / compile := (Compile / compile).dependsOn((Compile / scalafix).toTask(" MyScalafixRuleRule")).value,
     scriptedBufferLog := false,
     scriptedLaunchOpts += ("-Dscalafix-rules.version=" + version.value),
     scriptedLaunchOpts += ("-Dscalafix.version=" + _root_.scalafix.sbt.BuildInfo.scalafixVersion),
