@@ -105,6 +105,41 @@ lazy val rules = projectMatrix
     publishTo := sonatypePublishToBundle.value,
     libraryDependencies += "ch.epfl.scala" %% "scalafix-core" % V.scalafixVersion,
     libraryDependencies += "org.scalatest" %% "scalatest-funsuite" % "3.2.17" % Test,
+    Compile / sourceGenerators += task {
+      val dir = (Compile / sourceManaged).value
+      Seq(
+        "DiscardScalaFuture" -> "scala/concurrent/Future#",
+        "DiscardMonixTask" -> "monix/eval/Task#",
+        "DiscardEff" -> "org/atnos/eff/Eff#",
+      ).map { case (ruleName, tpe) =>
+        val f = dir / "fix" / s"${ruleName}.scala"
+        IO.write(
+          f,
+          s"""package fix
+          |
+          |import scalafix.Patch
+          |import scalafix.v1.Configuration
+          |import scalafix.v1.Rule
+          |import scalafix.v1.SemanticDocument
+          |import scalafix.v1.SemanticRule
+          |import metaconfig.Configured
+          |
+          |class ${ruleName}(config: DiscardSingleConfig) extends SemanticRule("${ruleName}") {
+          |
+          |  def this() = this(DiscardSingleConfig.default)
+          |
+          |  override def withConfiguration(config: Configuration): Configured[Rule] =
+          |    config.conf.getOrElse("${ruleName}")(this.config).map(newConfig => new ${ruleName}(newConfig))
+          |
+          |  override def fix(implicit doc: SemanticDocument): Patch =
+          |    DiscardValue.typeRef(config.toDiscardValueConfig("${tpe}"))
+          |
+          |}
+          |""".stripMargin
+        )
+        f
+      }
+    },
     Compile / doc / scalacOptions ++= {
       val hash = sys.process.Process("git rev-parse HEAD").lineStream_!.head
       if (scalaBinaryVersion.value != "3") {
