@@ -111,6 +111,7 @@ lazy val rules = projectMatrix
         "DiscardScalaFuture" -> "scala/concurrent/Future#",
         "DiscardMonixTask" -> "monix/eval/Task#",
         "DiscardEff" -> "org/atnos/eff/Eff#",
+        "DiscardCatsEffectIO" -> "cats/effect/IO#",
       ).map { case (ruleName, tpe) =>
         val f = dir / "fix" / s"${ruleName}.scala"
         IO.write(
