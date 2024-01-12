@@ -18,7 +18,6 @@ import scalafix.v1.SemanticType
 import scalafix.v1.TypeRef
 import scalafix.v1.ValueSignature
 import scalafix.v1.XtensionTreeScalafix
-import java.util.Locale
 
 case class DiscardValueConfig(
   error: Seq[String],
@@ -36,17 +35,6 @@ object DiscardValueConfig {
 
   implicit val surface: Surface[DiscardValueConfig] =
     metaconfig.generic.deriveSurface[DiscardValueConfig]
-
-  implicit val lintSeverityDecoderInstance: metaconfig.ConfDecoder[scalafix.lint.LintSeverity] = { conf =>
-    conf.as[String].map(_.toUpperCase(Locale.ROOT)).map {
-      case "ERROR" =>
-        LintSeverity.Error
-      case "INFO" =>
-        LintSeverity.Info
-      case _ =>
-        LintSeverity.Warning
-    }
-  }
 
   implicit val decoder: ConfDecoder[DiscardValueConfig] =
     metaconfig.generic.deriveDecoder(default)
