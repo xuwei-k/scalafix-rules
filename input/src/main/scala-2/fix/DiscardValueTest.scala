@@ -16,6 +16,8 @@ trait DiscardValueTest {
 
   def mock: DiscardValueTest
 
+  val inOrder: org.mockito.InOrder
+
   f0[Int] // assert: DiscardValue
 
   def f2[R]: Option[Int] = {
@@ -24,6 +26,8 @@ trait DiscardValueTest {
     f1[R](2) // assert: DiscardValue
 
     f1[R](3).map(_ + 4) // assert: DiscardValue
+
+    inOrder.verify(5)
 
     val x1 = f1[R](5)
     def x2: Option[Int] = f1[R](5)
