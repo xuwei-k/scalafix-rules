@@ -41,6 +41,10 @@ trait DiscardEffTest {
 
     x1.flatMap(y => x1.map(_ + y)) // assert: DiscardEff
 
+    var mutableValue: Eff[R, Int] = null
+
+    mutableValue = x1
+
     x1 // assert: DiscardEff
 
     x1

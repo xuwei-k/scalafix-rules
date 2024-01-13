@@ -44,6 +44,10 @@ trait DiscardScalaFutureTest {
 
     x1 // assert: DiscardScalaFuture
 
+    var mutableValue: Future[Int] = null
+
+    mutableValue = x1
+
     x1
   }
 }

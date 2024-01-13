@@ -43,6 +43,10 @@ trait DiscardMonixTaskTest {
 
     x1 // assert: DiscardMonixTask
 
+    var mutableValue: Task[Int] = null
+
+    mutableValue = x1
+
     x1
   }
 }

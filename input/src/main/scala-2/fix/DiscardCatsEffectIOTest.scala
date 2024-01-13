@@ -44,6 +44,10 @@ trait DiscardCatsEffectIOTest {
 
     x1 // assert: DiscardCatsEffectIO
 
+    var mutableValue: IO[Int] = x1
+
+    mutableValue = x1
+
     x1
   }
 }

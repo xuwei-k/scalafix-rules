@@ -82,9 +82,7 @@ object DiscardValue {
   )(implicit doc: SemanticDocument): Patch = {
     doc.tree.collect { case Term.Block(values :+ _) => // ignore last
       values.filter {
-        case _: Defn.Val =>
-          false
-        case _: Defn.Def =>
+        case _: Defn.Val | _: Defn.Def | _: Term.Assign | _: Defn.Var =>
           false
         case x =>
           x.collectFirst {
