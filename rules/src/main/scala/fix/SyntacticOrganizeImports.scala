@@ -4,18 +4,34 @@ import scalafix.Patch
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
 import scala.meta.Import
+import scala.meta.Importee
 import scala.meta.Pkg
 import scala.meta.inputs.Position
 import scalafix.lint.Diagnostic
 import scalafix.lint.LintSeverity
+import scala.annotation.tailrec
 
 class SyntacticOrganizeImports extends SyntacticRule("SyntacticOrganizeImports") {
+
+  private def collectWhile[A, B](list: List[A])(f: PartialFunction[A, B]): List[B] = {
+    @tailrec
+    def loop(values: List[A], acc: List[B]): List[B] = {
+      values match {
+        case x :: xs if f.isDefinedAt(x) =>
+          loop(xs, f(x) :: acc)
+        case _ =>
+          acc
+      }
+    }
+    loop(list, Nil).reverse
+  }
+
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect { case p: Pkg =>
       // find top-level imports
-      val imports = p.stats.dropWhile(!_.is[Import]).takeWhile(_.is[Import]).sortBy(_.pos.startLine)
+      val imports = collectWhile(p.stats.dropWhile(!_.is[Import])) { case i: Import => i }.sortBy(_.pos.startLine)
       // exclude Rename or multi Importees
-      val maybeMultiLine = imports.map(_.toString).forall(i => !Set("{", "}", " => ", " as ").exists(i contains _))
+      val maybeMultiLine = imports.forall(_.importers.forall(_.importees.forall(!_.is[Importee.Rename])))
       if (imports.nonEmpty && maybeMultiLine) {
         Seq(
           imports.tail.zip(imports).find { case (x1, x2) => (x1.pos.startLine - x2.pos.startLine) != 1 }.map {
