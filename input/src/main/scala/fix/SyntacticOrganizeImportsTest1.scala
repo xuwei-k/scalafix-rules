@@ -10,4 +10,4 @@ import scala.collection.mutable
 import scala.collection.mutable.SortedMap
 import scala.collection.mutable.SortedSet
 
-class SyntacticOrganizeImports
+class SyntacticOrganizeImportsTest1

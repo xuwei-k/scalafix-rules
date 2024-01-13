@@ -26,6 +26,22 @@ class SyntacticOrganizeImports extends SyntacticRule("SyntacticOrganizeImports")
     loop(list, Nil).reverse
   }
 
+  private def importToString(i: Import): String = {
+    val s = i.toString
+    if (i.importers.forall(_.importees.forall(!_.is[Importee.Wildcard]))) {
+      s
+    } else {
+      // for consistency OrganizeImports
+      // TODO https://github.com/scalacenter/scalafix/pull/1896 ?
+      val wildcardNewStyle = ".*"
+      if (s.endsWith(wildcardNewStyle)) {
+        s"${s.dropRight(wildcardNewStyle.length)}._"
+      } else {
+        s
+      }
+    }
+  }
+
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect { case p: Pkg =>
       // find top-level imports
@@ -50,7 +66,7 @@ class SyntacticOrganizeImports extends SyntacticRule("SyntacticOrganizeImports")
               )
           },
           imports
-            .sortBy(_.toString)
+            .sortBy(importToString)
             .zip(imports)
             .find { case (x1, x2) =>
               x1.toString != x2.toString
