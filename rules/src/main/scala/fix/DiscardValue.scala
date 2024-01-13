@@ -100,6 +100,16 @@ object DiscardValue {
     }
   }
 
+  private object Mockito {
+    def unapply(x: Term)(implicit doc: SemanticDocument): Boolean =
+      x.symbol.info.map(_.symbol.value).contains("org/mockito/Mockito#")
+  }
+
+  private object MockitoVerify {
+    def unapply(x: Term)(implicit doc: SemanticDocument): Boolean =
+      x.symbol.info.map(_.owner.value).contains("org/mockito/Mockito#")
+  }
+
   def fix(
     message: SemanticType => String,
     severity: LintSeverity,
@@ -111,9 +121,9 @@ object DiscardValue {
           false
         case x =>
           x.collectFirst {
-            case Term.Apply.After_4_6_0(Term.Select(Term.Name("Mockito"), _), _) =>
+            case Term.Apply.After_4_6_0(Term.Select(Mockito(), _), _) =>
               ()
-            case Term.Apply.After_4_6_0(Term.Name("verify"), _) =>
+            case Term.Apply.After_4_6_0(MockitoVerify(), _) =>
               ()
             case Term.Apply.After_4_6_0(
                   Term.Select(MockitoInOrder(), Term.Name("verify")),
