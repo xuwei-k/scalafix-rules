@@ -15,6 +15,8 @@ trait DiscardCatsEffectIOTest {
 
   def mock: DiscardCatsEffectIOTest
 
+  f0[Int] // assert: DiscardCatsEffectIO
+
   def f2[R](implicit ec: ExecutionContext): IO[Int] = {
     f0[R] // assert: DiscardCatsEffectIO
 

@@ -14,6 +14,8 @@ trait DiscardMonixTaskTest {
 
   def mock: DiscardMonixTaskTest
 
+  f0[Int] // assert: DiscardMonixTask
+
   def f2[R]: Task[Int] = {
     f0[R] // assert: DiscardMonixTask
 

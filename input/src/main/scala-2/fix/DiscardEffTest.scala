@@ -14,6 +14,8 @@ trait DiscardEffTest {
 
   def mock: DiscardEffTest
 
+  f0[Int] // assert: DiscardEff
+
   def f2[R]: Eff[R, Int] = {
     f0[R] // assert: DiscardEff
 

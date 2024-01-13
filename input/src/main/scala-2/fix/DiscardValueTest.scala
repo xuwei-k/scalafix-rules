@@ -16,6 +16,8 @@ trait DiscardValueTest {
 
   def mock: DiscardValueTest
 
+  f0[Int] // assert: DiscardValue
+
   def f2[R]: Option[Int] = {
     f0[R] // assert: DiscardValue
 

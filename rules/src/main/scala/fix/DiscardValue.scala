@@ -3,8 +3,12 @@ package fix
 import metaconfig.ConfDecoder
 import metaconfig.Configured
 import metaconfig.generic.Surface
+import scala.meta.Decl
 import scala.meta.Defn
+import scala.meta.Stat
+import scala.meta.Template
 import scala.meta.Term
+import scala.meta.Tree
 import scala.meta.contrib.XtensionTreeOps
 import scalafix.Patch
 import scalafix.lint.Diagnostic
@@ -52,6 +56,15 @@ class DiscardValue(config: DiscardValueConfig) extends SemanticRule("DiscardValu
 }
 
 object DiscardValue {
+  private object BlockOrTemplate {
+    def unapply(x: Tree): Option[List[Stat]] = PartialFunction.condOpt(x) {
+      case t: Term.Block =>
+        t.stats
+      case t: Template =>
+        t.stats
+    }
+  }
+
   def typeRef(
     config: DiscardValueConfig
   )(implicit doc: SemanticDocument): Patch = {
@@ -80,9 +93,9 @@ object DiscardValue {
     severity: LintSeverity,
     filter: SemanticType => Boolean
   )(implicit doc: SemanticDocument): Patch = {
-    doc.tree.collect { case Term.Block(values :+ _) => // ignore last
+    doc.tree.collect { case BlockOrTemplate(values :+ _) => // ignore last
       values.filter {
-        case _: Defn.Val | _: Defn.Def | _: Term.Assign | _: Defn.Var =>
+        case _: Defn | _: Term.Assign | _: Decl =>
           false
         case x =>
           x.collectFirst {

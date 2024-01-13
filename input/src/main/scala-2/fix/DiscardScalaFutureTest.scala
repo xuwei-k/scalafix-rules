@@ -15,6 +15,8 @@ trait DiscardScalaFutureTest {
 
   def mock: DiscardScalaFutureTest
 
+  f0[Int] // assert: DiscardScalaFuture
+
   def f2[R](implicit ec: ExecutionContext): Future[Int] = {
     f0[R] // assert: DiscardScalaFuture
 
