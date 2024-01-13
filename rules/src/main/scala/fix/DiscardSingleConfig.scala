@@ -29,7 +29,7 @@ object DiscardSingleConfig {
   implicit val surface: Surface[DiscardSingleConfig] =
     metaconfig.generic.deriveSurface[DiscardSingleConfig]
 
-  private implicit val lintSeverityDecoderInstance: ConfDecoder[scalafix.lint.LintSeverity] = { conf =>
+  private implicit val lintSeverityDecoderInstance: ConfDecoder[LintSeverity] = { conf =>
     conf.as[String].map(_.toUpperCase(Locale.ROOT)).map {
       case "ERROR" =>
         LintSeverity.Error
