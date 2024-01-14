@@ -8,6 +8,7 @@ class RuleSuite extends AbstractSemanticRuleSuite with AnyFunSuiteLike {
   private[this] val excludeWindows: Set[String] = Set(
     "FlatMapCollectTest",
     "DuplicateWildcardImportTest",
+    "PartialFunctionCondOptTest",
     "UnnecessarySortTest",
   ).map(_ + ".scala")
 
