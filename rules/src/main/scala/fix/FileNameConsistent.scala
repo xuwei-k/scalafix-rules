@@ -23,6 +23,8 @@ class FileNameConsistent extends SyntacticRule("FileNameConsistent") {
         TemplateDef(x, x.name.value)
       case x: Defn.Object if x.isTopLevel =>
         TemplateDef(x, x.name.value)
+      case x: Defn.Enum if x.isTopLevel =>
+        TemplateDef(x, x.name.value)
     }
     val packageObjects = doc.tree.collect { case x: Pkg.Object =>
       TemplateDef(x, x.name.value)
