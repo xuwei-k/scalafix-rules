@@ -4,6 +4,8 @@ import metaconfig.ConfDecoder
 import metaconfig.Configured
 import metaconfig.generic.Surface
 import scala.meta.Import
+import scala.meta.Importee
+import scala.meta.Importer
 import scala.meta.Pkg
 import scala.meta.Source
 import scala.meta.Token
@@ -35,41 +37,35 @@ class DuplicateWildcardImport(conf: DuplicateWildcardImportConfig) extends Synta
 
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect { case t: Source =>
-      // ignore `import a.b.{x => y}`
-      val exclude = {
-        Seq("{", "=>", "}") ++ {
-          if (conf.isScala3) {
-            Seq(" as ")
-          } else {
-            Nil
-          }
-        }
+      def isRename(s: Importer) = {
+        s.importees.exists(_.is[Importee.Rename])
       }
-      def isWildcard(s: String): Boolean = {
-        s.endsWith("._") || (conf.isScala3 && s.endsWith(".*"))
+      def isWildcard(s: Importer): Boolean = {
+        s.importees.exists(_.is[Importee.Wildcard])
       }
 
       t.stats.collect { case p: Pkg =>
         p.stats
       }.flatten.collect { case i: Import =>
-        i
-      }.groupBy(i => i.toString.split('.').init.mkString("."))
-        .values
-        .filter(x => x.size > 1 && x.exists(a => isWildcard(a.toString)))
-        .flatMap {
-          _.filterNot { x =>
-            val s = x.toString
-            isWildcard(s) || exclude.exists(s contains _)
-          }.map { x =>
-            Seq(
-              Patch.removeTokens(x.tokens),
-              Patch.removeTokens(
-                doc.tree.tokens.dropWhile(_.pos.start < x.tokens.last.pos.end).headOption.filter(_.is[Token.LF])
-              )
-            ).asPatch
-          }
+        i -> i.importers
+      }.collect { case (i, x :: Nil) =>
+        i -> x
+      }.groupBy { case (_, x) =>
+        x.ref.structure
+      }.values.filter { x =>
+        x.size > 1 && x.exists(a => isWildcard(a._2))
+      }.flatMap {
+        _.filterNot { x =>
+          isWildcard(x._2) || isRename(x._2)
+        }.map { x =>
+          Seq(
+            Patch.removeTokens(x._1.tokens),
+            Patch.removeTokens(
+              doc.tree.tokens.dropWhile(_.pos.start < x._1.tokens.last.pos.end).headOption.filter(_.is[Token.LF])
+            )
+          ).asPatch
         }
-        .asPatch
+      }.asPatch
     }.asPatch
   }
 }
