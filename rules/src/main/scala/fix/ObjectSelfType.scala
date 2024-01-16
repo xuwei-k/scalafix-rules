@@ -5,7 +5,7 @@ import scalafix.Patch
 import scalafix.lint.LintSeverity
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
-import scala.meta._
+import scala.meta.Defn
 
 class ObjectSelfType extends SyntacticRule("ObjectSelfType") {
   override def isLinter = true
@@ -14,11 +14,12 @@ class ObjectSelfType extends SyntacticRule("ObjectSelfType") {
     doc.tree.collect {
       case obj: Defn.Object if obj.templ.self.decltpe.isDefined =>
         Patch.lint(
-          new Diagnostic {
-            override def position = obj.templ.self.pos
-            override def message = "objects must not have a self type"
-            override def severity: LintSeverity = LintSeverity.Warning
-          }
+          Diagnostic(
+            id = "",
+            position = obj.templ.self.pos,
+            message = "objects must not have a self type",
+            severity = LintSeverity.Warning,
+          )
         )
     }.asPatch
   }
