@@ -38,7 +38,7 @@ class FileNameConsistent extends SyntacticRule("FileNameConsistent") {
       case f: Input.VirtualFile =>
         ScalaSource(
           fullPath = f.path,
-          name = f.path.split(java.io.File.separatorChar).lastOption.getOrElse("").replace(".scala", "")
+          name = f.path.split('/').lastOption.getOrElse("").replace(".scala", "")
         )
     }
 
