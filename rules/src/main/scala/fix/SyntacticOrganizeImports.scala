@@ -4,6 +4,7 @@ import scalafix.Patch
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
 import scala.meta.Import
+import scala.meta.Importer
 import scala.meta.Importee
 import scala.meta.Pkg
 import scala.meta.inputs.Position
@@ -26,19 +27,31 @@ class SyntacticOrganizeImports extends SyntacticRule("SyntacticOrganizeImports")
     loop(list, Nil).reverse
   }
 
-  private def importToString(i: Import): String = {
-    val s = i.toString
-    if (i.importers.forall(_.importees.forall(!_.is[Importee.Wildcard]))) {
-      s
-    } else {
-      // for consistency OrganizeImports
-      // TODO https://github.com/scalacenter/scalafix/pull/1896 ?
-      val wildcardNewStyle = ".*"
-      if (s.endsWith(wildcardNewStyle)) {
-        s"${s.dropRight(wildcardNewStyle.length)}._"
-      } else {
-        s
-      }
+  private def importToString(importer: Importer): String = {
+    importer.pos match {
+      case _: Position.Range =>
+        val s = importer.syntax
+        // for consistency OrganizeImports
+        // TODO https://github.com/scalacenter/scalafix/pull/1896 ?
+        val wildcardNewStyle = ".*"
+        if (s.endsWith(wildcardNewStyle)) {
+          s"${s.dropRight(wildcardNewStyle.length)}._"
+        } else {
+          s
+        }
+      case Position.None =>
+        // for consistency OrganizeImports
+        // https://github.com/scalacenter/scalafix/blob/3ca6e5a129bb070bfa/scalafix-rules/src/main/scala/scalafix/internal/rule/OrganizeImports.scala#L798-L821
+        val syntax = importer.syntax
+
+        (isCurlyBraced(importer), syntax lastIndexOfSlice " }") match {
+          case (_, -1) =>
+            syntax
+          case (true, index) =>
+            syntax.patch(index, "}", 2).replaceFirst("\\{ ", "{")
+          case _ =>
+            syntax
+        }
     }
   }
 
@@ -46,30 +59,36 @@ class SyntacticOrganizeImports extends SyntacticRule("SyntacticOrganizeImports")
     doc.tree.collect { case p: Pkg =>
       // find top-level imports
       val imports = collectWhile(p.stats.dropWhile(!_.is[Import])) { case i: Import => i }.sortBy(_.pos.startLine)
-      // exclude Rename or multi Importees
-      val maybeMultiLine = imports.forall(_.importers.forall(_.importees.forall(!_.is[Importee.Rename])))
-      if (imports.nonEmpty && maybeMultiLine) {
+      val importers = imports.map(_.importers).collect { case i :: Nil => i }
+      if (imports.nonEmpty && (imports.lengthCompare(importers.size) == 0)) {
+        val start = imports.map(_.pos.startLine).min
+        val end = imports.map(_.pos.endLine).max
+
         Seq(
-          imports.tail.zip(imports).find { case (x1, x2) => (x1.pos.startLine - x2.pos.startLine) != 1 }.map {
-            case (_, value) =>
+          doc.input.text.linesIterator.zipWithIndex
+            .slice(start, end + 1)
+            .filter(_._1.trim.isEmpty)
+            .map { case (_, emptyLineNumber) =>
               Patch.lint(
                 SyntacticOrganizeImportsWarn(
                   Position.Range(
-                    input = value.pos.input,
-                    startLine = value.pos.startLine + 1,
+                    input = doc.input,
+                    startLine = emptyLineNumber,
                     startColumn = 0,
-                    endLine = value.pos.startLine + 1,
+                    endLine = emptyLineNumber + 1,
                     endColumn = 0
                   ),
                   "there is empty line in top level imports"
                 )
               )
-          },
-          imports
+            }
+            .toList
+            .asPatch,
+          importers
             .sortBy(importToString)
-            .zip(imports)
+            .zip(importers)
             .find { case (x1, x2) =>
-              x1.toString != x2.toString
+              importToString(x1) != importToString(x2)
             }
             .map { case (_, value) =>
               Patch.lint(
@@ -79,11 +98,26 @@ class SyntacticOrganizeImports extends SyntacticRule("SyntacticOrganizeImports")
                 )
               )
             }
-        ).flatten.asPatch
+            .asPatch
+        ).asPatch
       } else {
         Patch.empty
       }
     }.asPatch
+  }
+
+  // https://github.com/scalacenter/scalafix/blob/3ca6e5a129bb070bfa/scalafix-rules/src/main/scala/scalafix/internal/rule/OrganizeImports.scala#L975-L980
+  private def isCurlyBraced(importer: Importer): Boolean = {
+    (importer.importees.size > 1) || {
+      importer.importees.exists {
+        case _: Importee.Rename =>
+          true
+        case _: Importee.Unimport =>
+          true
+        case _ =>
+          false
+      }
+    }
   }
 }
 
