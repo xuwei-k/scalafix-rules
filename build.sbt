@@ -108,7 +108,7 @@ lazy val rules = projectMatrix
     moduleName := "scalafix-rules",
     publishTo := sonatypePublishToBundle.value,
     libraryDependencies += "ch.epfl.scala" %% "scalafix-core" % V.scalafixVersion,
-    libraryDependencies += "org.scalatest" %% "scalatest-funsuite" % "3.2.17" % Test,
+    libraryDependencies += "org.scalatest" %% "scalatest-funsuite" % "3.2.18" % Test,
     Compile / sourceGenerators += task {
       val dir = (Compile / sourceManaged).value
       Seq(
