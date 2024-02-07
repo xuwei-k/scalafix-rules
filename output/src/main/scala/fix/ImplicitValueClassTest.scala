@@ -49,4 +49,6 @@ object ImplicitValueClassTest {
       }
     }
   }
+
+  implicit class HasContextBound[A: Option](val x: Int)
 }
