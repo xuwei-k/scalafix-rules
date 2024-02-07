@@ -4,6 +4,8 @@ import scalafix.Patch
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
 import scala.meta.Term
+import scala.meta.Token
+import scala.meta.tokens.Token.Keyword
 
 class UnnecessaryMatch extends SyntacticRule("UnnecessaryMatch") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
@@ -17,7 +19,10 @@ class UnnecessaryMatch extends SyntacticRule("UnnecessaryMatch") {
               )
             )
           ) if p1 == p2 && cases.forall(_.collect { case Term.Name(n) if n == p2 => () }.isEmpty) =>
-        Patch.replaceTree(f, Term.PartialFunction(cases).toString)
+        Seq(
+          Patch.removeTokens(f.tokens.takeWhile(!_.is[Token.KwMatch])),
+          Patch.removeTokens(f.tokens.find(_.is[Token.KwMatch]))
+        ).asPatch
       case Term.Apply.Initial(
             _,
             Term.Block(
@@ -29,7 +34,10 @@ class UnnecessaryMatch extends SyntacticRule("UnnecessaryMatch") {
               )
             ) :: Nil
           ) if p1 == p2 && cases.forall(_.collect { case Term.Name(n) if n == p2 => () }.isEmpty) =>
-        Patch.replaceTree(f, Term.PartialFunction(cases).toString)
+        Seq(
+          Patch.removeTokens(f.tokens.takeWhile(!_.is[Token.KwMatch])),
+          Patch.removeTokens(f.tokens.find(_.is[Token.KwMatch]))
+        ).asPatch
     }
   }.asPatch
 }
