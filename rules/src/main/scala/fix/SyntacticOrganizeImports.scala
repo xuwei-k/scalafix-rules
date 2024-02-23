@@ -1,16 +1,21 @@
 package fix
 
-import scalafix.Patch
-import scalafix.v1.SyntacticDocument
-import scalafix.v1.SyntacticRule
+import scala.annotation.tailrec
 import scala.meta.Import
-import scala.meta.Importer
 import scala.meta.Importee
+import scala.meta.Importer
 import scala.meta.Pkg
+import scala.meta.XtensionClassifiable
+import scala.meta.XtensionCollectionLikeUI
+import scala.meta.XtensionSyntax
 import scala.meta.inputs.Position
+import scalafix.Patch
 import scalafix.lint.Diagnostic
 import scalafix.lint.LintSeverity
-import scala.annotation.tailrec
+import scalafix.v1.SyntacticDocument
+import scalafix.v1.SyntacticRule
+import scalafix.v1.XtensionOptionPatch
+import scalafix.v1.XtensionSeqPatch
 
 class SyntacticOrganizeImports extends SyntacticRule("SyntacticOrganizeImports") {
 

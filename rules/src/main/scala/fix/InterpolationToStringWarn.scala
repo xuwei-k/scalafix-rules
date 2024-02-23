@@ -1,11 +1,13 @@
 package fix
 
-import scalafix.lint.LintSeverity
 import scala.meta.Term
+import scala.meta.XtensionCollectionLikeUI
 import scalafix.Diagnostic
 import scalafix.Patch
+import scalafix.lint.LintSeverity
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
+import scalafix.v1.XtensionSeqPatch
 
 class InterpolationToStringWarn extends SyntacticRule("InterpolationToStringWarn") {
   override def fix(implicit doc: SyntacticDocument): Patch = {

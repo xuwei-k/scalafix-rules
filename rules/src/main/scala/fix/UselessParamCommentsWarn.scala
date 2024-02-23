@@ -1,15 +1,18 @@
 package fix
 
 import java.util.Locale
+import scala.meta.Defn
+import scala.meta.XtensionCollectionLikeUI
+import scala.meta.contrib.DocToken
+import scala.meta.contrib.XtensionCommentOps
+import scala.meta.inputs.Position
 import scalafix.Patch
 import scalafix.lint.Diagnostic
 import scalafix.lint.LintSeverity
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
-import scala.meta.Defn
-import scala.meta.inputs.Position
-import scala.meta.contrib.DocToken
-import scala.meta.contrib.XtensionCommentOps
+import scalafix.v1.XtensionOptionPatch
+import scalafix.v1.XtensionSeqPatch
 
 class UselessParamCommentsWarn extends SyntacticRule("UselessParamCommentsWarn") {
   override def fix(implicit doc: SyntacticDocument): Patch = {

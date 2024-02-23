@@ -3,9 +3,11 @@ package fix
 import fix.FilterNot._
 import scala.meta.Term
 import scala.meta.Term.ApplyUnary
+import scala.meta.XtensionCollectionLikeUI
 import scalafix.Patch
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
+import scalafix.v1.XtensionSeqPatch
 
 object FilterNot {
   private object FilterValue {

@@ -5,11 +5,15 @@ import scala.meta.Mod
 import scala.meta.Pat
 import scala.meta.Term
 import scala.meta.Type
+import scala.meta.XtensionClassifiable
+import scala.meta.XtensionCollectionLikeUI
+import scala.meta.XtensionStructure
 import scalafix.Patch
 import scalafix.lint.Diagnostic
 import scalafix.lint.LintSeverity
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
+import scalafix.v1.XtensionSeqPatch
 
 object ObjectFinal {
   private val constantTypes: Seq[Type] = {

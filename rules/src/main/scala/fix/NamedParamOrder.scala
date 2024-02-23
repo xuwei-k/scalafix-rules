@@ -3,13 +3,16 @@ package fix
 import fix.NamedParamOrder.ApplyOrNew
 import scala.meta.Term
 import scala.meta.Tree
+import scala.meta.XtensionCollectionLikeUI
+import scala.meta.XtensionSyntax
+import scala.meta.contrib.XtensionTreeOps
 import scalafix.Patch
 import scalafix.v1.ClassSignature
 import scalafix.v1.MethodSignature
 import scalafix.v1.SemanticDocument
 import scalafix.v1.SemanticRule
+import scalafix.v1.XtensionSeqPatch
 import scalafix.v1.XtensionTreeScalafix
-import scala.meta.contrib.XtensionTreeOps
 
 object NamedParamOrder {
   private object ApplyOrNew {

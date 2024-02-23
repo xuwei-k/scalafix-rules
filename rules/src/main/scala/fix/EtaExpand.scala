@@ -1,10 +1,13 @@
 package fix
 
+import scala.meta.Mod
+import scala.meta.Term
+import scala.meta.XtensionClassifiable
+import scala.meta.XtensionCollectionLikeUI
 import scalafix.Patch
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
-import scala.meta.Mod
-import scala.meta.Term
+import scalafix.v1.XtensionSeqPatch
 
 class EtaExpand extends SyntacticRule("EtaExpand") {
   override def fix(implicit doc: SyntacticDocument): Patch = {

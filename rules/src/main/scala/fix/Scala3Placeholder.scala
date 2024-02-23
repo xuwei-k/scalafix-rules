@@ -1,13 +1,15 @@
 package fix
 
-import scalafix.Patch
-import scalafix.v1.SyntacticDocument
-import scalafix.v1.SyntacticRule
 import scala.meta.Type
 import scala.meta.Type.Bounds
+import scala.meta.XtensionCollectionLikeUI
 import scala.meta.inputs.Position
+import scalafix.Patch
 import scalafix.lint.Diagnostic
 import scalafix.lint.LintSeverity
+import scalafix.v1.SyntacticDocument
+import scalafix.v1.SyntacticRule
+import scalafix.v1.XtensionSeqPatch
 
 class Scala3Placeholder extends SyntacticRule("Scala3Placeholder") {
   override def fix(implicit doc: SyntacticDocument): Patch = {

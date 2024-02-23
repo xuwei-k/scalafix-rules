@@ -1,6 +1,7 @@
 package fix
 
 import scala.meta.Term
+import scala.meta.XtensionCollectionLikeUI
 import scalafix.Patch
 import scalafix.lint.Diagnostic
 import scalafix.lint.LintSeverity
@@ -10,6 +11,8 @@ import scalafix.v1.SemanticDocument
 import scalafix.v1.SemanticRule
 import scalafix.v1.TypeRef
 import scalafix.v1.ValueSignature
+import scalafix.v1.XtensionOptionPatch
+import scalafix.v1.XtensionSeqPatch
 import scalafix.v1.XtensionTreeScalafix
 
 class OptionGetWarn extends SemanticRule("OptionGetWarn") {

@@ -1,9 +1,15 @@
 package fix
 
+import scala.meta.Defn
+import scala.meta.Mod
+import scala.meta.Term
+import scala.meta.Type
+import scala.meta.XtensionClassifiable
+import scala.meta.XtensionCollectionLikeUI
 import scalafix.Patch
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
-import scala.meta._
+import scalafix.v1.XtensionSeqPatch
 
 /**
  * `implicit val foo = new Foo`

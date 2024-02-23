@@ -1,11 +1,13 @@
 package fix
 
-import scalafix.Patch
-import scalafix.v1.SyntacticDocument
-import scalafix.v1.SyntacticRule
 import scala.meta.Case
 import scala.meta.Pat
 import scala.meta.Term
+import scala.meta.XtensionCollectionLikeUI
+import scalafix.Patch
+import scalafix.v1.SyntacticDocument
+import scalafix.v1.SyntacticRule
+import scalafix.v1.XtensionSeqPatch
 
 class EitherMap extends SyntacticRule("EitherMap") {
   private object RightMapIdentity {

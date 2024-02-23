@@ -1,12 +1,15 @@
 package fix
 
-import scalafix.patch.Patch
-import scalafix.v1.SyntacticDocument
-import scalafix.v1.SyntacticRule
 import scala.meta.Enumerator.Generator
 import scala.meta.Pat
 import scala.meta.Term
 import scala.meta.Token
+import scala.meta.XtensionClassifiable
+import scala.meta.XtensionCollectionLikeUI
+import scalafix.patch.Patch
+import scalafix.v1.SyntacticDocument
+import scalafix.v1.SyntacticRule
+import scalafix.v1.XtensionSeqPatch
 
 class SimplifyForYield extends SyntacticRule("SimplifyForYield") {
   override def fix(implicit doc: SyntacticDocument): Patch = {

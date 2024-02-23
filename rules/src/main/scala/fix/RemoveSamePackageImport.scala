@@ -1,7 +1,10 @@
 package fix
 
-import scalafix.v1._
-import scala.meta._
+import scala.meta.Importee
+import scala.meta.Pkg
+import scalafix.Patch
+import scalafix.v1.SyntacticDocument
+import scalafix.v1.SyntacticRule
 
 class RemoveSamePackageImport extends SyntacticRule("RemoveSamePackageImport") {
 

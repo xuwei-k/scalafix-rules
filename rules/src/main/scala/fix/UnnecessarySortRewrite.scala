@@ -4,14 +4,16 @@ import metaconfig.ConfDecoder
 import metaconfig.ConfError
 import metaconfig.Configured
 import metaconfig.generic.Surface
+import scala.meta.Pkg
+import scala.meta.Source
+import scala.meta.Term
+import scala.meta.XtensionCollectionLikeUI
 import scalafix.Patch
 import scalafix.v1.Configuration
 import scalafix.v1.Rule
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
-import scala.meta.Pkg
-import scala.meta.Source
-import scala.meta.Term
+import scalafix.v1.XtensionSeqPatch
 
 case class UnnecessarySortRewriteConfig(rewriteConfig: UnnecessarySortRewriteConfig.RewriteConfig)
 

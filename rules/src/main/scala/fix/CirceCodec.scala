@@ -1,21 +1,23 @@
 package fix
 
-import scalafix.Patch
-import scalafix.v1.SyntacticDocument
-import scalafix.v1.SyntacticRule
-import scala.meta.Mod.Annot
-import scala.meta.Name.Indeterminate
-import scala.meta.Term.Select
 import scala.meta.Defn
 import scala.meta.Import
 import scala.meta.Importee
 import scala.meta.Importer
 import scala.meta.Init
 import scala.meta.Lit
+import scala.meta.Mod.Annot
+import scala.meta.Name.Indeterminate
 import scala.meta.Pkg
 import scala.meta.Source
 import scala.meta.Term
+import scala.meta.Term.Select
 import scala.meta.Type
+import scala.meta.XtensionCollectionLikeUI
+import scalafix.Patch
+import scalafix.v1.SyntacticDocument
+import scalafix.v1.SyntacticRule
+import scalafix.v1.XtensionSeqPatch
 
 object CirceCodec {
   private sealed abstract class TypeClass extends Product with Serializable

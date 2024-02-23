@@ -4,9 +4,13 @@ import scala.meta.Case
 import scala.meta.Pat
 import scala.meta.Term
 import scala.meta.Token
+import scala.meta.XtensionClassifiable
+import scala.meta.XtensionCollectionLikeUI
 import scalafix.Patch
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
+import scalafix.v1.XtensionOptionPatch
+import scalafix.v1.XtensionSeqPatch
 
 /**
   * [[https://github.com/scala/scala/blob/v2.13.12/src/library/scala/collection/LazyZipOps.scala]]

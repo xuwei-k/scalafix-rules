@@ -109,6 +109,7 @@ lazy val rules = projectMatrix
     publishTo := sonatypePublishToBundle.value,
     libraryDependencies += "ch.epfl.scala" %% "scalafix-core" % V.scalafixVersion,
     libraryDependencies += "org.scalatest" %% "scalatest-funsuite" % "3.2.18" % Test,
+    scalacOptions += "-Ywarn-unused:imports",
     Compile / sourceGenerators += task {
       val dir = (Compile / sourceManaged).value
       Seq(

@@ -2,14 +2,16 @@ package fix
 
 import java.util.Locale
 import scala.meta.Decl
-import scalafix.Patch
-import scalafix.v1.SyntacticDocument
-import scalafix.v1.SyntacticRule
 import scala.meta.Defn
 import scala.meta.Tree
+import scala.meta.XtensionCollectionLikeUI
 import scala.meta.contrib.AssociatedComments
 import scala.meta.contrib.DocToken
 import scala.meta.contrib.XtensionCommentOps
+import scalafix.Patch
+import scalafix.v1.SyntacticDocument
+import scalafix.v1.SyntacticRule
+import scalafix.v1.XtensionSeqPatch
 
 class RemoveUselessParamComments extends SyntacticRule("RemoveUselessParamComments") {
   override def fix(implicit doc: SyntacticDocument): Patch = {

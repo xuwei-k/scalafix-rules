@@ -3,9 +3,11 @@ package fix
 import scala.meta.Term
 import scala.meta.Term.Block
 import scala.meta.Term.If
+import scala.meta.XtensionCollectionLikeUI
 import scalafix.Patch
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
+import scalafix.v1.XtensionSeqPatch
 
 object OptionWhenUnless {
   private object SomeValue {

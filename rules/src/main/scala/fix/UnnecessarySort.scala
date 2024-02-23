@@ -1,12 +1,14 @@
 package fix
 
+import scala.meta.Position
+import scala.meta.Term
+import scala.meta.XtensionCollectionLikeUI
 import scalafix.Diagnostic
 import scalafix.Patch
 import scalafix.lint.LintSeverity
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
-import scala.meta.Term
-import scala.meta.Position
+import scalafix.v1.XtensionSeqPatch
 
 object UnnecessarySort {
   val scala213Methods: Map[String, String] = Map(

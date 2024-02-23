@@ -6,11 +6,15 @@ import scala.meta.Member
 import scala.meta.Mod
 import scala.meta.Stat
 import scala.meta.Template
+import scala.meta.XtensionClassifiable
+import scala.meta.XtensionCollectionLikeUI
+import scala.meta.XtensionStructure
 import scalafix.Diagnostic
 import scalafix.Patch
 import scalafix.lint.LintSeverity
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
+import scalafix.v1.XtensionSeqPatch
 
 object SameParamOverloading {
   private sealed abstract class Method extends Product with Serializable {

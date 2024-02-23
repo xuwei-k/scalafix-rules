@@ -1,11 +1,13 @@
 package fix
 
+import scala.meta.Term
+import scala.meta.XtensionCollectionLikeUI
+import scala.meta.tokens.Token.LeftBrace
+import scala.meta.tokens.Token.RightBrace
 import scalafix.Patch
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
-import scala.meta.Term
-import scala.meta.tokens.Token.LeftBrace
-import scala.meta.tokens.Token.RightBrace
+import scalafix.v1.XtensionSeqPatch
 
 class MapSequenceTraverse extends SyntacticRule("MapSequenceTraverse") {
   override def fix(implicit doc: SyntacticDocument): Patch = {

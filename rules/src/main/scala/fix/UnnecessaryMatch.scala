@@ -1,11 +1,13 @@
 package fix
 
+import scala.meta.Term
+import scala.meta.Token
+import scala.meta.XtensionClassifiable
+import scala.meta.XtensionCollectionLikeUI
 import scalafix.Patch
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
-import scala.meta.Term
-import scala.meta.Token
-import scala.meta.tokens.Token.Keyword
+import scalafix.v1.XtensionSeqPatch
 
 class UnnecessaryMatch extends SyntacticRule("UnnecessaryMatch") {
   override def fix(implicit doc: SyntacticDocument): Patch = {

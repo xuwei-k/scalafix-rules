@@ -1,8 +1,15 @@
 package fix
 
-import metaconfig.generic.Surface
+import java.io.File
+import java.util.Locale
 import metaconfig.ConfDecoder
 import metaconfig.Configured
+import metaconfig.generic.Surface
+import scala.meta.Pkg
+import scala.meta.Term
+import scala.meta.Tree
+import scala.meta.XtensionCollectionLikeUI
+import scala.meta.inputs.Input
 import scalafix.Diagnostic
 import scalafix.Patch
 import scalafix.lint.LintSeverity
@@ -10,12 +17,6 @@ import scalafix.v1.Configuration
 import scalafix.v1.Rule
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
-import java.io.File
-import java.util.Locale
-import scala.meta.Pkg
-import scala.meta.Term
-import scala.meta.Tree
-import scala.meta.inputs.Input
 
 case class DirectoryAndPackageNameConfig(
   baseDirectory: Seq[String],

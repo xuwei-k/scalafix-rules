@@ -1,13 +1,15 @@
 package fix
 
-import scalafix.Patch
-import scalafix.v1.SyntacticDocument
-import scalafix.v1.SyntacticRule
 import scala.meta.Case
 import scala.meta.Pat
 import scala.meta.Term
 import scala.meta.Term.Block
+import scala.meta.XtensionCollectionLikeUI
 import scala.meta.contrib._
+import scalafix.Patch
+import scalafix.v1.SyntacticDocument
+import scalafix.v1.SyntacticRule
+import scalafix.v1.XtensionSeqPatch
 
 object EitherGetOrElse {
   private abstract class Value(x: String) {

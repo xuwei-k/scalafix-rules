@@ -4,13 +4,15 @@ import scala.meta.Case
 import scala.meta.Lit
 import scala.meta.Pat
 import scala.meta.Term
-import scala.meta.Tree
-import scala.meta.Type
 import scala.meta.Term.ApplyInfix
 import scala.meta.Term.Block
+import scala.meta.Tree
+import scala.meta.Type
+import scala.meta.XtensionCollectionLikeUI
 import scalafix.Patch
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
+import scalafix.v1.XtensionSeqPatch
 
 object SlickFilter {
   private object CaseSome {

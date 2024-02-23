@@ -1,12 +1,14 @@
 package fix
 
+import scala.meta.Enumerator
+import scala.meta.Term
+import scala.meta.Term.ApplyType
+import scala.meta.Type
+import scala.meta.XtensionCollectionLikeUI
 import scalafix.Patch
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
-import scala.meta.Enumerator
-import scala.meta.Term
-import scala.meta.Type
-import scala.meta.Term.ApplyType
+import scalafix.v1.XtensionSeqPatch
 
 class RemovePureEff extends SyntacticRule("RemovePureEff") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
