@@ -1,13 +1,16 @@
 package fix
 
-import scalafix.Patch
-import scalafix.v1.SyntacticDocument
-import scalafix.v1.SyntacticRule
 import scala.meta.Case
 import scala.meta.Lit
 import scala.meta.Pat
 import scala.meta.Term
 import scala.meta.Term.ApplyInfix
+import scala.meta.XtensionCollectionLikeUI
+import scalafix.Patch
+import scalafix.v1.SyntacticDocument
+import scalafix.v1.SyntacticRule
+import scalafix.v1.XtensionOptionPatch
+import scalafix.v1.XtensionSeqPatch
 
 /**
  * [[https://github.com/scala/scala/blob/v2.13.12/src/library/scala/Option.scala#L367-L373]]

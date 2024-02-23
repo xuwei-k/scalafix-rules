@@ -1,9 +1,12 @@
 package fix
 
+import scala.meta.Term
+import scala.meta.XtensionCollectionLikeUI
+import scala.meta.XtensionSyntax
 import scalafix.Patch
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
-import scala.meta.Term
+import scalafix.v1.XtensionSeqPatch
 
 class RemoveStringInterpolation extends SyntacticRule("RemoveStringInterpolation") {
   override def fix(implicit doc: SyntacticDocument): Patch = {

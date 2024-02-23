@@ -2,9 +2,11 @@ package fix
 
 import scala.meta.Template
 import scala.meta.Term
+import scala.meta.XtensionCollectionLikeUI
 import scalafix.Patch
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
+import scalafix.v1.XtensionSeqPatch
 
 class MapToForeach extends SyntacticRule("MapToForeach") {
   override def fix(implicit doc: SyntacticDocument): Patch = {

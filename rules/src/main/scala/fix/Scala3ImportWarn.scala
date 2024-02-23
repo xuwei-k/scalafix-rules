@@ -1,12 +1,14 @@
 package fix
 
-import scalafix.Patch
-import scalafix.v1.SyntacticDocument
-import scalafix.v1.SyntacticRule
 import scala.meta.Importee
+import scala.meta.XtensionCollectionLikeUI
 import scala.meta.inputs.Position
+import scalafix.Patch
 import scalafix.lint.Diagnostic
 import scalafix.lint.LintSeverity
+import scalafix.v1.SyntacticDocument
+import scalafix.v1.SyntacticRule
+import scalafix.v1.XtensionSeqPatch
 
 class Scala3ImportWarn extends SyntacticRule("Scala3ImportWarn") {
   override def isLinter = true

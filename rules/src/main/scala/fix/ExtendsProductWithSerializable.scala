@@ -5,9 +5,13 @@ import scala.meta.Defn
 import scala.meta.Mod
 import scala.meta.Template
 import scala.meta.Type
+import scala.meta.XtensionClassifiable
+import scala.meta.XtensionCollectionLikeUI
+import scala.meta.typeParamClauseToValues
 import scalafix.Patch
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
+import scalafix.v1.XtensionSeqPatch
 
 /**
  * @see [[https://nrinaudo.github.io/scala-best-practices/adts/product_with_serializable.html]]

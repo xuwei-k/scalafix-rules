@@ -1,7 +1,10 @@
 package fix
 
-import scala.meta._
-import scalafix.v1._
+import scala.meta.Type
+import scalafix.Patch
+import scalafix.v1.SemanticDocument
+import scalafix.v1.SemanticRule
+import scalafix.v1.XtensionTreeScalafix
 
 class ScalazEitherInfix extends SemanticRule("ScalazEitherInfix") {
   override def fix(implicit doc: SemanticDocument): Patch = {

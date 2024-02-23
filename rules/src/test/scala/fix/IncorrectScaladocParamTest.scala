@@ -1,10 +1,10 @@
 package fix
 
 import org.scalatest.funsuite.AnyFunSuite
+import scala.meta.inputs.Input
 import scalafix.internal.config.ScalaVersion
 import scalafix.lint.LintSeverity
 import scalafix.v1.SyntacticDocument
-import scala.meta.inputs.Input
 
 class IncorrectScaladocParamTest extends AnyFunSuite {
   test("Scala 2") {

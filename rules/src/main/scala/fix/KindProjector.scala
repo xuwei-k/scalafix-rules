@@ -3,12 +3,14 @@ package fix
 import metaconfig.ConfDecoder
 import metaconfig.Configured
 import metaconfig.generic.Surface
+import scala.meta.Type
+import scala.meta.XtensionCollectionLikeUI
 import scalafix.Patch
 import scalafix.v1.Configuration
 import scalafix.v1.Rule
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
-import scala.meta.Type
+import scalafix.v1.XtensionSeqPatch
 
 case class KindProjectorConfig(
   rewriteInfixTypes: Set[String]

@@ -1,13 +1,15 @@
 package fix
 
+import scala.meta.Lit
+import scala.meta.Term
+import scala.meta.XtensionCollectionLikeUI
+import scala.meta.inputs.Position
 import scalafix.Diagnostic
 import scalafix.Patch
 import scalafix.lint.LintSeverity
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
-import scala.meta.Lit
-import scala.meta.Term
-import scala.meta.inputs.Position
+import scalafix.v1.XtensionSeqPatch
 
 class NoElse extends SyntacticRule("NoElse") {
   override def fix(implicit doc: SyntacticDocument): Patch = {

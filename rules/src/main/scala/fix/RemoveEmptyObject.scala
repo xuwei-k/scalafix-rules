@@ -1,10 +1,12 @@
 package fix
 
+import scala.meta.Defn
+import scala.meta.Template
+import scala.meta.XtensionCollectionLikeUI
 import scalafix.Patch
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
-import scala.meta.Defn
-import scala.meta.Template
+import scalafix.v1.XtensionSeqPatch
 
 class RemoveEmptyObject extends SyntacticRule("RemoveEmptyObject") {
   override def fix(implicit doc: SyntacticDocument): Patch = {

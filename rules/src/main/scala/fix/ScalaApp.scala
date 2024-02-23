@@ -1,14 +1,17 @@
 package fix
 
-import scalafix.Patch
-import scalafix.v1.SyntacticDocument
-import scalafix.v1.SyntacticRule
-import scala.meta.tokens.Token
 import scala.meta.Defn
 import scala.meta.Init
 import scala.meta.Pkg
 import scala.meta.Template
 import scala.meta.Type
+import scala.meta.XtensionClassifiable
+import scala.meta.XtensionCollectionLikeUI
+import scala.meta.tokens.Token
+import scalafix.Patch
+import scalafix.v1.SyntacticDocument
+import scalafix.v1.SyntacticRule
+import scalafix.v1.XtensionSeqPatch
 
 /**
  * @see [[https://docs.scala-lang.org/scala3/book/methods-main-methods.html]]

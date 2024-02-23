@@ -1,10 +1,13 @@
 package fix
 
+import scala.meta.Term
+import scala.meta.Token
+import scala.meta.XtensionClassifiable
+import scala.meta.XtensionCollectionLikeUI
 import scalafix.Patch
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
-import scala.meta.Term
-import scala.meta.Token
+import scalafix.v1.XtensionSeqPatch
 
 class AddLambdaParamParentheses extends SyntacticRule("AddLambdaParamParentheses") {
   override def fix(implicit doc: SyntacticDocument): Patch = {

@@ -1,11 +1,13 @@
 package fix
 
+import scala.meta.Defn
+import scala.meta.XtensionCollectionLikeUI
 import scalafix.Diagnostic
 import scalafix.Patch
 import scalafix.lint.LintSeverity
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
-import scala.meta.Defn
+import scalafix.v1.XtensionSeqPatch
 
 class ObjectSelfType extends SyntacticRule("ObjectSelfType") {
   override def isLinter = true

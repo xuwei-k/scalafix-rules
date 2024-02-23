@@ -9,6 +9,7 @@ import scala.meta.Stat
 import scala.meta.Template
 import scala.meta.Term
 import scala.meta.Tree
+import scala.meta.XtensionCollectionLikeUI
 import scala.meta.contrib.XtensionTreeOps
 import scalafix.Patch
 import scalafix.lint.Diagnostic
@@ -21,6 +22,8 @@ import scalafix.v1.SemanticRule
 import scalafix.v1.SemanticType
 import scalafix.v1.TypeRef
 import scalafix.v1.ValueSignature
+import scalafix.v1.XtensionOptionPatch
+import scalafix.v1.XtensionSeqPatch
 import scalafix.v1.XtensionTreeScalafix
 
 case class DiscardValueConfig(

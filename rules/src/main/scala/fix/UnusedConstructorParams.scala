@@ -1,13 +1,17 @@
 package fix
 
+import scala.meta.Defn
+import scala.meta.Mod
+import scala.meta.XtensionClassifiable
+import scala.meta.XtensionCollectionLikeUI
+import scala.meta.inputs.Position
+import scala.meta.termParamClauseToValues
 import scalafix.Patch
 import scalafix.lint.Diagnostic
 import scalafix.lint.LintSeverity
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
-import scala.meta.Defn
-import scala.meta.Mod
-import scala.meta.inputs.Position
+import scalafix.v1.XtensionSeqPatch
 
 class UnusedConstructorParams extends SyntacticRule("UnusedConstructorParams") {
   override def isLinter = true

@@ -1,9 +1,10 @@
 package fix
 
+import scala.meta.Lit
+import scala.meta.XtensionCollectionLikeUI
 import scalafix.v1.Patch
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
-import scala.meta.Lit
 
 class ReplaceSymbolLiterals extends SyntacticRule("ReplaceSymbolLiterals") {
 

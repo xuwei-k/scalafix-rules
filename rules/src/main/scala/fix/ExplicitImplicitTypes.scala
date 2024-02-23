@@ -1,15 +1,8 @@
 package fix
 
-import metaconfig.generic.Surface
 import metaconfig.ConfDecoder
 import metaconfig.Configured
-import scalafix.Diagnostic
-import scalafix.Patch
-import scalafix.lint.LintSeverity
-import scalafix.v1.Configuration
-import scalafix.v1.Rule
-import scalafix.v1.SyntacticDocument
-import scalafix.v1.SyntacticRule
+import metaconfig.generic.Surface
 import scala.annotation.tailrec
 import scala.meta.Ctor
 import scala.meta.Defn
@@ -18,7 +11,17 @@ import scala.meta.Pkg
 import scala.meta.Template
 import scala.meta.Term
 import scala.meta.Tree
+import scala.meta.XtensionClassifiable
+import scala.meta.XtensionCollectionLikeUI
 import scala.meta.inputs.Position
+import scalafix.Diagnostic
+import scalafix.Patch
+import scalafix.lint.LintSeverity
+import scalafix.v1.Configuration
+import scalafix.v1.Rule
+import scalafix.v1.SyntacticDocument
+import scalafix.v1.SyntacticRule
+import scalafix.v1.XtensionSeqPatch
 
 case class ExplicitImplicitTypesConfig(
   excludeLocal: Boolean

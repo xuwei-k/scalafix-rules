@@ -1,9 +1,11 @@
 package fix
 
 import scala.meta.Term
+import scala.meta.XtensionCollectionLikeUI
 import scalafix.Patch
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
+import scalafix.v1.XtensionSeqPatch
 
 class InterpolationToString extends SyntacticRule("InterpolationToString") {
   override def fix(implicit doc: SyntacticDocument): Patch = {

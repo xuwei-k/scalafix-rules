@@ -28,4 +28,4 @@ jobs:
     - uses: coursier/cache-action@v6
     - run: sbt test
     - if: matrix.os != 'windows-latest'
-      run: sbt scalafmtSbtCheck scalafmtCheckAll
+      run: sbt scalafmtSbtCheck scalafmtCheckAll "rules2_13/scalafixAll --check OrganizeImports"

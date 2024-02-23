@@ -2,9 +2,11 @@ package fix
 
 import scala.meta.Lit
 import scala.meta.Term
+import scala.meta.XtensionCollectionLikeUI
 import scalafix.Patch
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
+import scalafix.v1.XtensionSeqPatch
 
 object RemoveIf {
   object True {

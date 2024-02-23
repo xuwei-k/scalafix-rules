@@ -1,16 +1,18 @@
 package fix
 
 import fix.FileNameConsistent._
+import scala.meta.Defn
+import scala.meta.Pkg
+import scala.meta.Tree
+import scala.meta.XtensionClassifiable
+import scala.meta.XtensionCollectionLikeUI
+import scala.meta.inputs.Input
+import scala.meta.inputs.Position
 import scalafix.Diagnostic
 import scalafix.Patch
 import scalafix.lint.LintSeverity
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
-import scala.meta.Defn
-import scala.meta.Pkg
-import scala.meta.Tree
-import scala.meta.inputs.Input
-import scala.meta.inputs.Position
 
 class FileNameConsistent extends SyntacticRule("FileNameConsistent") {
   override def isLinter = true

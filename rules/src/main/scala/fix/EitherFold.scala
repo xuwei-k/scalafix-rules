@@ -1,14 +1,17 @@
 package fix
 
-import scalafix.Patch
-import scalafix.v1.SyntacticDocument
-import scalafix.v1.SyntacticRule
 import scala.meta.Case
 import scala.meta.Pat
 import scala.meta.Term
 import scala.meta.Term.Block
+import scala.meta.XtensionClassifiable
+import scala.meta.XtensionCollectionLikeUI
 import scala.meta.contrib.XtensionTreeOps
 import scala.meta.tokens.Token
+import scalafix.Patch
+import scalafix.v1.SyntacticDocument
+import scalafix.v1.SyntacticRule
+import scalafix.v1.XtensionSeqPatch
 
 object EitherFold {
 

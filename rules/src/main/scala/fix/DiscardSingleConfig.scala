@@ -1,9 +1,9 @@
 package fix
 
+import java.util.Locale
 import metaconfig.ConfDecoder
 import metaconfig.generic.Surface
 import scalafix.lint.LintSeverity
-import java.util.Locale
 
 case class DiscardSingleConfig(
   severity: LintSeverity
