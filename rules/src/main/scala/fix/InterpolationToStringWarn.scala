@@ -1,6 +1,7 @@
 package fix
 
 import scala.meta.Term
+import scala.meta.Tree
 import scala.meta.XtensionCollectionLikeUI
 import scalafix.Diagnostic
 import scalafix.Patch
@@ -18,19 +19,32 @@ class InterpolationToStringWarn extends SyntacticRule("InterpolationToStringWarn
             values
           ) =>
         values.collect {
-          case Term.Select(
-                _,
-                t @ Term.Name("toString")
-              ) =>
-            Patch.lint(
-              Diagnostic(
-                id = "",
-                message = "maybe unnecessary `toString` in the `s` interpolation",
-                position = t.pos,
-                severity = LintSeverity.Warning
-              )
+          case InterpolationToStringWarn.SelectToString(t) =>
+            t
+          case Term.Block(InterpolationToStringWarn.SelectToString(t) :: Nil) =>
+            t
+        }.map { t =>
+          Patch.lint(
+            Diagnostic(
+              id = "",
+              message = "maybe unnecessary `toString` in the `s` interpolation",
+              position = t.pos,
+              severity = LintSeverity.Warning
             )
+          )
         }.asPatch
     }
   }.asPatch
+}
+
+private object InterpolationToStringWarn {
+  private object SelectToString {
+    def unapply(t: Tree): Option[Term.Name] = PartialFunction.condOpt(t) {
+      case Term.Select(
+            _,
+            x @ Term.Name("toString")
+          ) =>
+        x
+    }
+  }
 }
