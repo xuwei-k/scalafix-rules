@@ -2,9 +2,12 @@ package fix
 
 import scala.meta.Importee
 import scala.meta.Pkg
+import scala.meta.transversers._
 import scalafix.Patch
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
+import scalafix.v1.XtensionOptionPatch
+import scalafix.v1.XtensionSeqPatch
 
 class RemoveSamePackageImport extends SyntacticRule("RemoveSamePackageImport") {
 
