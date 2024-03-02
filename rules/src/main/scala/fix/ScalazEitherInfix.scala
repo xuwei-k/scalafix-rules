@@ -1,9 +1,11 @@
 package fix
 
 import scala.meta.Type
+import scala.meta.transversers._
 import scalafix.Patch
 import scalafix.v1.SemanticDocument
 import scalafix.v1.SemanticRule
+import scalafix.v1.XtensionSeqPatch
 import scalafix.v1.XtensionTreeScalafix
 
 class ScalazEitherInfix extends SemanticRule("ScalazEitherInfix") {
