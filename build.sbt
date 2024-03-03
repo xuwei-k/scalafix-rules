@@ -22,7 +22,7 @@ val commonSettings = Def.settings(
   scalacOptions ++= {
     scalaBinaryVersion.value match {
       case "2.13" =>
-        Seq("-Wconf:msg=constructor modifiers are assumed by synthetic:info")
+        Seq("-Wconf:msg=method are copied from the case class constructor:silent")
       case _ =>
         Nil
     }
