@@ -7,7 +7,6 @@ import scala.meta.Importer
 import scala.meta.Pkg
 import scala.meta.XtensionClassifiable
 import scala.meta.XtensionCollectionLikeUI
-import scala.meta.XtensionSyntax
 import scala.meta.inputs.Position
 import scalafix.Patch
 import scalafix.lint.Diagnostic
@@ -33,31 +32,7 @@ class SyntacticOrganizeImports extends SyntacticRule("SyntacticOrganizeImports")
   }
 
   private def importToString(importer: Importer): String = {
-    importer.pos match {
-      case _: Position.Range =>
-        val s = importer.syntax
-        // for consistency OrganizeImports
-        // TODO https://github.com/scalacenter/scalafix/pull/1896 ?
-        val wildcardNewStyle = ".*"
-        if (s.endsWith(wildcardNewStyle)) {
-          s"${s.dropRight(wildcardNewStyle.length)}._"
-        } else {
-          s
-        }
-      case Position.None =>
-        // for consistency OrganizeImports
-        // https://github.com/scalacenter/scalafix/blob/3ca6e5a129bb070bfa/scalafix-rules/src/main/scala/scalafix/internal/rule/OrganizeImports.scala#L798-L821
-        val syntax = importer.syntax
-
-        (isCurlyBraced(importer), syntax lastIndexOfSlice " }") match {
-          case (_, -1) =>
-            syntax
-          case (true, index) =>
-            syntax.patch(index, "}", 2).replaceFirst("\\{ ", "{")
-          case _ =>
-            syntax
-        }
-    }
+    importer.pos.text
   }
 
   override def fix(implicit doc: SyntacticDocument): Patch = {
