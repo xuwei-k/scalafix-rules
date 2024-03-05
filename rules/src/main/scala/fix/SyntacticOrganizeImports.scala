@@ -2,7 +2,6 @@ package fix
 
 import scala.annotation.tailrec
 import scala.meta.Import
-import scala.meta.Importee
 import scala.meta.Importer
 import scala.meta.Pkg
 import scala.meta.XtensionClassifiable
@@ -84,20 +83,6 @@ class SyntacticOrganizeImports extends SyntacticRule("SyntacticOrganizeImports")
         Patch.empty
       }
     }.asPatch
-  }
-
-  // https://github.com/scalacenter/scalafix/blob/3ca6e5a129bb070bfa/scalafix-rules/src/main/scala/scalafix/internal/rule/OrganizeImports.scala#L975-L980
-  private def isCurlyBraced(importer: Importer): Boolean = {
-    (importer.importees.size > 1) || {
-      importer.importees.exists {
-        case _: Importee.Rename =>
-          true
-        case _: Importee.Unimport =>
-          true
-        case _ =>
-          false
-      }
-    }
   }
 }
 
