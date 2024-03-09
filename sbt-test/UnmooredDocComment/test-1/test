@@ -1,0 +1,2 @@
+> warningsAll
+$ must-mirror target/warnings/warnings.json expect.json
