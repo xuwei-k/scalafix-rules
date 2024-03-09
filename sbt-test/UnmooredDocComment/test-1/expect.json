@@ -1,0 +1,111 @@
+[{
+  "message": "[UnmooredDocComment] unmoored doc comment for `Pkg`",
+  "position": {
+    "line": 0,
+    "lineContent": "/** pkg */",
+    "sourcePath": "${BASE}/A.scala",
+    "startLine": 0,
+    "startColumn": 0,
+    "endLine": 0,
+    "endColumn": 10
+  }
+}, {
+  "message": "[UnmooredDocComment] unmoored doc comment for `Term.Param`",
+  "position": {
+    "line": 5,
+    "lineContent": "  /** xxx */",
+    "sourcePath": "${BASE}/A.scala",
+    "startLine": 5,
+    "startColumn": 2,
+    "endLine": 5,
+    "endColumn": 12
+  }
+}, {
+  "message": "[UnmooredDocComment] unmoored doc comment for `Case`",
+  "position": {
+    "line": 15,
+    "lineContent": "        /** ccc */",
+    "sourcePath": "${BASE}/A.scala",
+    "startLine": 15,
+    "startColumn": 8,
+    "endLine": 15,
+    "endColumn": 18
+  }
+}, {
+  "message": "[UnmooredDocComment] unmoored doc comment for `Term.ForYield`",
+  "position": {
+    "line": 21,
+    "lineContent": "    /** zzz */",
+    "sourcePath": "${BASE}/A.scala",
+    "startLine": 21,
+    "startColumn": 4,
+    "endLine": 21,
+    "endColumn": 14
+  }
+}, {
+  "message": "[UnmooredDocComment] unmoored doc comment for `Enumerator.Generator`",
+  "position": {
+    "line": 23,
+    "lineContent": "      /** sss */",
+    "sourcePath": "${BASE}/A.scala",
+    "startLine": 23,
+    "startColumn": 6,
+    "endLine": 23,
+    "endColumn": 16
+  }
+}, {
+  "message": "[UnmooredDocComment] unmoored doc comment for `Pkg`",
+  "position": {
+    "line": 0,
+    "lineContent": "/** pkg */",
+    "sourcePath": "${BASE}/A.scala",
+    "startLine": 0,
+    "startColumn": 0,
+    "endLine": 0,
+    "endColumn": 10
+  }
+}, {
+  "message": "[UnmooredDocComment] unmoored doc comment for `Term.Param`",
+  "position": {
+    "line": 5,
+    "lineContent": "  /** xxx */",
+    "sourcePath": "${BASE}/A.scala",
+    "startLine": 5,
+    "startColumn": 2,
+    "endLine": 5,
+    "endColumn": 12
+  }
+}, {
+  "message": "[UnmooredDocComment] unmoored doc comment for `Case`",
+  "position": {
+    "line": 15,
+    "lineContent": "        /** ccc */",
+    "sourcePath": "${BASE}/A.scala",
+    "startLine": 15,
+    "startColumn": 8,
+    "endLine": 15,
+    "endColumn": 18
+  }
+}, {
+  "message": "[UnmooredDocComment] unmoored doc comment for `Term.ForYield`",
+  "position": {
+    "line": 21,
+    "lineContent": "    /** zzz */",
+    "sourcePath": "${BASE}/A.scala",
+    "startLine": 21,
+    "startColumn": 4,
+    "endLine": 21,
+    "endColumn": 14
+  }
+}, {
+  "message": "[UnmooredDocComment] unmoored doc comment for `Enumerator.Generator`",
+  "position": {
+    "line": 23,
+    "lineContent": "      /** sss */",
+    "sourcePath": "${BASE}/A.scala",
+    "startLine": 23,
+    "startColumn": 6,
+    "endLine": 23,
+    "endColumn": 16
+  }
+}]
