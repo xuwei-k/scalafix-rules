@@ -1,5 +1,6 @@
 package fix
 
+import scala.collection.compat._
 import scala.meta.Decl
 import scala.meta.Defn
 import scala.meta.Mod
@@ -33,6 +34,7 @@ class UnmooredDocComment extends SyntacticRule("UnmooredDocComment") {
       doc.comments.leading(t).toSeq.filter(_.value.startsWith("*")).map(_ -> t)
     }.flatten
       .groupBy(_._1)
+      .view
       .mapValues(
         _.map(_._2).maxBy(t => (t.pos.end - t.pos.start, t.pos.end))
       )
