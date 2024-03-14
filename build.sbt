@@ -28,6 +28,7 @@ val commonSettings = Def.settings(
     }
   },
   scalacOptions ++= Seq(
+    "-Wconf:origin=scala.collection.compat.*:silent",
     "-deprecation",
     "-language:higherKinds",
     "-feature",
