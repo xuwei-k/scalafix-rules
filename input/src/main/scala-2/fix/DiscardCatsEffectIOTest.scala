@@ -15,6 +15,16 @@ trait DiscardCatsEffectIOTest {
 
   def mock: DiscardCatsEffectIOTest
 
+  def g[A](x: Option[IO[A]]): Option[Int] = {
+    x.map(y => 3) // assert: DiscardCatsEffectIO
+    x.map(_ => 3) // TODO
+    x.map(implicit y => 3)
+    x.map { y =>
+      println(y)
+      4
+    }
+  }
+
   f0[Int] // assert: DiscardCatsEffectIO
 
   def f2[R](implicit ec: ExecutionContext): IO[Int] = {

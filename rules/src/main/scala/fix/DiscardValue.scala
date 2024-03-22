@@ -118,45 +118,77 @@ object DiscardValue {
     severity: LintSeverity,
     filter: SemanticType => Boolean
   )(implicit doc: SemanticDocument): Patch = {
-    doc.tree.collect { case BlockOrTemplate(values :+ _) => // ignore last
-      values.filter {
-        case _: Defn | _: Term.Assign | _: Decl =>
-          false
-        case x =>
-          x.collectFirst {
-            case Term.Apply.After_4_6_0(Term.Select(Mockito(), _), _) =>
-              ()
-            case Term.Apply.After_4_6_0(MockitoVerify(), _) =>
-              ()
-            case Term.Apply.After_4_6_0(
-                  Term.Select(MockitoInOrder(), Term.Name("verify")),
-                  _
-                ) =>
-              ()
-          }.isEmpty
-      }.flatMap(x => x.symbol.info.map(x -> _))
-        .map { case (x, info) =>
-          PartialFunction
-            .condOpt(info.signature) {
-              case m: MethodSignature =>
-                m.returnType
-              case v: ValueSignature =>
-                v.tpe
-            }
-            .filter(filter)
-            .map { tpe =>
-              Patch.lint(
-                Diagnostic(
-                  id = "",
-                  message = message(tpe),
-                  position = x.pos,
-                  severity = severity,
+    doc.tree.collect {
+      case BlockOrTemplate(values :+ _) => // ignore last
+        values.filter {
+          case _: Defn | _: Term.Assign | _: Decl =>
+            false
+          case x =>
+            x.collectFirst {
+              case Term.Apply.After_4_6_0(Term.Select(Mockito(), _), _) =>
+                ()
+              case Term.Apply.After_4_6_0(MockitoVerify(), _) =>
+                ()
+              case Term.Apply.After_4_6_0(
+                    Term.Select(MockitoInOrder(), Term.Name("verify")),
+                    _
+                  ) =>
+                ()
+            }.isEmpty
+        }.flatMap(x => x.symbol.info.map(x -> _))
+          .map { case (x, info) =>
+            PartialFunction
+              .condOpt(info.signature) {
+                case m: MethodSignature =>
+                  m.returnType
+                case v: ValueSignature =>
+                  v.tpe
+              }
+              .filter(filter)
+              .map { tpe =>
+                Patch.lint(
+                  Diagnostic(
+                    id = "",
+                    message = message(tpe),
+                    position = x.pos,
+                    severity = severity,
+                  )
                 )
-              )
-            }
-            .asPatch
-        }
-        .asPatch
+              }
+              .asPatch
+          }
+          .asPatch
+      case Term.Function.After_4_6_0(
+            Term.ParamClause(
+              params,
+              None
+            ),
+            body
+          ) =>
+        params.collect {
+          case p
+              if p.mods.isEmpty &&
+                body.collect { case t: Term.Name =>
+                  t.value == p.name.value
+                }.isEmpty =>
+            p.name.symbol.info
+              .map(_.signature)
+              .collect { case v: ValueSignature =>
+                v.tpe
+              }
+              .filter(filter)
+              .map { tpe =>
+                Patch.lint(
+                  Diagnostic(
+                    id = "",
+                    message = message(tpe),
+                    position = p.pos,
+                    severity = severity,
+                  )
+                )
+              }
+              .asPatch
+        }.asPatch
     }.asPatch
   }
 }

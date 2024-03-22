@@ -12,6 +12,16 @@ trait DiscardEffTest {
 
   def f1[R](n: Int): Eff[R, Int]
 
+  def g[R, A](x: Option[Eff[R, A]]): Option[Int] = {
+    x.map(y => 3) // assert: DiscardEff
+    x.map(_ => 3) // TODO
+    x.map(implicit y => 3)
+    x.map { y =>
+      println(y)
+      4
+    }
+  }
+
   def mock: DiscardEffTest
 
   f0[Int] // assert: DiscardEff

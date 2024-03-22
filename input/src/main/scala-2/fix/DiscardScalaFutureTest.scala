@@ -13,6 +13,16 @@ trait DiscardScalaFutureTest {
 
   def f1[R](n: Int): Future[Int]
 
+  def g[A](x: Option[Future[A]]): Option[Int] = {
+    x.map(y => 3) // assert: DiscardScalaFuture
+    x.map(_ => 3) // TODO
+    x.map(implicit y => 3)
+    x.map { y =>
+      println(y)
+      4
+    }
+  }
+
   def mock: DiscardScalaFutureTest
 
   f0[Int] // assert: DiscardScalaFuture
