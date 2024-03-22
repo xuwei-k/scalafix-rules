@@ -12,6 +12,16 @@ trait DiscardMonixTaskTest {
 
   def f1[R](n: Int): Task[Int]
 
+  def g[A](x: Option[Task[A]]): Option[Int] = {
+    x.map(y => 3) // assert: DiscardMonixTask
+    x.map(_ => 3) // TODO
+    x.map(implicit y => 3)
+    x.map { y =>
+      println(y)
+      4
+    }
+  }
+
   def mock: DiscardMonixTaskTest
 
   f0[Int] // assert: DiscardMonixTask
