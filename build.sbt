@@ -113,12 +113,16 @@ lazy val rules = projectMatrix
     scalacOptions += "-Ywarn-unused:imports",
     Compile / sourceGenerators += task {
       val dir = (Compile / sourceManaged).value
-      Seq(
-        "DiscardScalaFuture" -> "scala/concurrent/Future#",
-        "DiscardMonixTask" -> "monix/eval/Task#",
-        "DiscardEff" -> "org/atnos/eff/Eff#",
-        "DiscardCatsEffectIO" -> "cats/effect/IO#",
-      ).map { case (ruleName, tpe) =>
+      Seq[(String, Seq[String])](
+        "DiscardSlickDBIO" -> Seq(
+          "slick/dbio/package.DBIO#",
+          "slick/dbio/DBIOAction#",
+        ),
+        "DiscardScalaFuture" -> Seq("scala/concurrent/Future#"),
+        "DiscardMonixTask" -> Seq("monix/eval/Task#"),
+        "DiscardEff" -> Seq("org/atnos/eff/Eff#"),
+        "DiscardCatsEffectIO" -> Seq("cats/effect/IO#"),
+      ).map { case (ruleName, types) =>
         val f = dir / "fix" / s"${ruleName}.scala"
         IO.write(
           f,
@@ -139,7 +143,7 @@ lazy val rules = projectMatrix
           |    config.conf.getOrElse("${ruleName}")(this.config).map(newConfig => new ${ruleName}(newConfig))
           |
           |  override def fix(implicit doc: SemanticDocument): Patch =
-          |    DiscardValue.typeRef(config.toDiscardValueConfig("${tpe}"))
+          |    DiscardValue.typeRef(config.toDiscardValueConfig(${types.map("\"" + _ + "\"")}))
           |
           |}
           |""".stripMargin

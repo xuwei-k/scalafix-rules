@@ -8,8 +8,7 @@ import scalafix.lint.LintSeverity
 case class DiscardSingleConfig(
   severity: LintSeverity
 ) {
-  def toDiscardValueConfig(tpe: String): DiscardValueConfig = {
-    val types = Seq(tpe)
+  def toDiscardValueConfig(types: Seq[String]): DiscardValueConfig = {
     severity match {
       case LintSeverity.Info =>
         DiscardValueConfig.default.copy(info = types)
