@@ -198,7 +198,7 @@ lazy val inputOutputCommon = Def.settings(
         Nil
     }
   },
-  libraryDependencies += "org.scala-lang.modules" %% "scala-collection-compat" % "2.11.0",
+  libraryDependencies += "org.scala-lang.modules" %% "scala-collection-compat" % "2.12.0",
   libraryDependencies ++= {
     if (scalaBinaryVersion.value != "3") {
       Seq(compilerPlugin("org.typelevel" %% "kind-projector" % "0.13.3" cross CrossVersion.full))
