@@ -5,6 +5,7 @@ import scala.meta.Defn
 import scala.meta.Mod
 import scala.meta.Template
 import scala.meta.Tree.WithParamClauseGroup
+import scala.meta.Type
 import scala.meta.XtensionClassifiable
 import scala.meta.XtensionCollectionLikeUI
 import scala.meta.XtensionStructure
@@ -17,17 +18,29 @@ import scalafix.v1.XtensionSeqPatch
 
 object SameParamOverloading {
   private case class Method(value: WithParamClauseGroup) {
-    def noImplicitParams: Option[List[Method.Param]] =
-      value.paramClauseGroup.map(_.paramClauses).filter(!_.forall(_.mod.exists(_.is[Mod.Implicit]))).map { a =>
-        a.flatMap(_.values).map { x =>
-          Method.Param(
-            paramType = x.decltpe.map(_.structure)
-          )
+    def noImplicitParams: Option[List[Method.ParamType]] =
+      value.paramClauseGroup.map(_.paramClauses).getOrElse(Nil).find(!_.mod.exists(_.is[Mod.Implicit])).map { a =>
+        a.values.map { x =>
+          x.decltpe match {
+            case Some(t: Type.Apply) =>
+              Method.Param(t.tpe.structure)
+            case Some(t: Type.ApplyInfix) =>
+              Method.Param(t.op.structure)
+            case Some(t: Type.Tuple) =>
+              Method.Tuple(t.args.size)
+            case Some(t: Type.Function) =>
+              Method.Func(t.paramClause.values.size)
+            case t =>
+              Method.Param(t.structure)
+          }
         }
       }
   }
   private object Method {
-    case class Param(paramType: Option[String])
+    sealed abstract class ParamType extends Product with Serializable
+    case class Param(paramType: String) extends ParamType
+    case class Func(size: Int) extends ParamType
+    case class Tuple(size: Int) extends ParamType
   }
 }
 
