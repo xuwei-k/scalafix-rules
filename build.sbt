@@ -216,7 +216,7 @@ lazy val inputOutputCommon = Def.settings(
   libraryDependencies += "com.typesafe.slick" %% "slick" % "3.5.1",
   libraryDependencies += "io.monix" %% "monix-eval" % "3.4.1",
   libraryDependencies += "org.mockito" % "mockito-subclass" % "5.12.0",
-  libraryDependencies += "org.atnos" %% "eff-core" % "7.0.1"
+  libraryDependencies += "org.atnos" %% "eff-core" % "7.0.2"
 )
 
 lazy val input = projectMatrix
