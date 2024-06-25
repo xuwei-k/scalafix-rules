@@ -12,15 +12,10 @@ class ApplyInfixNoParen extends SyntacticRule("ApplyInfixNoParen") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
       case t @ Term.ApplyInfix.After_4_6_0(
-            Term.ApplyInfix.After_4_6_0(
-              Lit.Boolean(false),
-              Term.Name("=="),
-              Type.ArgClause(Nil),
-              Term.ArgClause(List(Lit.Boolean(true)), None)
-            ),
-            Term.Name("&&"),
-            Type.ArgClause(Nil),
-            Term.ArgClause(List(Lit.Boolean(false)), None)
+            _: Term.ApplyInfix,
+            _,
+            _,
+            _
           ) =>
         Patch.lint(
           Diagnostic(
