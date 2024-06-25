@@ -20,7 +20,7 @@ class ApplyInfixNoParen extends SyntacticRule("ApplyInfixNoParen") {
         Patch.lint(
           Diagnostic(
             id = "",
-            message = "",
+            message = "中置記法を複数連続して書く場合は、必ず括弧を使って優先順位を明確にしてください",
             position = t.pos,
             severity = LintSeverity.Warning
           )
