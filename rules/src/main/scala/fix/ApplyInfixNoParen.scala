@@ -16,7 +16,7 @@ class ApplyInfixNoParen extends SyntacticRule("ApplyInfixNoParen") {
             _,
             _,
             _
-          ) =>
+          ) if t.tokens.forall(!_.is[Token.LeftParen]) =>
         Patch.lint(
           Diagnostic(
             id = "",
