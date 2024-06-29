@@ -11,18 +11,16 @@ val commonSettings = Def.settings(
     (f, f.relativeTo((Compile / sourceManaged).value).get.getPath)
   },
   scalacOptions ++= {
-    if (scalaBinaryVersion.value == "3") {
-      Nil
-    } else {
-      Seq(
-        "-Xsource:3",
-      )
-    }
-  },
-  scalacOptions ++= {
     scalaBinaryVersion.value match {
+      case "2.12" =>
+        Seq(
+          "-language:higherKinds",
+          "-Xsource:3",
+        )
       case "2.13" =>
-        Seq("-Wconf:msg=method are copied from the case class constructor:silent")
+        Seq(
+          "-Xsource:3-cross",
+        )
       case _ =>
         Nil
     }
@@ -30,7 +28,6 @@ val commonSettings = Def.settings(
   scalacOptions ++= Seq(
     "-Wconf:origin=scala.collection.compat.*:silent",
     "-deprecation",
-    "-language:higherKinds",
     "-feature",
   ),
   pomExtra := (
