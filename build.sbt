@@ -3,7 +3,7 @@ import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
 lazy val V = _root_.scalafix.sbt.BuildInfo
 
 lazy val rulesCrossVersions = Seq(V.scala213, V.scala212)
-lazy val scala3Version = "3.3.3"
+lazy val scala3Version = "3.4.2"
 
 val commonSettings = Def.settings(
   (Compile / packageSrc / mappings) ++= (Compile / managedSources).value.map { f =>
