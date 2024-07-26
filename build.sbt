@@ -205,7 +205,7 @@ lazy val inputOutputCommon = Def.settings(
   },
   libraryDependencies ++= {
     if (scalaBinaryVersion.value == "2.13") {
-      Seq("io.circe" %% "circe-generic-extras" % "0.14.3")
+      Seq("io.circe" %% "circe-generic-extras" % "0.14.4")
     } else {
       Nil
     }
