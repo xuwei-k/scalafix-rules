@@ -45,6 +45,11 @@ private object InterpolationToStringWarn {
             x @ Term.Name("toString")
           ) =>
         x
+      case Term.Apply.After_4_6_0(
+            Term.Select(_, x @ Term.Name("toString")),
+            Term.ArgClause(Nil, None)
+          ) =>
+        x
     }
   }
 }
