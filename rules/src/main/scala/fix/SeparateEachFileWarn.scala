@@ -12,24 +12,35 @@ class SeparateEachFileWarn(config: SeparateEachFileConfig) extends SyntacticRule
     config.conf.getOrElse("SeparateEachFileWarn")(this.config).map(newConfig => new SeparateEachFileWarn(newConfig))
 
   override def fix(implicit doc: SyntacticDocument): Patch = {
-    val topLevelValues = doc.tree.collect {
-      case t: (Stat.WithTemplate & Stat.WithMods & Member)
-          if t.parent.forall(_.is[Pkg]) && t.templ.inits.isEmpty && !t.is[Defn.Object] =>
-        t
-    }
+    if (
+      doc.tree.collect {
+        case t: Stat.WithMods if t.parent.forall(_.is[Pkg]) && t.mods.exists(_.is[Mod.Sealed]) =>
+          ()
+      }.isEmpty
+    ) {
+      val topLevelValues = doc.tree.collect {
+        case t: (Stat.WithTemplate & Stat.WithMods & Member)
+            if t.parent.forall(_.is[Pkg]) && t.templ.inits.isEmpty && !t.is[Defn.Object] =>
+          t
+      }
 
-    if ((topLevelValues.lengthCompare(config.limit) >= 0) && topLevelValues.forall(_.mods.forall(!_.is[Mod.Sealed]))) {
-      Patch.lint(
-        Diagnostic(
-          id = "",
-          message = Seq(
-            s"too many top level classes. please separate file. ${topLevelValues.size} ",
-            topLevelValues.map(_.name.value).mkString("[", ", ", "]")
-          ).mkString(""),
-          position = topLevelValues.head.pos,
-          severity = config.severity
+      if (
+        (topLevelValues.lengthCompare(config.limit) >= 0) && topLevelValues.forall(_.mods.forall(!_.is[Mod.Sealed]))
+      ) {
+        Patch.lint(
+          Diagnostic(
+            id = "",
+            message = Seq(
+              s"too many top level classes. please separate file. ${topLevelValues.size} ",
+              topLevelValues.map(_.name.value).mkString("[", ", ", "]")
+            ).mkString(""),
+            position = topLevelValues.head.pos,
+            severity = config.severity
+          )
         )
-      )
+      } else {
+        Patch.empty
+      }
     } else {
       Patch.empty
     }

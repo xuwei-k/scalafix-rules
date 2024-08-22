@@ -28,6 +28,12 @@ class SeparateEachFileRewrite(config: SeparateEachFileConfig) extends SyntacticR
         case f: Input.VirtualFile =>
           new File(f.path)
       }
+      .filter { _ =>
+        doc.tree.collect {
+          case t: Stat.WithMods if t.parent.forall(_.is[Pkg]) && t.mods.exists(_.is[Mod.Sealed]) =>
+            ()
+        }.isEmpty
+      }
       .foreach { input =>
         val topLevelValues = doc.tree.collect {
           case t: (Stat.WithTemplate & Member & Stat.WithMods)
