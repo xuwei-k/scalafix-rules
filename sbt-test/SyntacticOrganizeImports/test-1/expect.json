@@ -31,37 +31,4 @@
     "endLine": 7,
     "endColumn": 0
   }
-}, {
-  "message": "[SyntacticOrganizeImports] there is empty line in top level imports",
-  "position": {
-    "line": 3,
-    "lineContent": "",
-    "sourcePath": "${BASE}/A.scala",
-    "startLine": 3,
-    "startColumn": 0,
-    "endLine": 4,
-    "endColumn": 0
-  }
-}, {
-  "message": "[SyntacticOrganizeImports] there is empty line in top level imports",
-  "position": {
-    "line": 5,
-    "lineContent": "",
-    "sourcePath": "${BASE}/A.scala",
-    "startLine": 5,
-    "startColumn": 0,
-    "endLine": 6,
-    "endColumn": 0
-  }
-}, {
-  "message": "[SyntacticOrganizeImports] there is empty line in top level imports",
-  "position": {
-    "line": 6,
-    "lineContent": "",
-    "sourcePath": "${BASE}/A.scala",
-    "startLine": 6,
-    "startColumn": 0,
-    "endLine": 7,
-    "endColumn": 0
-  }
 }]
