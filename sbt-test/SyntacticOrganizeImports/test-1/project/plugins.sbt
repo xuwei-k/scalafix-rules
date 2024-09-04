@@ -1,2 +1,2 @@
 addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % sys.props("scalafix.version"))
-addSbtPlugin("com.github.xuwei-k" % "warning-diff-scalafix-plugin" % "0.4.1")
+addSbtPlugin("com.github.xuwei-k" % "warning-diff-scalafix-plugin" % "0.4.2")
