@@ -1,23 +1,12 @@
 [{
   "message": "[SyntacticOrganizeImports] there is empty line in top level imports",
   "position": {
-    "line": 3,
+    "line": 4,
     "lineContent": "",
     "sourcePath": "${BASE}/A.scala",
-    "startLine": 3,
+    "startLine": 4,
     "startColumn": 0,
-    "endLine": 4,
-    "endColumn": 0
-  }
-}, {
-  "message": "[SyntacticOrganizeImports] there is empty line in top level imports",
-  "position": {
-    "line": 5,
-    "lineContent": "",
-    "sourcePath": "${BASE}/A.scala",
-    "startLine": 5,
-    "startColumn": 0,
-    "endLine": 6,
+    "endLine": 5,
     "endColumn": 0
   }
 }, {
@@ -29,6 +18,17 @@
     "startLine": 6,
     "startColumn": 0,
     "endLine": 7,
+    "endColumn": 0
+  }
+}, {
+  "message": "[SyntacticOrganizeImports] there is empty line in top level imports",
+  "position": {
+    "line": 7,
+    "lineContent": "",
+    "sourcePath": "${BASE}/A.scala",
+    "startLine": 7,
+    "startColumn": 0,
+    "endLine": 8,
     "endColumn": 0
   }
 }]
