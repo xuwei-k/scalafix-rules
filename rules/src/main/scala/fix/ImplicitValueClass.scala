@@ -25,7 +25,9 @@ class ImplicitValueClass extends SyntacticRule("ImplicitValueClass") {
     def loop(a: Tree): Boolean = {
       a.parent match {
         case Some(x) =>
-          if (x.is[Template] || x.is[Defn.Object] || x.is[Pkg] || x.is[Source]) {
+          if (
+            x.is[Template] || x.is[Defn.Object] || x.is[Pkg] || x.is[Source] || x.is[Template.Body] || x.is[Pkg.Body]
+          ) {
             loop(x)
           } else {
             false

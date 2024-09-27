@@ -91,6 +91,6 @@ object FileNameConsistent {
 
   implicit class TreeOps(private val self: Defn) extends AnyVal {
     def isTopLevel: Boolean =
-      self.parent.exists(_.is[Pkg]) || self.parent.isEmpty
+      self.parent.exists(_.is[Pkg.Body]) || self.parent.isEmpty
   }
 }

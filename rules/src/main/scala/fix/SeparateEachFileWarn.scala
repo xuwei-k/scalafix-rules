@@ -14,13 +14,13 @@ class SeparateEachFileWarn(config: SeparateEachFileConfig) extends SyntacticRule
   override def fix(implicit doc: SyntacticDocument): Patch = {
     if (
       doc.tree.collect {
-        case t: Stat.WithMods if t.parent.forall(_.is[Pkg]) && t.mods.exists(_.is[Mod.Sealed]) =>
+        case t: Stat.WithMods if t.parent.forall(_.is[Pkg.Body]) && t.mods.exists(_.is[Mod.Sealed]) =>
           ()
       }.isEmpty
     ) {
       val topLevelValues = doc.tree.collect {
         case t: (Stat.WithTemplate & Stat.WithMods & Member)
-            if t.parent.forall(_.is[Pkg]) && t.templ.inits.isEmpty && !t.is[Defn.Object] =>
+            if t.parent.forall(_.is[Pkg.Body]) && t.templ.inits.isEmpty && !t.is[Defn.Object] =>
           t
       }
 

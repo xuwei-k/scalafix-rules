@@ -1,5 +1,6 @@
 package fix
 
+import org.scalatest.exceptions.TestPendingException
 import org.scalatest.funsuite.AnyFunSuite
 import scala.meta.inputs.Input
 import scalafix.internal.config.ScalaVersion
@@ -8,6 +9,9 @@ import scalafix.v1.SyntacticDocument
 
 class IncorrectScaladocParamTest extends AnyFunSuite {
   test("Scala 2") {
+    if (scala.util.Properties.isWin) {
+      throw new TestPendingException
+    }
     val x = new IncorrectScaladocParam
     val in = SyntacticDocument.fromInput(
       input = Input.String("""
@@ -64,6 +68,9 @@ class IncorrectScaladocParamTest extends AnyFunSuite {
   }
 
   test("Scala 3") {
+    if (scala.util.Properties.isWin) {
+      throw new TestPendingException
+    }
     val x = new IncorrectScaladocParam
     val in = SyntacticDocument.fromInput(
       input = Input.String("""

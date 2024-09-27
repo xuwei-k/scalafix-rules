@@ -30,7 +30,7 @@ class SeparateEachFileRewrite(config: SeparateEachFileConfig) extends SyntacticR
       }
       .filter { _ =>
         doc.tree.collect {
-          case t: Stat.WithMods if t.parent.forall(_.is[Pkg]) && t.mods.exists(_.is[Mod.Sealed]) =>
+          case t: Stat.WithMods if t.parent.forall(_.is[Pkg.Body]) && t.mods.exists(_.is[Mod.Sealed]) =>
             ()
         }.isEmpty
       }
