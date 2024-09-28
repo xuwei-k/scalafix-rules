@@ -37,7 +37,7 @@ class SyntacticOrganizeImports extends SyntacticRule("SyntacticOrganizeImports")
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect { case p: Pkg =>
       // find top-level imports
-      val imports = collectWhile(p.stats.dropWhile(!_.is[Import])) { case i: Import => i }.sortBy(_.pos.startLine)
+      val imports = collectWhile(p.body.stats.dropWhile(!_.is[Import])) { case i: Import => i }.sortBy(_.pos.startLine)
       val importers = imports.map(_.importers).collect { case i :: Nil => i }
       if (imports.nonEmpty && (imports.lengthCompare(importers.size) == 0)) {
         val start = imports.map(_.pos.startLine).min

@@ -64,7 +64,7 @@ object DiscardValue {
       case t: Term.Block =>
         t.stats
       case t: Template =>
-        t.stats
+        t.body.stats
     }
   }
 

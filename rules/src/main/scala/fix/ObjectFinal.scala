@@ -101,7 +101,7 @@ class ObjectFinal extends SyntacticRule("ObjectFinal") {
 
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect { case o: Defn.Object =>
-      o.templ.stats.collect {
+      o.templ.body.stats.collect {
         case Defn.Val(
               ObjectFinal.FinalMod(m),
               List(Pat.Var(_: Term.Name)),

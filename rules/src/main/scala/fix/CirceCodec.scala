@@ -82,7 +82,7 @@ class CirceCodec extends SyntacticRule("CirceCodec") {
                   Patch.removeTokens(annotation.tokens),
                   objectOpt match {
                     case Some(obj) =>
-                      Patch.addRight(obj.templ.stats.last, instance)
+                      Patch.addRight(obj.templ.body.stats.last, instance)
                     case None =>
                       Patch.addRight(clazz, s"\n\nobject ${className} {${instance}\n}")
                   }
@@ -95,7 +95,7 @@ class CirceCodec extends SyntacticRule("CirceCodec") {
       }.flatten
 
       if (result.nonEmpty) {
-        val pkg = src.collect { case p: Pkg => p.stats.head }.head
+        val pkg = src.collect { case p: Pkg => p.body.stats.head }.head
 
         val annotationImport = src.collect {
           case i @ Import(

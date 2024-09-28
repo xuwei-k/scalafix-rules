@@ -49,7 +49,7 @@ class DuplicateWildcardImport(conf: DuplicateWildcardImportConfig) extends Synta
       }
 
       t.stats.collect { case p: Pkg =>
-        p.stats
+        p.body.stats
       }.flatten.collect { case i: Import =>
         i -> i.importers
       }.collect { case (i, x :: Nil) =>

@@ -48,7 +48,7 @@ class SameParamOverloading extends SyntacticRule("SameParamOverloading") {
   import SameParamOverloading.*
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect { case t: Template =>
-      val overloadMethods = t.stats.collect {
+      val overloadMethods = t.body.stats.collect {
         case a: Defn.Def =>
           a.name -> Method(a)
         case a: Decl.Def =>
