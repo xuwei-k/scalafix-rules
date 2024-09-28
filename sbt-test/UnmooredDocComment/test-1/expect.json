@@ -10,17 +10,6 @@
     "endColumn": 10
   }
 }, {
-  "message": "[UnmooredDocComment] unmoored doc comment for `Pkg.Body`",
-  "position": {
-    "line": 4,
-    "lineContent": "/** AAA */",
-    "sourcePath": "${BASE}/A.scala",
-    "startLine": 4,
-    "startColumn": 0,
-    "endLine": 4,
-    "endColumn": 10
-  }
-}, {
   "message": "[UnmooredDocComment] unmoored doc comment for `Term.Param`",
   "position": {
     "line": 6,
