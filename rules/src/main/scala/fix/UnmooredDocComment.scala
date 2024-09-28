@@ -4,6 +4,7 @@ import scala.collection.compat._
 import scala.meta.Decl
 import scala.meta.Defn
 import scala.meta.Mod
+import scala.meta.Pkg
 import scala.meta.Stat
 import scala.meta.Tree
 import scala.meta.transversers._
@@ -17,7 +18,7 @@ import scalafix.v1.XtensionSeqPatch
 object UnmooredDocComment {
   private object Unmoored {
     def unapply(t: Tree): Boolean = t match {
-      case _: Stat.WithTemplate | _: Defn | _: Mod | _: Decl =>
+      case _: Stat.WithTemplate | _: Defn | _: Mod | _: Decl | _: Pkg.Body =>
         false
       case _ =>
         true

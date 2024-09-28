@@ -172,8 +172,7 @@ lazy val rules212 = rules
   .enablePlugins(ScalafixPlugin)
   .dependsOn(myRuleRule % ScalafixConfig)
   .settings(
-    // TODO re-enable if warning-diff-scalafix-plugin released
-    // Test / test := (Test / test).dependsOn(scripted.toTask("")).value,
+    Test / test := (Test / test).dependsOn(scripted.toTask("")).value,
     Compile / compile := (Compile / compile).dependsOn((Compile / scalafix).toTask(" MyScalafixRuleRule")).value,
     scriptedBufferLog := false,
     scriptedLaunchOpts += ("-Dscalafix-rules.version=" + version.value),

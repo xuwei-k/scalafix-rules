@@ -86,5 +86,5 @@ class SeparateEachFileRewrite(config: SeparateEachFileConfig) extends SyntacticR
     Patch.empty
   }
 
-  private def isTopLevel(t: Tree): Boolean = t.parent.forall(_.is[Pkg])
+  private def isTopLevel(t: Tree): Boolean = t.parent.forall(_.is[Pkg.Body])
 }
