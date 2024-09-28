@@ -12,7 +12,7 @@ class MapToForeach extends SyntacticRule("MapToForeach") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
       case t: Template =>
-        t.stats.collect {
+        t.body.stats.collect {
           case Term.Apply.Initial(
                 Term.Select(_, method @ Term.Name("map")),
                 _ :: Nil

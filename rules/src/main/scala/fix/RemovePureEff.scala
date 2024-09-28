@@ -13,7 +13,7 @@ import scalafix.v1.XtensionSeqPatch
 class RemovePureEff extends SyntacticRule("RemovePureEff") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect { case x1: Term.ForYield =>
-      x1.enums
+      x1.enumsBlock.enums
         .drop(1)
         .collect {
           case x @ Enumerator.Generator(

@@ -15,7 +15,7 @@ class SimplifyForYield extends SyntacticRule("SimplifyForYield") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
       case x1: Term.ForYield =>
-        val generatorAndRhs = x1.enums match {
+        val generatorAndRhs = x1.enumsBlock.enums match {
           case List(x2: Generator) =>
             x2.pat match {
               case x3: Pat.Var =>

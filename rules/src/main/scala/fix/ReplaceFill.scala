@@ -58,11 +58,13 @@ class ReplaceFill extends SyntacticRule("ReplaceFill") {
             case Name(n) if n == param.name.value => ()
           }.isEmpty =>
         Patch.replaceTree(t, s"${tpe}.fill(${size}){$body}")
-      case t @ Term.ForYield(
-            List(
-              Enumerator.Generator(
-                Pat.Var(n @ Term.Name(_)),
-                ToUntil(size, tpe)
+      case t @ Term.ForYield.After_4_9_9(
+            Term.EnumeratorsBlock(
+              List(
+                Enumerator.Generator(
+                  Pat.Var(n @ Term.Name(_)),
+                  ToUntil(size, tpe)
+                )
               )
             ),
             body
@@ -70,11 +72,13 @@ class ReplaceFill extends SyntacticRule("ReplaceFill") {
             case Name(x) if x == n.value => ()
           }.isEmpty =>
         Patch.replaceTree(t, s"${tpe}.fill(${size}){$body}")
-      case t @ Term.ForYield(
-            List(
-              Enumerator.Generator(
-                Pat.Wildcard(),
-                ToUntil(size, tpe)
+      case t @ Term.ForYield.After_4_9_9(
+            Term.EnumeratorsBlock(
+              List(
+                Enumerator.Generator(
+                  Pat.Wildcard(),
+                  ToUntil(size, tpe)
+                )
               )
             ),
             body

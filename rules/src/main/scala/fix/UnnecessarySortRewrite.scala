@@ -88,7 +88,7 @@ class UnnecessarySortRewrite(config: UnnecessarySortRewriteConfig) extends Synta
 
       if (result.nonEmpty) {
         val patch = result.map(_._1).asPatch
-        val pkg = src.collect { case p: Pkg => p.stats.head }.head
+        val pkg = src.collect { case p: Pkg => p.body.stats.head }.head
         if (result.exists(_._2)) {
           Seq(
             Patch.addLeft(pkg, "\nimport scala.collection.compat._\n"),

@@ -123,7 +123,7 @@ class DirectoryAndPackageName(config: DirectoryAndPackageNameConfig) extends Syn
   override def isLinter = true
 
   private def getPackages(t: Tree): List[Term.Ref] = {
-    t.collect { case p: Pkg => p.ref :: p.stats.flatMap(getPackages) }.flatten.distinct
+    t.collect { case p: Pkg => p.ref :: p.body.stats.flatMap(getPackages) }.flatten.distinct
   }
 
   override def fix(implicit doc: SyntacticDocument): Patch = {
