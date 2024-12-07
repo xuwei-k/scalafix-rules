@@ -17,7 +17,12 @@ class CollectHeadOption extends SyntacticRule("CollectHeadOption") {
             ),
             Term.Name("headOption")
           ) =>
-        Patch.replaceTree(t, s"${obj}.collectFirst${func}")
+        func match {
+          case _: Term.PartialFunction =>
+            Patch.replaceTree(t, s"${obj}.collectFirst${func}")
+          case _ =>
+            Patch.replaceTree(t, s"${obj}.collectFirst(${func})")
+        }
     }
   }.asPatch
 }
