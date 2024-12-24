@@ -2,7 +2,9 @@ import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
 
 lazy val V = _root_.scalafix.sbt.BuildInfo
 
-lazy val rulesCrossVersions = Seq(V.scala213, V.scala212)
+def scalafixVersion = "0.13.0+92-a18fe129-SNAPSHOT"
+
+lazy val rulesCrossVersions = Seq(V.scala213, V.scala212, "3.6.2")
 lazy val scala3Version = "3.3.4"
 
 val commonSettings = Def.settings(
@@ -95,7 +97,7 @@ lazy val resourceGenSettings = Def.settings(
 lazy val myRuleRule = project.settings(
   commonSettings,
   scalaVersion := V.scala212,
-  libraryDependencies += "ch.epfl.scala" %% "scalafix-core" % V.scalafixVersion,
+  libraryDependencies += "ch.epfl.scala" %% "scalafix-core" % scalafixVersion cross CrossVersion.for3Use2_13,
   resourceGenSettings,
   publish / skip := true
 )
@@ -105,7 +107,7 @@ lazy val rules = projectMatrix
     commonSettings,
     moduleName := "scalafix-rules",
     publishTo := sonatypePublishToBundle.value,
-    libraryDependencies += "ch.epfl.scala" %% "scalafix-core" % V.scalafixVersion,
+    libraryDependencies += "ch.epfl.scala" %% "scalafix-core" % scalafixVersion cross CrossVersion.for3Use2_13,
     libraryDependencies += "org.scalatest" %% "scalatest-funsuite" % "3.2.19" % Test,
     scalacOptions += "-Ywarn-unused:imports",
     Compile / sourceGenerators += task {
@@ -176,7 +178,7 @@ lazy val rules212 = rules
     Compile / compile := (Compile / compile).dependsOn((Compile / scalafix).toTask(" MyScalafixRuleRule")).value,
     scriptedBufferLog := false,
     scriptedLaunchOpts += ("-Dscalafix-rules.version=" + version.value),
-    scriptedLaunchOpts += ("-Dscalafix.version=" + _root_.scalafix.sbt.BuildInfo.scalafixVersion),
+    scriptedLaunchOpts += ("-Dscalafix.version=" + scalafixVersion),
     sbtTestDirectory := (LocalRootProject / baseDirectory).value / "sbt-test",
     scriptedLaunchOpts ++= {
       import scala.collection.JavaConverters.*
@@ -232,7 +234,7 @@ lazy val input = projectMatrix
     publish / skip := true
   )
   .defaultAxes(VirtualAxis.jvm)
-  .jvmPlatform(scalaVersions = rulesCrossVersions :+ scala3Version)
+  .jvmPlatform(scalaVersions = rulesCrossVersions)
 
 lazy val output = projectMatrix
   .settings(
@@ -241,7 +243,7 @@ lazy val output = projectMatrix
     publish / skip := true
   )
   .defaultAxes(VirtualAxis.jvm)
-  .jvmPlatform(scalaVersions = rulesCrossVersions :+ scala3Version)
+  .jvmPlatform(scalaVersions = rulesCrossVersions)
 
 lazy val testsAggregate = Project("tests", file("target/testsAggregate"))
   .aggregate(tests.projectRefs: _*)
@@ -255,7 +257,7 @@ lazy val tests = projectMatrix
   .settings(
     commonSettings,
     publish / skip := true,
-    libraryDependencies += "ch.epfl.scala" % "scalafix-testkit" % V.scalafixVersion % Test cross CrossVersion.full,
+    libraryDependencies += "ch.epfl.scala" % "scalafix-testkit" % scalafixVersion % Test cross CrossVersion.full,
     scalafixTestkitOutputSourceDirectories :=
       TargetAxis.resolve(output, Compile / unmanagedSourceDirectories).value,
     scalafixTestkitInputSourceDirectories :=
@@ -266,24 +268,6 @@ lazy val tests = projectMatrix
       TargetAxis.resolve(input, Compile / scalacOptions).value,
     scalafixTestkitInputScalaVersion :=
       TargetAxis.resolve(input, Compile / scalaVersion).value
-  )
-  .defaultAxes(
-    rulesCrossVersions.map(VirtualAxis.scalaABIVersion) :+ VirtualAxis.jvm: _*
-  )
-  .customRow(
-    scalaVersions = Seq(V.scala212),
-    axisValues = Seq(TargetAxis(scala3Version), VirtualAxis.jvm),
-    settings = Seq()
-  )
-  .customRow(
-    scalaVersions = Seq(V.scala213),
-    axisValues = Seq(TargetAxis(V.scala213), VirtualAxis.jvm),
-    settings = Seq()
-  )
-  .customRow(
-    scalaVersions = Seq(V.scala212),
-    axisValues = Seq(TargetAxis(V.scala212), VirtualAxis.jvm),
-    settings = Seq()
   )
   .dependsOn(rules)
   .enablePlugins(ScalafixTestkitPlugin)
