@@ -110,46 +110,6 @@ lazy val rules = projectMatrix
     libraryDependencies += "ch.epfl.scala" %% "scalafix-core" % scalafixVersion cross CrossVersion.for3Use2_13,
     libraryDependencies += "org.scalatest" %% "scalatest-funsuite" % "3.2.19" % Test,
     scalacOptions += "-Ywarn-unused:imports",
-    Compile / sourceGenerators += task {
-      val dir = (Compile / sourceManaged).value
-      Seq[(String, Seq[String])](
-        "DiscardSlickDBIO" -> Seq(
-          "slick/dbio/package.DBIO#",
-          "slick/dbio/DBIOAction#",
-        ),
-        "DiscardScalaFuture" -> Seq("scala/concurrent/Future#"),
-        "DiscardMonixTask" -> Seq("monix/eval/Task#"),
-        "DiscardEff" -> Seq("org/atnos/eff/Eff#"),
-        "DiscardCatsEffectIO" -> Seq("cats/effect/IO#"),
-      ).map { case (ruleName, types) =>
-        val f = dir / "fix" / s"${ruleName}.scala"
-        IO.write(
-          f,
-          s"""package fix
-          |
-          |import scalafix.Patch
-          |import scalafix.v1.Configuration
-          |import scalafix.v1.Rule
-          |import scalafix.v1.SemanticDocument
-          |import scalafix.v1.SemanticRule
-          |import metaconfig.Configured
-          |
-          |class ${ruleName}(config: DiscardSingleConfig) extends SemanticRule("${ruleName}") {
-          |
-          |  def this() = this(DiscardSingleConfig.default)
-          |
-          |  override def withConfiguration(config: Configuration): Configured[Rule] =
-          |    config.conf.getOrElse("${ruleName}")(this.config).map(newConfig => new ${ruleName}(newConfig))
-          |
-          |  override def fix(implicit doc: SemanticDocument): Patch =
-          |    DiscardValue.typeRef(config.toDiscardValueConfig(${types.map("\"" + _ + "\"")}))
-          |
-          |}
-          |""".stripMargin
-        )
-        f
-      }
-    },
     Compile / doc / scalacOptions ++= {
       val hash = sys.process.Process("git rev-parse HEAD").lineStream_!.head
       if (scalaBinaryVersion.value != "3") {
