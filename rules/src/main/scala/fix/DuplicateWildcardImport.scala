@@ -8,10 +8,10 @@ import scala.meta.Importee
 import scala.meta.Importer
 import scala.meta.Pkg
 import scala.meta.Source
-import scala.meta.Token
 import scala.meta.XtensionClassifiable
 import scala.meta.XtensionCollectionLikeUI
 import scala.meta.XtensionStructure
+import scala.meta.tokens.Token
 import scalafix.Patch
 import scalafix.v1.Configuration
 import scalafix.v1.Rule
