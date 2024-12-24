@@ -2,9 +2,9 @@ package fix
 
 import scala.meta.Position
 import scala.meta.Term
-import scala.meta.Token
 import scala.meta.XtensionClassifiable
 import scala.meta.XtensionCollectionLikeUI
+import scala.meta.tokens.Token
 import scalafix.Diagnostic
 import scalafix.Patch
 import scalafix.lint.LintSeverity

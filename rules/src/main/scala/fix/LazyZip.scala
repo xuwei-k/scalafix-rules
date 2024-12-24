@@ -3,9 +3,9 @@ package fix
 import scala.meta.Case
 import scala.meta.Pat
 import scala.meta.Term
-import scala.meta.Token
 import scala.meta.XtensionClassifiable
 import scala.meta.XtensionCollectionLikeUI
+import scala.meta.tokens.Token
 import scalafix.Patch
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
