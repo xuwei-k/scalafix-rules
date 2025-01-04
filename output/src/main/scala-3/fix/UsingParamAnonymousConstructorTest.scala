@@ -7,6 +7,12 @@ trait UsingParamAnonymousConstructorTest {
     def f: Int = x1
   }
 
+  class A3(using val x1: Int)
+
+  class A4(using var x1: Int)
+
+  class A5(using @annotation.nowarn x1: Int)
+
   trait B1(using  Int)
 
   trait B2(using x1: Int) {

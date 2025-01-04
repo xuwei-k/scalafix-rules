@@ -17,7 +17,7 @@ class UsingParamAnonymousConstructor extends SyntacticRule("UsingParamAnonymousC
       val t = c.ctor
       t.paramClauses.filter { paramClause =>
         paramClause.values.forall(_.mods.exists(_.is[Mod.Using])) && paramClause.values.forall(m =>
-          !m.mods.exists(_.is[Mod.Inline]) && !m.mods.exists(_.is[Mod.Annot])
+          !m.mods.exists(x => x.is[Mod.Inline] || x.is[Mod.Annot] || x.is[Mod.ValParam] || x.is[Mod.VarParam])
         )
       }.map { paramClause =>
         val countOneNames = c.collect { case x: Term.Name =>
