@@ -191,6 +191,8 @@ lazy val inputOutputCommon = Def.settings(
     scalaBinaryVersion.value match {
       case "2.13" =>
         Seq("-Wconf:cat=scala3-migration:info")
+      case "3" =>
+        Seq("-Ykind-projector")
       case _ =>
         Nil
     }
