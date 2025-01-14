@@ -1,7 +1,6 @@
 package fix
 
 import scala.meta.Type
-import scala.meta.Type.Bounds
 import scala.meta.XtensionCollectionLikeUI
 import scala.meta.inputs.Position
 import scalafix.Patch
@@ -14,7 +13,8 @@ import scalafix.v1.XtensionSeqPatch
 class Scala3Placeholder extends SyntacticRule("Scala3Placeholder") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
-      case t @ Type.Wildcard(Bounds(None, None)) if t.toString == "_" =>
+      case t @ Type.Wildcard(bounds)
+          if bounds.context.isEmpty && bounds.lo.isEmpty && bounds.hi.isEmpty && (t.toString == "_") =>
         Seq(
           Patch.lint(
             Scala3PlaceholderWarn(t.pos)
