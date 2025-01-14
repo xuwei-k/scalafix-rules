@@ -2,7 +2,8 @@ import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
 
 lazy val V = _root_.scalafix.sbt.BuildInfo
 
-lazy val rulesCrossVersions = Seq(V.scala213, V.scala212)
+lazy val scala213 = V.scala213
+lazy val rulesCrossVersions = Seq(scala213, V.scala212)
 lazy val scala3Version = "3.3.4"
 
 val commonSettings = Def.settings(
@@ -278,8 +279,8 @@ lazy val tests = projectMatrix
     settings = Seq()
   )
   .customRow(
-    scalaVersions = Seq(V.scala213),
-    axisValues = Seq(TargetAxis(V.scala213), VirtualAxis.jvm),
+    scalaVersions = Seq(scala213),
+    axisValues = Seq(TargetAxis(scala213), VirtualAxis.jvm),
     settings = Seq()
   )
   .customRow(
