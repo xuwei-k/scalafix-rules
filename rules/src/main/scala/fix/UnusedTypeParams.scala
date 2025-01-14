@@ -20,7 +20,10 @@ class UnusedTypeParams extends SyntacticRule("UnusedTypeParams") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
       case t: Defn.Def if !t.mods.exists(_.is[Mod.Override]) =>
-        val typeParams = t.paramClauseGroups.flatMap(_.tparamClause).filter(p => p.cbounds.isEmpty && p.vbounds.isEmpty)
+        val typeParams =
+          t.paramClauseGroups
+            .flatMap(_.tparamClause)
+            .filter(p => p.bounds.context.isEmpty && p.bounds.view.isEmpty && p.bounds.context.isEmpty)
         val typeParamsMap = typeParams.map(t => t.name.value -> t).toMap
         val names = t.collect {
           case x: Term.Name =>

@@ -49,7 +49,7 @@ class ImplicitValueClass extends SyntacticRule("ImplicitValueClass") {
             Template.Initial(Nil, Nil, _, stats)
           )
           if c.mods.exists(_.is[Mod.Implicit]) && stats.forall(_.is[Defn.Def]) && allParentIsObject(c) && !p1.decltpe
-            .forall(_.is[Type.ByName]) && c.tparamClause.values.forall(_.cbounds.isEmpty) =>
+            .forall(_.is[Type.ByName]) && c.tparamClause.values.forall(_.bounds.context.isEmpty) =>
         Seq(
           {
             if (p1.mods.exists(_.is[ValParam])) {
