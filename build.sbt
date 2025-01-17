@@ -105,7 +105,20 @@ lazy val rules = projectMatrix
     commonSettings,
     moduleName := "scalafix-rules",
     publishTo := sonatypePublishToBundle.value,
-    libraryDependencies += "ch.epfl.scala" %% "scalafix-core" % V.scalafixVersion,
+    libraryDependencies += ("ch.epfl.scala" %% "scalafix-core" % V.scalafixVersion cross CrossVersion.for3Use2_13)
+      .exclude(
+        "org.scalameta",
+        "metaconfig-typesafe-config_2.13"
+      )
+      .exclude(
+        "com.lihaoyi",
+        "sourcecode_2.13"
+      )
+      .exclude(
+        "org.scala-lang.modules",
+        "scala-collection-compat_2.13"
+      ),
+    libraryDependencies += "org.scalameta" %% "metaconfig-typesafe-config" % "0.14.0",
     libraryDependencies += "org.scalatest" %% "scalatest-funsuite" % "3.2.19" % Test,
     scalacOptions += "-Ywarn-unused:imports",
     Compile / sourceGenerators += task {
@@ -164,7 +177,7 @@ lazy val rules = projectMatrix
     resourceGenSettings,
   )
   .defaultAxes(VirtualAxis.jvm)
-  .jvmPlatform(rulesCrossVersions)
+  .jvmPlatform(rulesCrossVersions :+ "3.6.3")
 
 lazy val rules212 = rules
   .jvm(V.scala212)
