@@ -45,21 +45,12 @@ class UnmooredDocComment extends SyntacticRule("UnmooredDocComment") {
         Patch.lint(
           Diagnostic(
             id = "",
-            message = s"unmoored doc comment for `${treeName(tree)}`",
+            message = s"unmoored doc comment for `${tree.productPrefix}`",
             position = comment.pos,
             severity = LintSeverity.Warning
           )
         )
       }
       .asPatch
-  }
-
-  private def treeName(t: Tree): String = {
-    t match {
-      case x: scala.Product =>
-        x.productPrefix
-      case _ =>
-        t.getClass.getName
-    }
   }
 }
