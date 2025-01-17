@@ -4,6 +4,11 @@
 [![scaladoc](https://javadoc.io/badge2/com.github.xuwei-k/scalafix-rules_2.13/javadoc.svg)](https://javadoc.io/doc/com.github.xuwei-k/scalafix-rules_2.13/latest/fix/index.html)
 
 
+| scalafix | scalafix-rules |
+|----------|----------------|
+| 0.14.x   | 0.6.x          |
+| 0.13.x   | 0.5.x          |
+| 0.12.x   | 0.4.x          |
 
 `project/plugins.sbt`
 
