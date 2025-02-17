@@ -2,6 +2,7 @@ package fix
 
 import scala.meta.Defn
 import scala.meta.Mod
+import scala.meta.Stat
 import scala.meta.XtensionClassifiable
 import scala.meta.XtensionCollectionLikeUI
 import scala.meta.inputs.Position
@@ -18,7 +19,9 @@ class UnusedConstructorParams extends SyntacticRule("UnusedConstructorParams") {
 
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
-      case x: Defn.Class if !x.mods.exists(_.is[Mod.Case]) =>
+      case x: (Stat.WithTemplate & Stat.WithCtor & Stat.WithMods)
+          if (x.is[Defn.Class] || x.is[Defn.Trait]) &&
+            !x.mods.exists(_.is[Mod.Case]) =>
         val params = x.ctor.paramClauses.flatten
           .filterNot(_.mods.exists(_.is[Mod.Implicit]))
           .filterNot(_.mods.exists(_.is[Mod.Using]))
