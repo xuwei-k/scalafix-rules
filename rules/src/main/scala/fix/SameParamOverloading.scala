@@ -2,6 +2,7 @@ package fix
 
 import scala.meta.Decl
 import scala.meta.Defn
+import scala.meta.Member
 import scala.meta.Mod
 import scala.meta.Template
 import scala.meta.Tree.WithParamClauseGroup
@@ -17,7 +18,7 @@ import scalafix.v1.SyntacticRule
 import scalafix.v1.XtensionSeqPatch
 
 object SameParamOverloading {
-  private case class Method(value: WithParamClauseGroup) {
+  private case class Method(value: WithParamClauseGroup & Member.Term) {
     def noImplicitParams: Option[List[Method.ParamType]] =
       value.paramClauseGroup.map(_.paramClauses).getOrElse(Nil).find(!_.mod.exists(_.is[Mod.Implicit])).map { a =>
         a.values.map { x =>
@@ -61,7 +62,7 @@ class SameParamOverloading extends SyntacticRule("SameParamOverloading") {
             Diagnostic(
               id = "",
               message = "same param overloading",
-              position = x.value.pos,
+              position = x.value.name.pos,
               severity = LintSeverity.Warning
             )
           )
