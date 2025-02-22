@@ -33,12 +33,26 @@ class RemoveParameterUntuplingCase extends SyntacticRule("RemoveParameterUntupli
             case Pat.Var(_: Term.Name) => true
             case _ => false
           } =>
-        c.tokens
-          .find(_.is[Token.KwCase])
-          .map(
-            Patch.removeToken
-          )
-          .asPatch
+        Seq(
+          PartialFunction
+            .condOpt(
+              (
+                c.tokens.filter(x => x.is[Token.LeftParen] && (x.pos.start < values.head.pos.start)),
+                c.tokens.filter(x =>
+                  x.is[Token.RightParen] && (values.last.pos.start < x.pos.start) && (x.pos.end < c.body.pos.start)
+                )
+              )
+            ) { case (l +: _ +: _, r +: _ +: _) =>
+              Patch.removeTokens(Seq(l, r))
+            }
+            .asPatch,
+          c.tokens
+            .find(_.is[Token.KwCase])
+            .map(
+              Patch.removeToken
+            )
+            .asPatch
+        ).asPatch
     }.asPatch
   }
 }
