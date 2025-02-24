@@ -12,6 +12,8 @@ trait RemoveParameterUntuplingCaseTest {
 
   xs.map { case (a, b) => a + b }
 
+  xs.map { case (a, _) => a }
+
   xs.map { case ((a, b)) => (b, a) }
 
   xs.map { case (a, 2) => a }

@@ -32,7 +32,7 @@ class ParameterUntuplingCaseWarn extends SyntacticRule("ParameterUntuplingCaseWa
               )
             )
           ) if values.forall {
-            case Pat.Var(_: Term.Name) => true
+            case Pat.Var(_: Term.Name) | Pat.Wildcard() => true
             case _ => false
           } =>
         c.tokens

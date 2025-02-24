@@ -30,7 +30,7 @@ class RemoveParameterUntuplingCase extends SyntacticRule("RemoveParameterUntupli
               )
             )
           ) if values.forall {
-            case Pat.Var(_: Term.Name) => true
+            case Pat.Var(_: Term.Name) | Pat.Wildcard() => true
             case _ => false
           } =>
         Seq(
