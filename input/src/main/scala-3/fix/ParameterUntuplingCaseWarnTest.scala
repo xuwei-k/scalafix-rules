@@ -12,6 +12,8 @@ trait ParameterUntuplingCaseWarnTest {
 
   xs.map { case (a, b) => a + b } // assert: ParameterUntuplingCaseWarn
 
+  xs.map { case (a, _) => a } // assert: ParameterUntuplingCaseWarn
+
   xs.map { case (a, 2) => a }
 
   xs.map { case (a, C) => a }
