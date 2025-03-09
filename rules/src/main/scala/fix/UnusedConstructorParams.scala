@@ -37,6 +37,25 @@ class UnusedConstructorParams extends SyntacticRule("UnusedConstructorParams") {
             UnusedParamWarn(a.pos)
           )
         }.asPatch
+      case x: Defn.Enum =>
+        val params = x.ctor.paramClauses.flatten.filterNot(
+          _.mods.exists(m => m.is[Mod.Implicit] || m.is[Mod.Using] || m.is[Mod.VarParam] || m.is[Mod.ValParam])
+        )
+        val allTokens = {
+          val values =
+            x.templ.body.stats
+              .filterNot(s => s.is[Defn.EnumCase] || s.is[Defn.RepeatedEnumCase])
+              .flatMap(_.tokens)
+              .map(_.text)
+              .toSet
+          values ++ values.filter(a => a.startsWith("`") && a.endsWith("`")).map(_.drop(1).dropRight(1))
+        }
+        val maybeUnused = params.filterNot(p => allTokens(p.name.value))
+        maybeUnused.map { a =>
+          Patch.lint(
+            UnusedParamWarn(a.pos)
+          )
+        }.asPatch
     }.asPatch
   }
 }
