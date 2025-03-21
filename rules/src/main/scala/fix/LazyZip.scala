@@ -40,8 +40,8 @@ class LazyZip extends SyntacticRule("LazyZip") {
                         pfCase @ Case(
                           Pat.Tuple(
                             List(
-                              Pat.Var(_: Term.Name),
-                              Pat.Var(_: Term.Name)
+                              Pat.Var(_: Term.Name) | Pat.Wildcard(),
+                              Pat.Var(_: Term.Name) | Pat.Wildcard()
                             )
                           ),
                           None,
