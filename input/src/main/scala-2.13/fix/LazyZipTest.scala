@@ -12,6 +12,10 @@ trait LazyZipTest {
     x2._1.take(x1)
   }
 
+  list1.zip(list2).map { case (x1, _) =>
+    x1
+  }
+
   list1.zip(list2).map { case (x1, (x2, x3)) =>
     (x1, x2, x3)
   }
