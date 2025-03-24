@@ -89,6 +89,13 @@ class IncorrectScaladocParamTest extends AnyFunSuite {
           |  */
           |  case C(x2: Int) extends A(x2)
           |}
+          |
+          |/**
+          | * @param a aaa
+          | * @param b bbb
+          | */
+          |def interleaved[A](a: A)[B](b: B): (A, B) = (a, b)
+          |
           |""".stripMargin),
       scalaVersion = ScalaVersion.scala3
     )
