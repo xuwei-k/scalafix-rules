@@ -25,11 +25,11 @@ class IncorrectScaladocParam extends SyntacticRule("IncorrectScaladocParam") {
       case t: Defn.Class =>
         p(t, t.ctor.paramClauses)
       case t: Defn.Def =>
-        p(t, t.paramClauses)
+        p(t, t.paramClauseGroups.flatMap(_.paramClauses))
       case t: Decl.Def =>
-        p(t, t.paramClauses)
+        p(t, t.paramClauseGroups.flatMap(_.paramClauses))
       case t: Defn.Macro =>
-        p(t, t.paramClauses)
+        p(t, t.paramClauseGroups.flatMap(_.paramClauses))
       case t: Ctor.Secondary =>
         p(t, t.paramClauses)
       case t: Defn.Enum =>
