@@ -10,12 +10,15 @@ import scala.meta.XtensionCollectionLikeUI
 import scala.meta.typeParamClauseToValues
 import scalafix.Diagnostic
 import scalafix.Patch
+import scalafix.RuleName
 import scalafix.lint.LintSeverity
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
 import scalafix.v1.XtensionSeqPatch
 
 class UnusedTypeParams extends SyntacticRule("UnusedTypeParams") {
+
+  protected def severity: LintSeverity = LintSeverity.Warning
 
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
@@ -35,14 +38,21 @@ class UnusedTypeParams extends SyntacticRule("UnusedTypeParams") {
           .groupBy(_.name.value)
           .values
           .collect { case a :: Nil =>
-            Patch.lint(new UnusedTypeParamsWarn(a.pos))
+            Patch.lint(new UnusedTypeParamsWarn(a.pos, severity))
           }
           .asPatch
     }.asPatch
   }
 }
 
-class UnusedTypeParamsWarn(override val position: Position) extends Diagnostic {
+class UnusedTypeParamsWarn(
+  override val position: Position,
+  override val severity: LintSeverity
+) extends Diagnostic {
   override def message = "maybe unused type param"
-  override def severity: LintSeverity = LintSeverity.Warning
+}
+
+class UnusedTypeParamsError extends UnusedTypeParams {
+  override val name: RuleName = RuleName(this.getClass.getSimpleName)
+  override protected def severity: LintSeverity = LintSeverity.Error
 }

@@ -9,12 +9,15 @@ import scala.meta.inputs.Position
 import scalafix.Patch
 import scalafix.lint.Diagnostic
 import scalafix.lint.LintSeverity
+import scalafix.rule.RuleName
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
 import scalafix.v1.XtensionOptionPatch
 import scalafix.v1.XtensionSeqPatch
 
 class UselessParamCommentsWarn extends SyntacticRule("UselessParamCommentsWarn") {
+  protected def severity: LintSeverity = LintSeverity.Warning
+
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect { case t: Defn.Class =>
       doc.comments
@@ -44,7 +47,7 @@ class UselessParamCommentsWarn extends SyntacticRule("UselessParamCommentsWarn")
                             endColumn = length
                           )
                         },
-                        severity = LintSeverity.Warning
+                        severity = severity
                       )
                     )
                   }
@@ -55,4 +58,9 @@ class UselessParamCommentsWarn extends SyntacticRule("UselessParamCommentsWarn")
         .asPatch
     }.asPatch
   }
+}
+
+class UselessParamCommentsError extends UselessParamCommentsWarn {
+  override val name: RuleName = RuleName(this.getClass.getSimpleName)
+  override protected def severity: LintSeverity = LintSeverity.Error
 }

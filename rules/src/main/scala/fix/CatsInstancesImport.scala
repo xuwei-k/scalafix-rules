@@ -4,6 +4,7 @@ import scala.meta.Importer
 import scala.meta.Term
 import scala.meta.XtensionCollectionLikeUI
 import scalafix.Patch
+import scalafix.RuleName
 import scalafix.lint.Diagnostic
 import scalafix.lint.LintSeverity
 import scalafix.v1.SyntacticDocument
@@ -11,6 +12,8 @@ import scalafix.v1.SyntacticRule
 import scalafix.v1.XtensionSeqPatch
 
 class CatsInstancesImport extends SyntacticRule("CatsInstancesImport") {
+  protected def severity: LintSeverity = LintSeverity.Warning
+
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
       case t @ Importer(
@@ -25,9 +28,14 @@ class CatsInstancesImport extends SyntacticRule("CatsInstancesImport") {
             id = "",
             message = "unnecessary import https://github.com/typelevel/cats/pull/3043",
             position = t.pos,
-            severity = LintSeverity.Warning
+            severity = severity
           )
         )
     }
   }.asPatch
+}
+
+class CatsInstancesImportError extends CatsInstancesImport {
+  override val name: RuleName = RuleName(this.getClass.getSimpleName)
+  override protected def severity: LintSeverity = LintSeverity.Error
 }

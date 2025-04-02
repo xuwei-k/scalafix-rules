@@ -17,6 +17,7 @@ import scala.meta.inputs.Position
 import scalafix.Diagnostic
 import scalafix.Patch
 import scalafix.lint.LintSeverity
+import scalafix.rule.RuleName
 import scalafix.v1.Configuration
 import scalafix.v1.Rule
 import scalafix.v1.SyntacticDocument
@@ -47,6 +48,8 @@ object ExplicitImplicitTypesConfig {
 class ExplicitImplicitTypes(config: ExplicitImplicitTypesConfig) extends SyntacticRule("ExplicitImplicitTypes") {
   def this() = this(ExplicitImplicitTypesConfig.default)
 
+  protected def severity: LintSeverity = LintSeverity.Warning
+
   override def withConfiguration(config: Configuration): Configured[Rule] = {
     config.conf.getOrElse("ExplicitImplicitTypes")(this.config).map(newConfig => new ExplicitImplicitTypes(newConfig))
   }
@@ -54,9 +57,9 @@ class ExplicitImplicitTypes(config: ExplicitImplicitTypesConfig) extends Syntact
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
       case t1: Defn.Val if t1.mods.exists(_.is[Mod.Implicit]) && t1.decltpe.isEmpty && isNotLocal(t1) =>
-        Patch.lint(ExplicitImplicitTypesWarn(t1.pos))
+        Patch.lint(ExplicitImplicitTypesWarn(t1.pos, severity))
       case t1: Defn.Def if t1.mods.exists(_.is[Mod.Implicit]) && t1.decltpe.isEmpty =>
-        Patch.lint(ExplicitImplicitTypesWarn(t1.pos))
+        Patch.lint(ExplicitImplicitTypesWarn(t1.pos, severity))
     }.asPatch
   }
 
@@ -88,7 +91,14 @@ class ExplicitImplicitTypes(config: ExplicitImplicitTypesConfig) extends Syntact
   }
 }
 
-case class ExplicitImplicitTypesWarn(override val position: Position) extends Diagnostic {
+case class ExplicitImplicitTypesWarn(
+  override val position: Position,
+  override val severity: LintSeverity
+) extends Diagnostic {
   override def message = "add explicit types for implicit values"
-  override def severity: LintSeverity = LintSeverity.Warning
+}
+
+class ExplicitImplicitTypesError extends ExplicitImplicitTypes {
+  override val name: RuleName = RuleName(this.getClass.getSimpleName)
+  override protected def severity: LintSeverity = LintSeverity.Error
 }

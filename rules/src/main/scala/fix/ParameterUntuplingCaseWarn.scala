@@ -6,6 +6,7 @@ import scala.meta.Term
 import scala.meta.XtensionClassifiable
 import scala.meta.XtensionCollectionLikeUI
 import scala.meta.tokens.Token
+import scalafix.RuleName
 import scalafix.lint.Diagnostic
 import scalafix.lint.LintSeverity
 import scalafix.v1.Patch
@@ -19,6 +20,8 @@ import scalafix.v1.XtensionSeqPatch
  * [[https://docs.scala-lang.org/scala3/reference/other-new-features/parameter-untupling-spec.html]]
  */
 class ParameterUntuplingCaseWarn extends SyntacticRule("ParameterUntuplingCaseWarn") {
+  protected def severity: LintSeverity = LintSeverity.Warning
+
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
       case Term.PartialFunction(
@@ -45,11 +48,16 @@ class ParameterUntuplingCaseWarn extends SyntacticRule("ParameterUntuplingCaseWa
                 message =
                   "unnecessary `case` if scala 3 https://docs.scala-lang.org/scala3/reference/other-new-features/parameter-untupling.html",
                 position = c.pos,
-                severity = LintSeverity.Warning
+                severity = severity
               )
             )
           )
           .asPatch
     }.asPatch
   }
+}
+
+class ParameterUntuplingCaseError extends ParameterUntuplingCaseWarn {
+  override val name: RuleName = RuleName(this.getClass.getSimpleName)
+  override protected def severity: LintSeverity = LintSeverity.Error
 }

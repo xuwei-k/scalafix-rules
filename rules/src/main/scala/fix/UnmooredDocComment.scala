@@ -9,6 +9,7 @@ import scala.meta.Stat
 import scala.meta.Tree
 import scala.meta.transversers._
 import scalafix.Patch
+import scalafix.RuleName
 import scalafix.lint.Diagnostic
 import scalafix.lint.LintSeverity
 import scalafix.v1.SyntacticDocument
@@ -30,6 +31,8 @@ object UnmooredDocComment {
  * [[https://github.com/scala/scala/blob/4b124f211b661d/src/scaladoc/scala/tools/nsc/doc/ScaladocAnalyzer.scala#L175]]
  */
 class UnmooredDocComment extends SyntacticRule("UnmooredDocComment") {
+  protected def severity: LintSeverity = LintSeverity.Warning
+
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect { case t @ UnmooredDocComment.Unmoored() =>
       doc.comments.leading(t).toSeq.filter(_.value.startsWith("*")).map(_ -> t)
@@ -47,10 +50,15 @@ class UnmooredDocComment extends SyntacticRule("UnmooredDocComment") {
             id = "",
             message = s"unmoored doc comment for `${tree.productPrefix}`",
             position = comment.pos,
-            severity = LintSeverity.Warning
+            severity = severity
           )
         )
       }
       .asPatch
   }
+}
+
+class UnmooredDocCommentError extends UnmooredDocComment {
+  override val name: RuleName = RuleName(this.getClass.getSimpleName)
+  override protected def severity: LintSeverity = LintSeverity.Error
 }

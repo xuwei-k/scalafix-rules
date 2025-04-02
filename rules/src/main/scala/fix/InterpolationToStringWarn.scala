@@ -6,11 +6,14 @@ import scala.meta.XtensionCollectionLikeUI
 import scalafix.Diagnostic
 import scalafix.Patch
 import scalafix.lint.LintSeverity
+import scalafix.rule.RuleName
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
 import scalafix.v1.XtensionSeqPatch
 
 class InterpolationToStringWarn extends SyntacticRule("InterpolationToStringWarn") {
+  protected def severity: LintSeverity = LintSeverity.Warning
+
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
       case Term.Interpolate(
@@ -29,7 +32,7 @@ class InterpolationToStringWarn extends SyntacticRule("InterpolationToStringWarn
               id = "",
               message = "maybe unnecessary `toString` in the `s` interpolation",
               position = t.pos,
-              severity = LintSeverity.Warning
+              severity = severity
             )
           )
         }.asPatch
@@ -52,4 +55,9 @@ private object InterpolationToStringWarn {
         x
     }
   }
+}
+
+class InterpolationToStringError extends InterpolationToStringWarn {
+  override val name: RuleName = RuleName(this.getClass.getSimpleName)
+  override protected def severity: LintSeverity = LintSeverity.Error
 }

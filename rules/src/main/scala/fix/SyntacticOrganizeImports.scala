@@ -10,12 +10,15 @@ import scala.meta.inputs.Position
 import scalafix.Patch
 import scalafix.lint.Diagnostic
 import scalafix.lint.LintSeverity
+import scalafix.rule.RuleName
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
 import scalafix.v1.XtensionOptionPatch
 import scalafix.v1.XtensionSeqPatch
 
 class SyntacticOrganizeImports extends SyntacticRule("SyntacticOrganizeImports") {
+
+  protected def severity: LintSeverity = LintSeverity.Warning
 
   private def collectWhile[A, B](list: List[A])(f: PartialFunction[A, B]): List[B] = {
     @tailrec
@@ -57,7 +60,8 @@ class SyntacticOrganizeImports extends SyntacticRule("SyntacticOrganizeImports")
                     endLine = emptyLineNumber + 1,
                     endColumn = 0
                   ),
-                  "there is empty line in top level imports"
+                  "there is empty line in top level imports",
+                  severity
                 )
               )
             }
@@ -73,7 +77,8 @@ class SyntacticOrganizeImports extends SyntacticRule("SyntacticOrganizeImports")
               Patch.lint(
                 SyntacticOrganizeImportsWarn(
                   value.pos,
-                  "does not sorted imports"
+                  "does not sorted imports",
+                  severity
                 )
               )
             }
@@ -88,7 +93,11 @@ class SyntacticOrganizeImports extends SyntacticRule("SyntacticOrganizeImports")
 
 case class SyntacticOrganizeImportsWarn(
   override val position: Position,
-  override val message: String
-) extends Diagnostic {
-  override def severity: LintSeverity = LintSeverity.Warning
+  override val message: String,
+  override val severity: LintSeverity
+) extends Diagnostic
+
+class SyntacticOrganizeImportsError extends SyntacticOrganizeImports {
+  override val name: RuleName = RuleName(this.getClass.getSimpleName)
+  override protected def severity: LintSeverity = LintSeverity.Error
 }

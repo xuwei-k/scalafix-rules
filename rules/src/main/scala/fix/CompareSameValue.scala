@@ -5,6 +5,7 @@ import scala.meta.XtensionClassifiable
 import scala.meta.XtensionCollectionLikeUI
 import scala.meta.XtensionStructure
 import scalafix.Patch
+import scalafix.RuleName
 import scalafix.lint.Diagnostic
 import scalafix.lint.LintSeverity
 import scalafix.v1.SyntacticDocument
@@ -36,6 +37,8 @@ private object CompareSameValue {
 }
 
 class CompareSameValue extends SyntacticRule("CompareSameValue") {
+  protected def severity: LintSeverity = LintSeverity.Warning
+
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
       case t @ CompareSameValue.X(a1, a2) if a1.structure == a2.structure && t.collect {
@@ -47,9 +50,14 @@ class CompareSameValue extends SyntacticRule("CompareSameValue") {
             message = "compare same values!?",
             position = t.pos,
             explanation = "",
-            severity = LintSeverity.Warning
+            severity = severity
           )
         )
     }.asPatch
   }
+}
+
+class CompareSameValueError extends CompareSameValue {
+  override val name: RuleName = RuleName(this.getClass.getSimpleName)
+  override protected def severity: LintSeverity = LintSeverity.Error
 }

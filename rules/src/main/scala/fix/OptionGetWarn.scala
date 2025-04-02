@@ -5,6 +5,7 @@ import scala.meta.XtensionCollectionLikeUI
 import scalafix.Patch
 import scalafix.lint.Diagnostic
 import scalafix.lint.LintSeverity
+import scalafix.rule.RuleName
 import scalafix.v1.ByNameType
 import scalafix.v1.MethodSignature
 import scalafix.v1.SemanticDocument
@@ -16,6 +17,8 @@ import scalafix.v1.XtensionSeqPatch
 import scalafix.v1.XtensionTreeScalafix
 
 class OptionGetWarn extends SemanticRule("OptionGetWarn") {
+  protected def severity: LintSeverity = LintSeverity.Warning
+
   override def fix(implicit doc: SemanticDocument): Patch = {
     doc.tree.collect { case Term.Select(obj, get @ Term.Name("get")) =>
       def p = Patch.lint(
@@ -23,7 +26,7 @@ class OptionGetWarn extends SemanticRule("OptionGetWarn") {
           id = "",
           message = "Don't use Option.get",
           position = get.pos,
-          severity = LintSeverity.Warning
+          severity = severity
         )
       )
       obj.symbol.info.flatMap { i =>
@@ -38,4 +41,9 @@ class OptionGetWarn extends SemanticRule("OptionGetWarn") {
       }.asPatch
     }.asPatch
   }
+}
+
+class OptionGetError extends OptionGetWarn {
+  override val name: RuleName = RuleName(this.getClass.getSimpleName)
+  override protected def severity: LintSeverity = LintSeverity.Error
 }

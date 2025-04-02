@@ -4,6 +4,8 @@ import scala.meta.Defn
 import scala.meta.Init
 import scala.meta.Lit
 import scala.meta.Mod
+import scala.meta.Name
+import scala.meta.Pat
 import scala.meta.Template
 import scala.meta.Term
 import scala.meta.Type
@@ -22,8 +24,134 @@ class MyScalafixRuleRule extends SyntacticRule("MyScalafixRuleRule") {
     }
   }
 
-  override def fix(implicit doc: SyntacticDocument): Patch = {
+  override def fix(implicit doc: SyntacticDocument): Patch = Seq(
+    if (
+      doc.tree.collect {
+        case Defn.Def.After_4_7_3(
+              List(
+                Mod.Protected(Name.Anonymous())
+              ),
+              Term.Name("severity"),
+              Nil,
+              Some(
+                Type.Name("LintSeverity")
+              ),
+              Term.Select(
+                Term.Name("LintSeverity"),
+                Term.Name("Warning")
+              )
+            ) =>
+          ()
+      }.nonEmpty && doc.tree.collect {
+        case t: Defn.Class if t.name.value.endsWith("Error") =>
+      }.isEmpty
+    ) {
+      Patch.lint(
+        Diagnostic(
+          id = "",
+          message = "not found Error rule",
+          position = doc.tree.pos,
+          severity = LintSeverity.Error
+        )
+      )
+    } else {
+      Patch.empty
+    },
     doc.tree.collect {
+      case t: Defn.Object if t.name.value.endsWith("Error") =>
+        val warnSuffix = "Warn"
+        Seq(
+          t.templ.inits.collect {
+            case Init.After_4_6_0(
+                  Type.Name(c),
+                  _,
+                  Nil
+                )
+                if (s"${c}Error" != t.name.value) && (c
+                  .endsWith(warnSuffix) && s"${c.dropRight(warnSuffix.length)}Error" != t.name.value) =>
+              Patch.lint(
+                Diagnostic(
+                  id = "",
+                  message = "invalid class name",
+                  position = t.pos,
+                  severity = LintSeverity.Error
+                )
+              )
+          }.asPatch,
+          t.templ.body match {
+            case Template.Body(
+                  None,
+                  List(
+                    Defn.Val(
+                      List(
+                        Mod.Override()
+                      ),
+                      List(
+                        Pat.Var(Term.Name("name"))
+                      ),
+                      Some(
+                        Type.Name("RuleName")
+                      ),
+                      Term.Apply.After_4_6_0(
+                        Term.Name("RuleName"),
+                        Term.ArgClause(
+                          List(
+                            Term.Select(
+                              Term.Select(
+                                Term.This(Name.Anonymous()),
+                                Term.Name("getClass")
+                              ),
+                              Term.Name("getSimpleName")
+                            )
+                          ),
+                          None
+                        )
+                      )
+                    ),
+                    Defn.Def.After_4_7_3(
+                      List(
+                        Mod.Override(),
+                        Mod.Protected(Name.Anonymous())
+                      ),
+                      Term.Name("severity"),
+                      Nil,
+                      Some(
+                        Type.Name("LintSeverity")
+                      ),
+                      Term.Select(
+                        Term.Name("LintSeverity"),
+                        Term.Name("Error")
+                      )
+                    )
+                  )
+                ) =>
+              Patch.empty
+            case _ =>
+              Patch.lint(
+                Diagnostic(
+                  id = "",
+                  message = "invalid Error rule",
+                  position = t.pos,
+                  severity = LintSeverity.Error
+                )
+              )
+          }
+        ).asPatch
+      case t: Defn.Def if t.name.value == "fix" =>
+        t.collect {
+          case x @ Term.Select(
+                Term.Name("LintSeverity"),
+                _
+              ) =>
+            Patch.lint(
+              Diagnostic(
+                id = "",
+                message = "don't use LintSeverity directory",
+                position = x.pos,
+                severity = LintSeverity.Error
+              )
+            )
+        }.asPatch
       case Defn.Class.After_4_6_0(
             _,
             className,
@@ -89,5 +217,5 @@ class MyScalafixRuleRule extends SyntacticRule("MyScalafixRuleRule") {
           }
         ).asPatch
     }.asPatch
-  }
+  ).asPatch
 }

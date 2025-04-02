@@ -10,12 +10,15 @@ import scala.meta.inputs.Input
 import scala.meta.inputs.Position
 import scalafix.Diagnostic
 import scalafix.Patch
+import scalafix.RuleName
 import scalafix.lint.LintSeverity
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
 
 class FileNameConsistent extends SyntacticRule("FileNameConsistent") {
   override def isLinter = true
+
+  protected def severity: LintSeverity = LintSeverity.Warning
 
   override def fix(implicit doc: SyntacticDocument): Patch = {
     val defs = doc.tree.collect {
@@ -61,7 +64,8 @@ class FileNameConsistent extends SyntacticRule("FileNameConsistent") {
               FileNameConsistentWaring(
                 names = names,
                 path = src.fullPath,
-                position = defs.headOption.getOrElse(packageObjects.head).tree.pos
+                position = defs.headOption.getOrElse(packageObjects.head).tree.pos,
+                severity = severity
               )
             )
           }
@@ -82,15 +86,22 @@ object FileNameConsistent {
 
   private case class TemplateDef(tree: Tree, name: String)
 
-  private case class FileNameConsistentWaring(names: List[String], path: String, override val position: Position)
-      extends Diagnostic {
+  private case class FileNameConsistentWaring(
+    names: List[String],
+    path: String,
+    override val position: Position,
+    override val severity: LintSeverity
+  ) extends Diagnostic {
     override def message: String = s"inconsistent file name and class name. names = ${names.mkString("[", ", ", "]")}"
-
-    override def severity: LintSeverity = LintSeverity.Warning
   }
 
   implicit class TreeOps(private val self: Defn) extends AnyVal {
     def isTopLevel: Boolean =
       self.parent.exists(_.is[Pkg.Body]) || self.parent.isEmpty
   }
+}
+
+class FileNameConsistentError extends FileNameConsistent {
+  override val name: RuleName = RuleName(this.getClass.getSimpleName)
+  override protected def severity: LintSeverity = LintSeverity.Error
 }

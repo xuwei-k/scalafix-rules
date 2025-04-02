@@ -6,6 +6,7 @@ import scala.meta.Term
 import scala.meta.XtensionCollectionLikeUI
 import scala.meta.contrib.XtensionTreeOps
 import scalafix.Patch
+import scalafix.RuleName
 import scalafix.lint.Diagnostic
 import scalafix.lint.LintSeverity
 import scalafix.v1.SyntacticDocument
@@ -13,6 +14,8 @@ import scalafix.v1.SyntacticRule
 import scalafix.v1.XtensionSeqPatch
 
 class UnusedSelfType extends SyntacticRule("UnusedSelfType") {
+  protected def severity: LintSeverity = LintSeverity.Warning
+
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
       case t @ Template.After_4_9_9(
@@ -34,9 +37,14 @@ class UnusedSelfType extends SyntacticRule("UnusedSelfType") {
             id = "",
             message = "unused self type",
             position = a.pos,
-            severity = LintSeverity.Warning
+            severity = severity
           )
         )
     }.asPatch
   }
+}
+
+class UnusedSelfTypeError extends UnusedSelfType {
+  override val name: RuleName = RuleName(this.getClass.getSimpleName)
+  override protected def severity: LintSeverity = LintSeverity.Error
 }

@@ -9,11 +9,14 @@ import scala.meta.termParamClauseToValues
 import scalafix.Patch
 import scalafix.lint.Diagnostic
 import scalafix.lint.LintSeverity
+import scalafix.rule.RuleName
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
 import scalafix.v1.XtensionSeqPatch
 
 class RedundantCaseClassVal extends SyntacticRule("RedundantCaseClassVal") {
+  protected def severity: LintSeverity = LintSeverity.Warning
+
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
       case c @ Defn.Class.After_4_6_0(
@@ -44,7 +47,7 @@ class RedundantCaseClassVal extends SyntacticRule("RedundantCaseClassVal") {
                   id = "",
                   message = "redundant case class val",
                   position = valMod.pos,
-                  severity = LintSeverity.Warning
+                  severity = severity
                 )
               )
             }
@@ -52,4 +55,9 @@ class RedundantCaseClassVal extends SyntacticRule("RedundantCaseClassVal") {
           .asPatch
     }.asPatch
   }
+}
+
+class RedundantCaseClassValError extends RedundantCaseClassVal {
+  override val name: RuleName = RuleName(this.getClass.getSimpleName)
+  override protected def severity: LintSeverity = LintSeverity.Error
 }

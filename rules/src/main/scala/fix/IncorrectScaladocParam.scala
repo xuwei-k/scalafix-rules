@@ -12,11 +12,15 @@ import scala.meta.inputs.Position
 import scalafix.Patch
 import scalafix.lint.Diagnostic
 import scalafix.lint.LintSeverity
+import scalafix.rule.RuleName
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
 import scalafix.v1.XtensionSeqPatch
 
 class IncorrectScaladocParam extends SyntacticRule("IncorrectScaladocParam") {
+
+  protected def severity: LintSeverity = LintSeverity.Warning
+
   override def fix(implicit doc: SyntacticDocument): Patch = {
     fix0(doc).map(Patch.lint).asPatch
   }
@@ -70,7 +74,7 @@ class IncorrectScaladocParam extends SyntacticRule("IncorrectScaladocParam") {
                       endColumn = len
                     )
                   },
-                  severity = LintSeverity.Warning
+                  severity = severity
                 )
               }
             }
@@ -78,4 +82,9 @@ class IncorrectScaladocParam extends SyntacticRule("IncorrectScaladocParam") {
       }
     }
   }
+}
+
+class IncorrectScaladocParamError extends IncorrectScaladocParam {
+  override val name: RuleName = RuleName(this.getClass.getSimpleName)
+  override protected def severity: LintSeverity = LintSeverity.Error
 }

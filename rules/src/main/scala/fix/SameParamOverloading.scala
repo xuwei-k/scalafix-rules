@@ -13,6 +13,7 @@ import scala.meta.XtensionStructure
 import scalafix.Diagnostic
 import scalafix.Patch
 import scalafix.lint.LintSeverity
+import scalafix.rule.RuleName
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
 import scalafix.v1.XtensionSeqPatch
@@ -47,6 +48,9 @@ object SameParamOverloading {
 
 class SameParamOverloading extends SyntacticRule("SameParamOverloading") {
   import SameParamOverloading.*
+
+  protected def severity: LintSeverity = LintSeverity.Warning
+
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect { case t: Template =>
       val overloadMethods = t.body.stats.collect {
@@ -63,11 +67,16 @@ class SameParamOverloading extends SyntacticRule("SameParamOverloading") {
               id = "",
               message = "same param overloading",
               position = x.value.name.pos,
-              severity = LintSeverity.Warning
+              severity = severity
             )
           )
         }
       }.asPatch
     }.asPatch
   }
+}
+
+class SameParamOverloadingError extends SameParamOverloading {
+  override val name: RuleName = RuleName(this.getClass.getSimpleName)
+  override protected def severity: LintSeverity = LintSeverity.Error
 }

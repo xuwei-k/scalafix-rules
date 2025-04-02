@@ -8,6 +8,7 @@ import scala.meta.XtensionCollectionLikeUI
 import scala.meta.inputs.Position
 import scala.meta.termParamClauseToValues
 import scalafix.Patch
+import scalafix.RuleName
 import scalafix.lint.Diagnostic
 import scalafix.lint.LintSeverity
 import scalafix.v1.SyntacticDocument
@@ -16,6 +17,8 @@ import scalafix.v1.XtensionSeqPatch
 
 class UnusedConstructorParams extends SyntacticRule("UnusedConstructorParams") {
   override def isLinter = true
+
+  protected def severity: LintSeverity = LintSeverity.Warning
 
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
@@ -34,7 +37,7 @@ class UnusedConstructorParams extends SyntacticRule("UnusedConstructorParams") {
         val maybeUnused = params.filterNot(p => allTokens(p.name.value))
         maybeUnused.map { a =>
           Patch.lint(
-            UnusedParamWarn(a.pos)
+            UnusedParamWarn(a.pos, severity)
           )
         }.asPatch
       case x: Defn.Enum =>
@@ -53,15 +56,22 @@ class UnusedConstructorParams extends SyntacticRule("UnusedConstructorParams") {
         val maybeUnused = params.filterNot(p => allTokens(p.name.value))
         maybeUnused.map { a =>
           Patch.lint(
-            UnusedParamWarn(a.pos)
+            UnusedParamWarn(a.pos, severity)
           )
         }.asPatch
     }.asPatch
   }
 }
 
-case class UnusedParamWarn(override val position: Position) extends Diagnostic {
+case class UnusedParamWarn(
+  override val position: Position,
+  override val severity: LintSeverity
+) extends Diagnostic {
   override def message: String = s"maybe unused constructor param"
 
-  override def severity: LintSeverity = LintSeverity.Warning
+}
+
+class UnusedConstructorParamsError extends UnusedConstructorParams {
+  override val name: RuleName = RuleName(this.getClass.getSimpleName)
+  override protected def severity: LintSeverity = LintSeverity.Error
 }

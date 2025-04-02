@@ -9,6 +9,7 @@ import scala.meta.XtensionClassifiable
 import scala.meta.XtensionCollectionLikeUI
 import scala.meta.XtensionStructure
 import scalafix.Patch
+import scalafix.RuleName
 import scalafix.lint.Diagnostic
 import scalafix.lint.LintSeverity
 import scalafix.v1.SyntacticDocument
@@ -98,6 +99,7 @@ object ObjectFinal {
 }
 
 class ObjectFinal extends SyntacticRule("ObjectFinal") {
+  protected def severity: LintSeverity = LintSeverity.Warning
 
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect { case o: Defn.Object =>
@@ -114,7 +116,7 @@ class ObjectFinal extends SyntacticRule("ObjectFinal") {
               message =
                 "redundant `final` for val if not constant https://scala-lang.org/files/archive/spec/2.13/06-expressions.html#constant-expressions",
               position = m.pos,
-              severity = LintSeverity.Warning
+              severity = severity
             )
           )
         case Defn.Def.After_4_7_3(
@@ -129,10 +131,15 @@ class ObjectFinal extends SyntacticRule("ObjectFinal") {
               id = "",
               message = "redundant final",
               position = m.pos,
-              severity = LintSeverity.Warning
+              severity = severity
             )
           )
       }.asPatch
     }.asPatch
   }
+}
+
+class ObjectFinalError extends ObjectFinal {
+  override val name: RuleName = RuleName(this.getClass.getSimpleName)
+  override protected def severity: LintSeverity = LintSeverity.Error
 }
