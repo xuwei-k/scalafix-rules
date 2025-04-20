@@ -6,6 +6,12 @@ class A(
   /** xxx */
   val x: Int
 ) {
+
+  /** secondary constructor */
+  def this(s: String) = {
+    this(3)
+  }
+
   /** yyy */
   def y(n: Int): Int = {
     val m = {
