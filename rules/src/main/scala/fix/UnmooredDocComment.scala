@@ -1,6 +1,7 @@
 package fix
 
 import scala.collection.compat._
+import scala.meta.Ctor
 import scala.meta.Decl
 import scala.meta.Defn
 import scala.meta.Mod
@@ -18,7 +19,7 @@ import scalafix.v1.XtensionSeqPatch
 object UnmooredDocComment {
   private object Unmoored {
     def unapply(t: Tree): Boolean = t match {
-      case _: Stat.WithTemplate | _: Defn | _: Mod | _: Decl | _: Pkg.Body =>
+      case _: Stat.WithTemplate | _: Defn | _: Mod | _: Decl | _: Pkg.Body | _: Ctor =>
         false
       case _ =>
         true

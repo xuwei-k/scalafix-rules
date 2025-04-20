@@ -23,34 +23,34 @@
 }, {
   "message": "[UnmooredDocComment] unmoored doc comment for `Case`",
   "position": {
-    "line": 16,
+    "line": 22,
     "lineContent": "        /** ccc */",
     "sourcePath": "${BASE}/A.scala",
-    "startLine": 16,
+    "startLine": 22,
     "startColumn": 8,
-    "endLine": 16,
+    "endLine": 22,
     "endColumn": 18
   }
 }, {
   "message": "[UnmooredDocComment] unmoored doc comment for `Term.ForYield`",
   "position": {
-    "line": 22,
+    "line": 28,
     "lineContent": "    /** zzz */",
     "sourcePath": "${BASE}/A.scala",
-    "startLine": 22,
+    "startLine": 28,
     "startColumn": 4,
-    "endLine": 22,
+    "endLine": 28,
     "endColumn": 14
   }
 }, {
   "message": "[UnmooredDocComment] unmoored doc comment for `Enumerator.Generator`",
   "position": {
-    "line": 24,
+    "line": 30,
     "lineContent": "      /** sss */",
     "sourcePath": "${BASE}/A.scala",
-    "startLine": 24,
+    "startLine": 30,
     "startColumn": 6,
-    "endLine": 24,
+    "endLine": 30,
     "endColumn": 16
   }
 }]
