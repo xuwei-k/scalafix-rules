@@ -41,9 +41,6 @@ class DuplicateWildcardImport(conf: DuplicateWildcardImportConfig) extends Synta
 
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect { case t: Source =>
-      def isRename(s: Importer) = {
-        s.importees.exists(_.is[Importee.Rename])
-      }
       def isWildcard(s: Importer): Boolean = {
         s.importees.exists(_.is[Importee.Wildcard])
       }
@@ -60,7 +57,9 @@ class DuplicateWildcardImport(conf: DuplicateWildcardImportConfig) extends Synta
         x.size > 1 && x.exists(a => isWildcard(a._2))
       }.flatMap {
         _.filterNot { x =>
-          isWildcard(x._2) || isRename(x._2)
+          x._2.importees.exists(x =>
+            x.is[Importee.Rename] || x.is[Importee.Wildcard] || x.is[Importee.GivenAll] || x.is[Importee.Given]
+          )
         }.map { x =>
           Seq(
             Patch.removeTokens(x._1.tokens),
