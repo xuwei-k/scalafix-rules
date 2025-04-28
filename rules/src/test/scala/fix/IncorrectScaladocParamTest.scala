@@ -43,17 +43,24 @@ class IncorrectScaladocParamTest extends AnyFunSuite {
           |   * @param ggg hhh
           |   */
           |  def f3(y3: Int) = macro macroImpl
+          |
+          | /**
+          |   * @param aaa bbb
+          |   * @param aaa ccc
+          |   */
+          |  def f4(aaa: Int): Int
           |}
           |""".stripMargin),
       scalaVersion = ScalaVersion.scala2
     )
     val result = x.fix0(in)
-    assert(result.size == 5)
+    assert(result.size == 7)
     result.foreach { x =>
-      assert(x.message == "incorrect @param")
       assert(x.severity == LintSeverity.Warning)
     }
-    assert(result.map(_.position.startLine).sorted == Seq(3, 8, 14, 20, 26))
+    assert(result.count(_.message == "incorrect @param") == 5)
+    assert(result.count(_.message == "duplicate @param aaa") == 2)
+    assert(result.map(_.position.startLine).sorted == Seq(3, 8, 14, 20, 26, 31, 32))
     val values =
       result.map(x => Input.Slice(input = in.input, start = x.position.start, end = x.position.end).text).toSet
     assert(
@@ -63,6 +70,8 @@ class IncorrectScaladocParamTest extends AnyFunSuite {
         "   * @param ccc ddd",
         "  * @param eee fff",
         "   * @param ggg hhh",
+        "   * @param aaa bbb",
+        "   * @param aaa ccc",
       )
     )
   }

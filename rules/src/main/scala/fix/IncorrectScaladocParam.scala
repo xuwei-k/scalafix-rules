@@ -43,39 +43,58 @@ class IncorrectScaladocParam extends SyntacticRule("IncorrectScaladocParam") {
     val names = paramsClauses.flatMap(_.values.map(_.name.value.trim)).toSet
 
     doc.comments.leading(t).toList.flatMap { x =>
-      x.docTokens.toList.flatten.flatMap { c =>
+      val scaladocParamNames = x.docTokens.toList.flatten.flatMap(c =>
         PartialFunction
           .condOpt(c.kind) { case DocToken.Param =>
             c.name
           }
           .flatten
           .map(_.trim)
-          .flatMap { paramName =>
-            if (names(paramName)) {
-              None
-            } else {
-              PartialFunction.condOpt(x.value.linesIterator.zipWithIndex.collect {
-                case (str, i) if str.contains(s" ${paramName} ") => (str.length, i)
-              }.toList) { case List((len, index)) =>
+      )
+      val duplicateNames = scaladocParamNames.groupBy(identity).filter(_._2.size > 1).map(_._1).filter(names)
+
+      def getPositions(paramName: String): List[Position] =
+        x.value.linesIterator.zipWithIndex.collect {
+          case (str, i) if str.contains(s" ${paramName} ") => (str.length, i)
+        }.toList.map { case (len, index) =>
+          val line = x.pos.startLine + index
+          Position.Range(
+            input = doc.input,
+            startLine = line,
+            startColumn = 0,
+            endLine = line,
+            endColumn = len
+          )
+        }
+
+      Seq(
+        duplicateNames.flatMap(x => getPositions(x).map(x -> _)).map { case (duplicateName, pos) =>
+          Diagnostic(
+            id = "",
+            message = s"duplicate @param ${duplicateName}",
+            position = pos,
+            severity = LintSeverity.Warning
+          )
+        },
+        scaladocParamNames.flatMap(paramName =>
+          if (names(paramName)) {
+            Nil
+          } else {
+            PartialFunction
+              .condOpt(getPositions(paramName)) { case pos :: Nil =>
+                pos
+              }
+              .map { pos =>
                 Diagnostic(
                   id = "",
                   message = "incorrect @param",
-                  position = {
-                    val line = x.pos.startLine + index
-                    Position.Range(
-                      input = doc.input,
-                      startLine = line,
-                      startColumn = 0,
-                      endLine = line,
-                      endColumn = len
-                    )
-                  },
+                  position = pos,
                   severity = LintSeverity.Warning
                 )
               }
-            }
           }
-      }
+        )
+      ).flatten
     }
   }
 }
