@@ -61,7 +61,7 @@ releaseProcess := Seq[ReleaseStep](
   commitReleaseVersion,
   tagRelease,
   releaseStepCommandAndRemaining("publishSigned"),
-  releaseStepCommandAndRemaining("sonatypeBundleRelease"),
+  releaseStepCommandAndRemaining("sonaUpload"),
   setNextVersion,
   commitNextVersion,
   pushChanges
@@ -104,7 +104,7 @@ lazy val rules = projectMatrix
   .settings(
     commonSettings,
     moduleName := "scalafix-rules",
-    publishTo := sonatypePublishToBundle.value,
+    publishTo := (if (isSnapshot.value) None else localStaging.value),
     libraryDependencies += "ch.epfl.scala" %% "scalafix-core" % V.scalafixVersion,
     libraryDependencies += "org.scalatest" %% "scalatest-funsuite" % "3.2.19" % Test,
     scalacOptions += {
