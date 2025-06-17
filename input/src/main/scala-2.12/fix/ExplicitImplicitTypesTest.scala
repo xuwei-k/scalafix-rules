@@ -2,6 +2,8 @@ package fix
 
 /*
 rule = ExplicitImplicitTypes
+
+ExplicitImplicitTypes.excludeLocal = true
  */
 class ExplicitImplicitTypesTest {
   def this(x: Int) = {
