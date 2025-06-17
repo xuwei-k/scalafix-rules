@@ -28,7 +28,7 @@ case class ExplicitImplicitTypesConfig(
 )
 
 object ExplicitImplicitTypesConfig {
-  val default = ExplicitImplicitTypesConfig(excludeLocal = true)
+  val default = ExplicitImplicitTypesConfig(excludeLocal = false)
 
   implicit val surface: Surface[ExplicitImplicitTypesConfig] =
     metaconfig.generic.deriveSurface[ExplicitImplicitTypesConfig]
