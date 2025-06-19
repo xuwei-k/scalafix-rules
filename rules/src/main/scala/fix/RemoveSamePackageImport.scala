@@ -17,7 +17,7 @@ class RemoveSamePackageImport extends SyntacticRule("RemoveSamePackageImport") {
     }.headOption
 
     pkgOpt.map { pkg =>
-      val ref = s"${pkg.ref.toString()}"
+      val ref = s"${pkg.ref}"
       doc.tree.collect {
         case _: Importee.Rename =>
           Patch.empty
