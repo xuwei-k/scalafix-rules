@@ -173,14 +173,64 @@ lazy val rules = projectMatrix
   .defaultAxes(VirtualAxis.jvm)
   .jvmPlatform(rulesCrossVersions)
 
+val dogfooding = taskKey[Unit]("")
+
 lazy val rules212 = rules
   .jvm(V.scala212)
   .enablePlugins(ScriptedPlugin)
   .enablePlugins(ScalafixPlugin)
   .dependsOn(myRuleRule % ScalafixConfig)
   .settings(
+    semanticdbEnabled := false,
     Test / test := (Test / test).dependsOn(scripted.toTask("")).value,
+    dogfooding := Def.taskDyn {
+      val rules: Seq[String] = Seq(
+        "CaseClassImplicitVal",
+        "CompareSameValue",
+        "DirectoryAndPackageName",
+        "DuplicateWildcardImport",
+        "ExplicitImplicitTypes",
+        "FileNameConsistent",
+        "FilterSize",
+        "FinalObjectWarn",
+        "FutureUnit",
+        "ImplicitClassNoParent",
+        "ImplicitClassOnlyDef",
+        "ImplicitImplicit",
+        "ImplicitValueClass",
+        "IncorrectScaladocParam",
+        "InterpolationToStringWarn",
+        "IntersectionType",
+        "IsEmptyNonEmpty",
+        "LeakingImplicitClassValAll",
+        "MapDistinctSize",
+        "MapFlattenFlatMap",
+        "MapToForeach",
+        "ObjectSelfType",
+        "PartialFunctionCondOpt",
+        "SameParamOverloading",
+        "Scala3Keyword",
+        "SimplifyForYield",
+        "StringFormatToInterpolation",
+        "UnmooredDocComment",
+        "UnnecessaryMatch",
+        "UnusedConstructorParams",
+        "UnusedSelfType",
+        "UnusedTypeParams",
+        "UselessParamCommentsWarn",
+      )
+
+      assert(rules.distinct.sorted == rules)
+
+      val arg = rules
+        .map(x => s"dependency:${x}@com.github.xuwei-k:scalafix-rules:0.6.11")
+        .mkString(" ", " ", " --settings.lint.error.includes=.* --check")
+      Def.task {
+        (Compile / scalafix).toTask(arg).value
+      }
+    }.value,
     Compile / compile := (Compile / compile).dependsOn((Compile / scalafix).toTask(" MyScalafixRuleRule")).value,
+    Compile / compile := (Compile / compile).dependsOn(dogfooding).value,
     scriptedBufferLog := false,
     scriptedLaunchOpts += ("-Dscalafix-rules.version=" + version.value),
     scriptedLaunchOpts += ("-Dscalafix.version=" + _root_.scalafix.sbt.BuildInfo.scalafixVersion),
