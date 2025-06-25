@@ -1,6 +1,9 @@
 package fix
 
 import java.util.Locale
+import metaconfig.ConfDecoder
+import metaconfig.Configured
+import metaconfig.generic.Surface
 import scala.meta.Defn
 import scala.meta.XtensionCollectionLikeUI
 import scala.meta.contrib.DocToken
@@ -9,12 +12,38 @@ import scala.meta.inputs.Position
 import scalafix.Patch
 import scalafix.lint.Diagnostic
 import scalafix.lint.LintSeverity
+import scalafix.v1.Configuration
+import scalafix.v1.Rule
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
 import scalafix.v1.XtensionOptionPatch
 import scalafix.v1.XtensionSeqPatch
 
-class UselessParamCommentsWarn extends SyntacticRule("UselessParamCommentsWarn") {
+final case class UselessParamCommentsWarnConfig(
+  message: String
+)
+
+object UselessParamCommentsWarnConfig {
+  val default: UselessParamCommentsWarnConfig = UselessParamCommentsWarnConfig(
+    message = "useless @param"
+  )
+
+  implicit val surface: Surface[UselessParamCommentsWarnConfig] =
+    metaconfig.generic.deriveSurface[UselessParamCommentsWarnConfig]
+
+  implicit val decoder: ConfDecoder[UselessParamCommentsWarnConfig] =
+    metaconfig.generic.deriveDecoder(default)
+}
+class UselessParamCommentsWarn(config: UselessParamCommentsWarnConfig)
+    extends SyntacticRule("UselessParamCommentsWarn") {
+
+  def this() = this(UselessParamCommentsWarnConfig.default)
+
+  override def withConfiguration(config: Configuration): Configured[Rule] = {
+    config.conf
+      .getOrElse("UselessParamCommentsWarn")(this.config)
+      .map(newConfig => new UselessParamCommentsWarn(newConfig))
+  }
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect { case t: Defn.Class =>
       doc.comments
@@ -33,7 +62,7 @@ class UselessParamCommentsWarn extends SyntacticRule("UselessParamCommentsWarn")
                     Patch.lint(
                       Diagnostic(
                         id = "",
-                        message = "useless @param",
+                        message = config.message,
                         position = {
                           val line = x.pos.startLine + index
                           Position.Range(

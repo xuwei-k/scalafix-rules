@@ -1,5 +1,8 @@
 package fix
 
+import metaconfig.ConfDecoder
+import metaconfig.Configured
+import metaconfig.generic.Surface
 import scala.meta.Decl
 import scala.meta.Defn
 import scala.meta.Member
@@ -13,6 +16,8 @@ import scala.meta.XtensionStructure
 import scalafix.Diagnostic
 import scalafix.Patch
 import scalafix.lint.LintSeverity
+import scalafix.v1.Configuration
+import scalafix.v1.Rule
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
 import scalafix.v1.XtensionSeqPatch
@@ -45,7 +50,28 @@ object SameParamOverloading {
   }
 }
 
-class SameParamOverloading extends SyntacticRule("SameParamOverloading") {
+final case class SameParamOverloadingConfig(
+  message: String
+)
+
+object SameParamOverloadingConfig {
+  val default: SameParamOverloadingConfig = SameParamOverloadingConfig(
+    message = "same param overloading"
+  )
+
+  implicit val surface: Surface[SameParamOverloadingConfig] =
+    metaconfig.generic.deriveSurface[SameParamOverloadingConfig]
+
+  implicit val decoder: ConfDecoder[SameParamOverloadingConfig] =
+    metaconfig.generic.deriveDecoder(default)
+}
+class SameParamOverloading(config: SameParamOverloadingConfig) extends SyntacticRule("SameParamOverloading") {
+
+  def this() = this(SameParamOverloadingConfig.default)
+
+  override def withConfiguration(config: Configuration): Configured[Rule] = {
+    config.conf.getOrElse("SameParamOverloading")(this.config).map(newConfig => new SameParamOverloading(newConfig))
+  }
   import SameParamOverloading.*
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect { case t: Template =>
@@ -61,7 +87,7 @@ class SameParamOverloading extends SyntacticRule("SameParamOverloading") {
           Patch.lint(
             Diagnostic(
               id = "",
-              message = "same param overloading",
+              message = config.message,
               position = x.value.name.pos,
               severity = LintSeverity.Warning
             )
