@@ -9,3 +9,5 @@ addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.5.5")
 addSbtPlugin("com.github.sbt" % "sbt-release" % "1.4.0")
 
 addSbtPlugin("com.github.xuwei-k" % "sbt-root-aggregate" % "0.1.0")
+
+addSbtPlugin("com.github.xuwei-k" % "scalafix-rule-resource-gen" % "0.1.1")
