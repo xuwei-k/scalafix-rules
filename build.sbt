@@ -71,34 +71,14 @@ commonSettings
 
 publish / skip := true
 
-lazy val resourceGenSettings = Def.settings(
-  Compile / resourceGenerators += Def.task {
-    val rules = (Compile / compile).value
-      .asInstanceOf[sbt.internal.inc.Analysis]
-      .apis
-      .internal
-      .collect {
-        case (className, analyzed) if analyzed.api.classApi.structure.parents.collect { case p: xsbti.api.Projection =>
-              p.id
-            }.exists(Set("SyntacticRule", "SemanticRule")) =>
-          className
-      }
-      .toList
-      .sorted
-    assert(rules.nonEmpty)
-    val output = (Compile / resourceManaged).value / "META-INF" / "services" / "scalafix.v1.Rule"
-    IO.writeLines(output, rules)
-    Seq(output)
-  }.taskValue,
-)
-
-lazy val myRuleRule = project.settings(
-  commonSettings,
-  scalaVersion := V.scala212,
-  libraryDependencies += "ch.epfl.scala" %% "scalafix-core" % V.scalafixVersion,
-  resourceGenSettings,
-  publish / skip := true
-)
+lazy val myRuleRule = project
+  .settings(
+    commonSettings,
+    scalaVersion := V.scala212,
+    libraryDependencies += "ch.epfl.scala" %% "scalafix-core" % V.scalafixVersion,
+    publish / skip := true
+  )
+  .enablePlugins(ScalafixRuleResourceGen)
 
 lazy val rules = projectMatrix
   .settings(
@@ -168,9 +148,9 @@ lazy val rules = projectMatrix
         Nil
       }
     },
-    resourceGenSettings,
   )
   .defaultAxes(VirtualAxis.jvm)
+  .enablePlugins(ScalafixRuleResourceGen)
   .jvmPlatform(rulesCrossVersions)
 
 val dogfooding = taskKey[Unit]("")
