@@ -1,5 +1,8 @@
 package fix
 
+import metaconfig.ConfDecoder
+import metaconfig.Configured
+import metaconfig.generic.Surface
 import scala.meta.Defn
 import scala.meta.Mod
 import scala.meta.Term
@@ -10,12 +13,35 @@ import scala.meta.typeParamClauseToValues
 import scalafix.Diagnostic
 import scalafix.Patch
 import scalafix.lint.LintSeverity
+import scalafix.v1.Configuration
+import scalafix.v1.Rule
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
 import scalafix.v1.XtensionSeqPatch
 
-class UnusedTypeParams extends SyntacticRule("UnusedTypeParams") {
+final case class UnusedTypeParamsConfig(
+  message: String
+)
 
+object UnusedTypeParamsConfig {
+  val default: UnusedTypeParamsConfig = UnusedTypeParamsConfig(
+    message = "maybe unused type param"
+  )
+
+  implicit val surface: Surface[UnusedTypeParamsConfig] =
+    metaconfig.generic.deriveSurface[UnusedTypeParamsConfig]
+
+  implicit val decoder: ConfDecoder[UnusedTypeParamsConfig] =
+    metaconfig.generic.deriveDecoder(default)
+}
+
+class UnusedTypeParams(config: UnusedTypeParamsConfig) extends SyntacticRule("UnusedTypeParams") {
+
+  def this() = this(UnusedTypeParamsConfig.default)
+
+  override def withConfiguration(config: Configuration): Configured[Rule] = {
+    config.conf.getOrElse("UnusedTypeParams")(this.config).map(newConfig => new UnusedTypeParams(newConfig))
+  }
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
       case t: Defn.Def if !t.mods.exists(_.is[Mod.Override]) =>
@@ -37,7 +63,7 @@ class UnusedTypeParams extends SyntacticRule("UnusedTypeParams") {
             Patch.lint(
               Diagnostic(
                 id = "",
-                message = "maybe unused type param",
+                message = config.message,
                 position = a.pos,
                 severity = LintSeverity.Warning
               )
