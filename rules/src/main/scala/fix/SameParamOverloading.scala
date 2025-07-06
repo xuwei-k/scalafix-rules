@@ -65,6 +65,7 @@ object SameParamOverloadingConfig {
   implicit val decoder: ConfDecoder[SameParamOverloadingConfig] =
     metaconfig.generic.deriveDecoder(default)
 }
+
 class SameParamOverloading(config: SameParamOverloadingConfig) extends SyntacticRule("SameParamOverloading") {
 
   def this() = this(SameParamOverloadingConfig.default)

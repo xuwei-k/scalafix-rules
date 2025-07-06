@@ -29,6 +29,7 @@ object AutoEtaExpansionConfig {
   implicit val decoder: ConfDecoder[AutoEtaExpansionConfig] =
     metaconfig.generic.deriveDecoder(default)
 }
+
 class AutoEtaExpansion(config: AutoEtaExpansionConfig) extends SyntacticRule("AutoEtaExpansion") {
 
   def this() = this(AutoEtaExpansionConfig.default)

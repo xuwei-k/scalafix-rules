@@ -31,6 +31,7 @@ object CatsImplicitsImportConfig {
   implicit val decoder: ConfDecoder[CatsImplicitsImportConfig] =
     metaconfig.generic.deriveDecoder(default)
 }
+
 class CatsImplicitsImport(config: CatsImplicitsImportConfig) extends SyntacticRule("CatsImplicitsImport") {
 
   def this() = this(CatsImplicitsImportConfig.default)

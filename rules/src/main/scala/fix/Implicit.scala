@@ -28,6 +28,7 @@ object ImplicitConfig {
   implicit val decoder: ConfDecoder[ImplicitConfig] =
     metaconfig.generic.deriveDecoder(default)
 }
+
 class Implicit(config: ImplicitConfig) extends SyntacticRule("Implicit") {
 
   def this() = this(ImplicitConfig.default)

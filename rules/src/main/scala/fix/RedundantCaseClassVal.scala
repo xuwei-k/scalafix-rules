@@ -33,6 +33,7 @@ object RedundantCaseClassValConfig {
   implicit val decoder: ConfDecoder[RedundantCaseClassValConfig] =
     metaconfig.generic.deriveDecoder(default)
 }
+
 class RedundantCaseClassVal(config: RedundantCaseClassValConfig) extends SyntacticRule("RedundantCaseClassVal") {
 
   def this() = this(RedundantCaseClassValConfig.default)

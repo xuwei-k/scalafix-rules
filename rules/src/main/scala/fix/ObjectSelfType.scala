@@ -30,6 +30,7 @@ object ObjectSelfTypeConfig {
   implicit val decoder: ConfDecoder[ObjectSelfTypeConfig] =
     metaconfig.generic.deriveDecoder(default)
 }
+
 class ObjectSelfType(config: ObjectSelfTypeConfig) extends SyntacticRule("ObjectSelfType") {
 
   def this() = this(ObjectSelfTypeConfig.default)

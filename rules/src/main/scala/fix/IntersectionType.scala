@@ -29,6 +29,7 @@ object IntersectionTypeConfig {
   implicit val decoder: ConfDecoder[IntersectionTypeConfig] =
     metaconfig.generic.deriveDecoder(default)
 }
+
 class IntersectionType(config: IntersectionTypeConfig) extends SyntacticRule("IntersectionType") {
 
   def this() = this(IntersectionTypeConfig.default)
