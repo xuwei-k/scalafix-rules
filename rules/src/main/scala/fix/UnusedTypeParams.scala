@@ -2,7 +2,6 @@ package fix
 
 import scala.meta.Defn
 import scala.meta.Mod
-import scala.meta.Position
 import scala.meta.Term
 import scala.meta.Type
 import scala.meta.XtensionClassifiable
@@ -35,14 +34,16 @@ class UnusedTypeParams extends SyntacticRule("UnusedTypeParams") {
           .groupBy(_.name.value)
           .values
           .collect { case a :: Nil =>
-            Patch.lint(new UnusedTypeParamsWarn(a.pos))
+            Patch.lint(
+              Diagnostic(
+                id = "",
+                message = "maybe unused type param",
+                position = a.pos,
+                severity = LintSeverity.Warning
+              )
+            )
           }
           .asPatch
     }.asPatch
   }
-}
-
-class UnusedTypeParamsWarn(override val position: Position) extends Diagnostic {
-  override def message = "maybe unused type param"
-  override def severity: LintSeverity = LintSeverity.Warning
 }

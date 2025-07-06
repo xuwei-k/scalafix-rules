@@ -4,7 +4,6 @@ import scala.meta.Case
 import scala.meta.Pat
 import scala.meta.Term
 import scala.meta.XtensionCollectionLikeUI
-import scala.meta.inputs.Position
 import scalafix.Patch
 import scalafix.lint.Diagnostic
 import scalafix.lint.LintSeverity
@@ -38,18 +37,22 @@ class OptionMapFlatMap extends SyntacticRule("OptionMapFlatMap") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
       case t @ Term.Match.After_4_4_5(_, CaseSome() :: NoneToNone() :: Nil, _) =>
-        Patch.lint(OptionMapFlatMapWarn(t.pos))
+        t.pos
       case t @ Term.Match.After_4_4_5(_, NoneToNone() :: CaseSome() :: Nil, _) =>
-        Patch.lint(OptionMapFlatMapWarn(t.pos))
+        t.pos
       case t @ Term.PartialFunction(CaseSome() :: NoneToNone() :: Nil) =>
-        Patch.lint(OptionMapFlatMapWarn(t.pos))
+        t.pos
       case t @ Term.PartialFunction(NoneToNone() :: CaseSome() :: Nil) =>
-        Patch.lint(OptionMapFlatMapWarn(t.pos))
-    }.asPatch
+        t.pos
+    }.map(pos =>
+      Patch.lint(
+        Diagnostic(
+          id = "",
+          message = "maybe you can use Option#map or flatMap",
+          position = pos,
+          severity = LintSeverity.Warning
+        )
+      )
+    ).asPatch
   }
-}
-
-case class OptionMapFlatMapWarn(override val position: Position) extends Diagnostic {
-  override def message = "maybe you can use Option#map or flatMap"
-  override def severity: LintSeverity = LintSeverity.Warning
 }

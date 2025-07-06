@@ -1,6 +1,5 @@
 package fix
 
-import scala.meta.Position
 import scala.meta.Term
 import scala.meta.XtensionClassifiable
 import scala.meta.XtensionCollectionLikeUI
@@ -26,14 +25,14 @@ class LambdaParamParentheses extends SyntacticRule("LambdaParamParentheses") {
           Patch.empty
         } else {
           Patch.lint(
-            LambdaParamParenthesesWarn(param.pos)
+            Diagnostic(
+              id = "",
+              message = "add parentheses or remove explicit types for prepare Scala 3",
+              position = param.pos,
+              severity = LintSeverity.Warning
+            )
           )
         }
     }.asPatch
   }
-}
-
-case class LambdaParamParenthesesWarn(override val position: Position) extends Diagnostic {
-  override def message = "add parentheses or remove explicit types for prepare Scala 3"
-  override def severity: LintSeverity = LintSeverity.Warning
 }

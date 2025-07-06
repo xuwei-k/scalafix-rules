@@ -13,7 +13,6 @@ import scala.meta.Term
 import scala.meta.Tree
 import scala.meta.XtensionClassifiable
 import scala.meta.XtensionCollectionLikeUI
-import scala.meta.inputs.Position
 import scalafix.Diagnostic
 import scalafix.Patch
 import scalafix.lint.LintSeverity
@@ -54,10 +53,19 @@ class ExplicitImplicitTypes(config: ExplicitImplicitTypesConfig) extends Syntact
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
       case t1: Defn.Val if t1.mods.exists(_.is[Mod.Implicit]) && t1.decltpe.isEmpty && isNotLocal(t1) =>
-        Patch.lint(ExplicitImplicitTypesWarn(t1.pos))
+        t1.pos
       case t1: Defn.Def if t1.mods.exists(_.is[Mod.Implicit]) && t1.decltpe.isEmpty =>
-        Patch.lint(ExplicitImplicitTypesWarn(t1.pos))
-    }.asPatch
+        t1.pos
+    }.map(pos =>
+      Patch.lint(
+        Diagnostic(
+          id = "",
+          message = "add explicit types for implicit values",
+          position = pos,
+          severity = LintSeverity.Warning
+        )
+      )
+    ).asPatch
   }
 
   @tailrec
@@ -86,9 +94,4 @@ class ExplicitImplicitTypes(config: ExplicitImplicitTypesConfig) extends Syntact
       true
     }
   }
-}
-
-case class ExplicitImplicitTypesWarn(override val position: Position) extends Diagnostic {
-  override def message = "add explicit types for implicit values"
-  override def severity: LintSeverity = LintSeverity.Warning
 }
