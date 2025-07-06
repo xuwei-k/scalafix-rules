@@ -2,7 +2,6 @@ package fix
 
 import scala.meta.Importee
 import scala.meta.XtensionCollectionLikeUI
-import scala.meta.inputs.Position
 import scalafix.Patch
 import scalafix.lint.Diagnostic
 import scalafix.lint.LintSeverity
@@ -15,12 +14,14 @@ class Scala3ImportWarn extends SyntacticRule("Scala3ImportWarn") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
       case t: Importee.Wildcard if t.toString == "_" =>
-        Patch.lint(Scala3ImportWarning(t.pos))
+        Patch.lint(
+          Diagnostic(
+            id = "",
+            message = "use `*` instead of `_` for wildcard import",
+            position = t.pos,
+            severity = LintSeverity.Warning
+          )
+        )
     }.asPatch
   }
-}
-
-case class Scala3ImportWarning(override val position: Position) extends Diagnostic {
-  override def message: String = "use `*` instead of `_` for wildcard import"
-  override def severity: LintSeverity = LintSeverity.Warning
 }

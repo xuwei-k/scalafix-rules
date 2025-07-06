@@ -49,15 +49,17 @@ class SyntacticOrganizeImports extends SyntacticRule("SyntacticOrganizeImports")
             .filter(_._1.trim.isEmpty)
             .map { case (_, emptyLineNumber) =>
               Patch.lint(
-                SyntacticOrganizeImportsWarn(
-                  Position.Range(
+                Diagnostic(
+                  id = "",
+                  message = "there is empty line in top level imports",
+                  position = Position.Range(
                     input = doc.input,
                     startLine = emptyLineNumber,
                     startColumn = 0,
                     endLine = emptyLineNumber + 1,
                     endColumn = 0
                   ),
-                  "there is empty line in top level imports"
+                  severity = LintSeverity.Warning
                 )
               )
             }
@@ -71,9 +73,11 @@ class SyntacticOrganizeImports extends SyntacticRule("SyntacticOrganizeImports")
             }
             .map { case (_, value) =>
               Patch.lint(
-                SyntacticOrganizeImportsWarn(
-                  value.pos,
-                  "does not sorted imports"
+                Diagnostic(
+                  id = "",
+                  message = "does not sorted imports",
+                  position = value.pos,
+                  severity = LintSeverity.Warning
                 )
               )
             }
@@ -84,11 +88,4 @@ class SyntacticOrganizeImports extends SyntacticRule("SyntacticOrganizeImports")
       }
     }.asPatch
   }
-}
-
-case class SyntacticOrganizeImportsWarn(
-  override val position: Position,
-  override val message: String
-) extends Diagnostic {
-  override def severity: LintSeverity = LintSeverity.Warning
 }

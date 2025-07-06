@@ -3,7 +3,6 @@ package fix
 import scala.meta.Lit
 import scala.meta.Term
 import scala.meta.XtensionCollectionLikeUI
-import scala.meta.inputs.Position
 import scalafix.Diagnostic
 import scalafix.Patch
 import scalafix.lint.LintSeverity
@@ -15,13 +14,13 @@ class NoElse extends SyntacticRule("NoElse") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect { case t @ Term.If.After_4_4_0(_, _, Lit.Unit(), _) =>
       Patch.lint(
-        NoElseWarn(t.pos)
+        Diagnostic(
+          id = "",
+          message = "add `else`",
+          position = t.pos,
+          severity = LintSeverity.Warning
+        )
       )
     }.asPatch
   }
-}
-
-case class NoElseWarn(override val position: Position) extends Diagnostic {
-  override def message = "add `else`"
-  override def severity: LintSeverity = LintSeverity.Warning
 }

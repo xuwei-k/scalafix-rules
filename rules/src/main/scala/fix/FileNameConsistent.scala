@@ -7,7 +7,6 @@ import scala.meta.Tree
 import scala.meta.XtensionClassifiable
 import scala.meta.XtensionCollectionLikeUI
 import scala.meta.inputs.Input
-import scala.meta.inputs.Position
 import scalafix.Diagnostic
 import scalafix.Patch
 import scalafix.lint.LintSeverity
@@ -58,10 +57,11 @@ class FileNameConsistent extends SyntacticRule("FileNameConsistent") {
             Patch.empty
           } else {
             Patch.lint(
-              FileNameConsistentWaring(
-                names = names,
-                path = src.fullPath,
-                position = defs.headOption.getOrElse(packageObjects.head).tree.pos
+              Diagnostic(
+                id = "",
+                message = s"inconsistent file name and class name. names = ${names.mkString("[", ", ", "]")}",
+                position = defs.headOption.getOrElse(packageObjects.head).tree.pos,
+                severity = LintSeverity.Warning
               )
             )
           }
@@ -81,13 +81,6 @@ object FileNameConsistent {
   private case class ScalaSource(fullPath: String, name: String)
 
   private case class TemplateDef(tree: Tree, name: String)
-
-  private case class FileNameConsistentWaring(names: List[String], path: String, override val position: Position)
-      extends Diagnostic {
-    override def message: String = s"inconsistent file name and class name. names = ${names.mkString("[", ", ", "]")}"
-
-    override def severity: LintSeverity = LintSeverity.Warning
-  }
 
   implicit class TreeOps(private val self: Defn) extends AnyVal {
     def isTopLevel: Boolean =

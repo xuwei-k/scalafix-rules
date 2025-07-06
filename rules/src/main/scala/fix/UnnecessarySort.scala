@@ -1,6 +1,5 @@
 package fix
 
-import scala.meta.Position
 import scala.meta.Term
 import scala.meta.XtensionCollectionLikeUI
 import scalafix.Diagnostic
@@ -34,12 +33,13 @@ class UnnecessarySort extends SyntacticRule("UnnecessarySort") {
             Term.Name(methodName)
           ) if UnnecessarySort.map.contains(methodName) =>
         Patch.lint(
-          UnnecessarySortWarn(t.pos, s"maybe you can use ${UnnecessarySort.map(methodName)}")
+          Diagnostic(
+            id = "",
+            message = s"maybe you can use ${UnnecessarySort.map(methodName)}",
+            position = t.pos,
+            severity = LintSeverity.Warning
+          )
         )
     }.asPatch
   }
-}
-
-case class UnnecessarySortWarn(override val position: Position, message: String) extends Diagnostic {
-  override def severity: LintSeverity = LintSeverity.Warning
 }
