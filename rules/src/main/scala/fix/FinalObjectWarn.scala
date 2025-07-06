@@ -32,6 +32,7 @@ object FinalObjectWarnConfig {
   implicit val decoder: ConfDecoder[FinalObjectWarnConfig] =
     metaconfig.generic.deriveDecoder(default)
 }
+
 class FinalObjectWarn(config: FinalObjectWarnConfig) extends SyntacticRule("FinalObjectWarn") {
 
   def this() = this(FinalObjectWarnConfig.default)

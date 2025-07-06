@@ -55,6 +55,7 @@ object CompareSameValueConfig {
   implicit val decoder: ConfDecoder[CompareSameValueConfig] =
     metaconfig.generic.deriveDecoder(default)
 }
+
 class CompareSameValue(config: CompareSameValueConfig) extends SyntacticRule("CompareSameValue") {
 
   def this() = this(CompareSameValueConfig.default)

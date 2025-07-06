@@ -31,6 +31,7 @@ object CaseClassImplicitValConfig {
   implicit val decoder: ConfDecoder[CaseClassImplicitValConfig] =
     metaconfig.generic.deriveDecoder(default)
 }
+
 class CaseClassImplicitVal(config: CaseClassImplicitValConfig) extends SyntacticRule("CaseClassImplicitVal") {
 
   def this() = this(CaseClassImplicitValConfig.default)

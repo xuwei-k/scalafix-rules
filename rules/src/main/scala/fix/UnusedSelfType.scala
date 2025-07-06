@@ -32,6 +32,7 @@ object UnusedSelfTypeConfig {
   implicit val decoder: ConfDecoder[UnusedSelfTypeConfig] =
     metaconfig.generic.deriveDecoder(default)
 }
+
 class UnusedSelfType(config: UnusedSelfTypeConfig) extends SyntacticRule("UnusedSelfType") {
 
   def this() = this(UnusedSelfTypeConfig.default)

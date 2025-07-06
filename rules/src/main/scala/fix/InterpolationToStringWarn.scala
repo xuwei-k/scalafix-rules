@@ -30,6 +30,7 @@ object InterpolationToStringWarnConfig {
   implicit val decoder: ConfDecoder[InterpolationToStringWarnConfig] =
     metaconfig.generic.deriveDecoder(default)
 }
+
 class InterpolationToStringWarn(config: InterpolationToStringWarnConfig)
     extends SyntacticRule("InterpolationToStringWarn") {
 

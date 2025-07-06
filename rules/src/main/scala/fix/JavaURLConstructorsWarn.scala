@@ -30,6 +30,7 @@ object JavaURLConstructorsWarnConfig {
   implicit val decoder: ConfDecoder[JavaURLConstructorsWarnConfig] =
     metaconfig.generic.deriveDecoder(default)
 }
+
 class JavaURLConstructorsWarn(config: JavaURLConstructorsWarnConfig) extends SemanticRule("JavaURLConstructorsWarn") {
 
   def this() = this(JavaURLConstructorsWarnConfig.default)

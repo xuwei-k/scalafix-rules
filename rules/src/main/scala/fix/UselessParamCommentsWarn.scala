@@ -34,6 +34,7 @@ object UselessParamCommentsWarnConfig {
   implicit val decoder: ConfDecoder[UselessParamCommentsWarnConfig] =
     metaconfig.generic.deriveDecoder(default)
 }
+
 class UselessParamCommentsWarn(config: UselessParamCommentsWarnConfig)
     extends SyntacticRule("UselessParamCommentsWarn") {
 

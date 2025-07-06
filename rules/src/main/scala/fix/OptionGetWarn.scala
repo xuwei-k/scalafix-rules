@@ -35,6 +35,7 @@ object OptionGetWarnConfig {
   implicit val decoder: ConfDecoder[OptionGetWarnConfig] =
     metaconfig.generic.deriveDecoder(default)
 }
+
 class OptionGetWarn(config: OptionGetWarnConfig) extends SemanticRule("OptionGetWarn") {
 
   def this() = this(OptionGetWarnConfig.default)

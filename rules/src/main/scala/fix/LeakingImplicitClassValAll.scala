@@ -34,6 +34,7 @@ object LeakingImplicitClassValAllConfig {
   implicit val decoder: ConfDecoder[LeakingImplicitClassValAllConfig] =
     metaconfig.generic.deriveDecoder(default)
 }
+
 class LeakingImplicitClassValAll(config: LeakingImplicitClassValAllConfig)
     extends SyntacticRule("LeakingImplicitClassValAll") {
 

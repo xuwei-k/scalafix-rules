@@ -30,6 +30,7 @@ object CatsInstancesImportConfig {
   implicit val decoder: ConfDecoder[CatsInstancesImportConfig] =
     metaconfig.generic.deriveDecoder(default)
 }
+
 class CatsInstancesImport(config: CatsInstancesImportConfig) extends SyntacticRule("CatsInstancesImport") {
 
   def this() = this(CatsInstancesImportConfig.default)
