@@ -3,6 +3,8 @@ package fix
 import metaconfig.ConfDecoder
 import metaconfig.Configured
 import metaconfig.generic.Surface
+import scala.meta.Defn
+import scala.meta.Stat
 import scala.meta.Type
 import scala.meta.transversers._
 import scalafix.Patch
@@ -41,14 +43,24 @@ class TypeProjection(config: TypeProjectionConfig) extends SyntacticRule("TypePr
 
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect { case t: Type.Project =>
-      Patch.lint(
-        Diagnostic(
-          id = "",
-          message = config.message,
-          position = t.pos,
-          severity = LintSeverity.Warning
-        )
-      )
+      t.qual match {
+        case Type.Refine.After_4_9_9(
+              None,
+              Stat.Block(
+                (_: Defn.Type) :: Nil
+              )
+            ) =>
+          Patch.empty
+        case _ =>
+          Patch.lint(
+            Diagnostic(
+              id = "",
+              message = config.message,
+              position = t.pos,
+              severity = LintSeverity.Warning
+            )
+          )
+      }
     }.asPatch
   }
 }
