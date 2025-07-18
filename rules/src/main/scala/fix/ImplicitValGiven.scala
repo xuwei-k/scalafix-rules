@@ -15,7 +15,7 @@ class ImplicitValGiven extends SyntacticRule("ImplicitValGiven") {
               _
             ),
             _
-          ) if t.mods.exists(_.is[Mod.Implicit]) =>
+          ) if t.mods.exists(_.is[Mod.Implicit]) && !t.mods.exists(_.is[Mod.Override]) =>
         Seq(
           t.tokens.find(_.is[scala.meta.tokens.Token.KwVal]).map(Patch.replaceToken(_, "given")),
           t.tokens.zip(t.tokens.drop(1)).find(_._1.is[scala.meta.tokens.Token.KwLazy]).map { case (t1, t2) =>
