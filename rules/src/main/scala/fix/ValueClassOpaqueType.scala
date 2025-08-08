@@ -57,7 +57,7 @@ class ValueClassOpaqueType extends SyntacticRule("ValueClassOpaqueType") {
             s"opaque type ${className} = ${tpe}",
             s"",
             s"object ${className}{",
-            s"  def apply(${fieldName}: ${tpe}): ${className} = value",
+            s"  def apply(${fieldName}: ${tpe}): ${className} = ${fieldName}",
             s"",
             s"  extension (x: ${className}) {",
             s"    def ${fieldName}: ${tpe} = x",
