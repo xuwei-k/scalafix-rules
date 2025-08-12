@@ -3,6 +3,7 @@ package fix
 import scala.annotation.tailrec
 import scala.meta.Ctor
 import scala.meta.Defn
+import scala.meta.Import
 import scala.meta.Mod
 import scala.meta.Mod.ValParam
 import scala.meta.Pkg
@@ -48,8 +49,11 @@ class ImplicitValueClass extends SyntacticRule("ImplicitValueClass") {
             Ctor.Primary.Initial(_, _, List(p1 :: Nil)),
             Template.Initial(Nil, Nil, _, stats)
           )
-          if c.mods.exists(_.is[Mod.Implicit]) && stats.forall(_.is[Defn.Def]) && allParentIsObject(c) && !p1.decltpe
-            .forall(_.is[Type.ByName]) && c.tparamClause.values.forall(_.bounds.context.isEmpty) =>
+          if c.mods.exists(_.is[Mod.Implicit]) && stats.forall(s =>
+            s.is[Defn.Def] || s.is[Import] || s.is[Defn.Type]
+          ) && allParentIsObject(c) && !p1.decltpe.forall(
+            _.is[Type.ByName]
+          ) && c.tparamClause.values.forall(_.bounds.context.isEmpty) =>
         Seq(
           {
             if (p1.mods.exists(_.is[ValParam])) {

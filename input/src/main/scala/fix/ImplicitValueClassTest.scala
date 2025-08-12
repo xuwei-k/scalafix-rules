@@ -34,6 +34,14 @@ object ImplicitValueClassTest {
     println(a)
   }
 
+  implicit class A7(a: Int) {
+    import scala.util.Random
+
+    type X = Random
+
+    def f: X = Random
+  }
+
   implicit class ByName(a: => Int)
 
   object X1 {
