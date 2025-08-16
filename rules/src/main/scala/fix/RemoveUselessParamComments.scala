@@ -5,9 +5,10 @@ import scala.meta.Decl
 import scala.meta.Defn
 import scala.meta.Tree
 import scala.meta.XtensionCollectionLikeUI
+import scala.meta.XtensionSyntax
 import scala.meta.contrib.AssociatedComments
-import scala.meta.contrib.DocToken
-import scala.meta.contrib.XtensionCommentOps
+import scala.meta.internal.Scaladoc
+import scala.meta.internal.Scaladoc.TagType
 import scalafix.Patch
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
@@ -30,22 +31,34 @@ class RemoveUselessParamComments extends SyntacticRule("RemoveUselessParamCommen
       .leading(t)
       .toSeq
       .map { x =>
-        val xs = x.docTokens.toList.flatten.map { c =>
-          (c.kind, c.name.map(_.toLowerCase(Locale.ROOT)), c.body.map(_.toLowerCase(Locale.ROOT)))
-        }.collect {
-          case (DocToken.Param, Some(x1), Some(x2)) if x1 == x2 =>
-            PartialFunction.condOpt(x.value.linesIterator.zipWithIndex.collect {
-              case (str, i) if str.contains(s" ${x1} ") => i
-            }.toList) { case index :: Nil =>
-              index
-            }
-          case (DocToken.Param, Some(x1), _) if x1.contains("@param") && x1.contains('\n') =>
-            PartialFunction.condOpt(x.value.linesIterator.zipWithIndex.collect {
-              case (str, i) if str.contains(s" ${x1.dropRight("@param".length + 1)}") => i
-            }.toList) { case index :: Nil =>
-              index
-            }
-        }.flatten.toSet
+        val xs = scala.meta.internal.parsers.ScaladocParser
+          .parse(x.syntax)
+          .toSeq
+          .flatMap(_.para.flatMap(_.terms))
+          .collect { case c @ Scaladoc.Tag(TagType.Param, _, _) =>
+            (
+              c.label.map(_.value.toLowerCase(Locale.ROOT)),
+              c.desc.collect { case text: Scaladoc.Text =>
+                text.parts.map(_.part.syntax.toLowerCase(Locale.ROOT))
+              }.flatten.toList
+            )
+          }
+          .collect {
+            case (Some(x1), Seq(x2)) if x1 == x2 =>
+              PartialFunction.condOpt(x.value.linesIterator.zipWithIndex.collect {
+                case (str, i) if str.contains(" @param ") && str.contains(s" ${x1} ") => i
+              }.toList) { case index :: Nil =>
+                index
+              }
+            case (Some(x1), Nil) =>
+              PartialFunction.condOpt(x.value.linesIterator.zipWithIndex.collect {
+                case (str, i) if str.contains(" @param ") && str.endsWith(s" ${x1}") => i
+              }.toList) { case index :: Nil =>
+                index
+              }
+          }
+          .flatten
+          .toSet
 
         if (xs.nonEmpty) {
           Patch.replaceToken(
