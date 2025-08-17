@@ -203,7 +203,7 @@ lazy val rules212 = rules
       assert(rules.distinct.sorted == rules)
 
       val arg = rules
-        .map(x => s"dependency:${x}@com.github.xuwei-k:scalafix-rules:0.6.13")
+        .map(x => s"dependency:${x}@com.github.xuwei-k:scalafix-rules:0.6.14")
         .mkString(" ", " ", " --settings.lint.error.includes=.* --check")
       Def.task {
         (Compile / scalafix).toTask(arg).value
