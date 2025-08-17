@@ -1,8 +1,7 @@
 package fix
 
 import java.util.Locale
-import scala.meta.Decl
-import scala.meta.Defn
+import scala.meta.Stat
 import scala.meta.Tree
 import scala.meta.XtensionCollectionLikeUI
 import scala.meta.XtensionSyntax
@@ -17,11 +16,9 @@ import scalafix.v1.XtensionSeqPatch
 class RemoveUselessParamComments extends SyntacticRule("RemoveUselessParamComments") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
-      case t: Defn.Class =>
+      case t: Stat.WithCtor =>
         p(t, doc.comments)
-      case t: Defn.Def =>
-        p(t, doc.comments)
-      case t: Decl.Def =>
+      case t: Tree.WithParamClauseGroups =>
         p(t, doc.comments)
     }.asPatch
   }
