@@ -1,0 +1,23 @@
+[{
+  "message": "[UselessParamCommentsWarn] useless @param",
+  "position": {
+    "line": 4,
+    "lineContent": " * @param aaa AAA",
+    "sourcePath": "${BASE}/A.scala",
+    "startLine": 4,
+    "startColumn": 0,
+    "endLine": 4,
+    "endColumn": 17
+  }
+}, {
+  "message": "[UselessParamCommentsWarn] useless @param",
+  "position": {
+    "line": 12,
+    "lineContent": "   * @param ddd ddd",
+    "sourcePath": "${BASE}/A.scala",
+    "startLine": 12,
+    "startColumn": 0,
+    "endLine": 12,
+    "endColumn": 19
+  }
+}]

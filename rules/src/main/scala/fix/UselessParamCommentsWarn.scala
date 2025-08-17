@@ -4,9 +4,11 @@ import java.util.Locale
 import metaconfig.ConfDecoder
 import metaconfig.Configured
 import metaconfig.generic.Surface
-import scala.meta.Defn
+import scala.meta.Stat
+import scala.meta.Tree
 import scala.meta.XtensionCollectionLikeUI
 import scala.meta.XtensionSyntax
+import scala.meta.contrib.AssociatedComments
 import scala.meta.inputs.Position
 import scala.meta.internal.Scaladoc
 import scala.meta.internal.Scaladoc.TagType
@@ -48,51 +50,58 @@ class UselessParamCommentsWarn(config: UselessParamCommentsWarnConfig)
       .map(newConfig => new UselessParamCommentsWarn(newConfig))
   }
   override def fix(implicit doc: SyntacticDocument): Patch = {
-    doc.tree.collect { case t: Defn.Class =>
-      doc.comments
-        .leading(t)
-        .flatMap(x =>
-          ScaladocParser
-            .parse(x.syntax)
-            .toSeq
-            .flatMap(_.para.flatMap(_.terms))
-            .collect { case c @ Scaladoc.Tag(TagType.Param, _, _) =>
-              (
-                x,
-                c.label.map(_.value.toLowerCase(Locale.ROOT)),
-                c.desc.collect { case text: Scaladoc.Text =>
-                  text.parts.map(_.part.syntax.toLowerCase(Locale.ROOT))
-                }.flatten
-              )
-            }
-            .collect {
-              case (x, Some(x1), Seq(x2)) if x1 == x2 =>
-                PartialFunction
-                  .condOpt(x.value.linesIterator.zipWithIndex.collect {
-                    case (str, i) if str.contains(s" ${x1} ") => (str.length + 1, i)
-                  }.toList) { case List((length, index)) =>
-                    Patch.lint(
-                      Diagnostic(
-                        id = "",
-                        message = config.message,
-                        position = {
-                          val line = x.pos.startLine + index
-                          Position.Range(
-                            input = doc.input,
-                            startLine = line,
-                            startColumn = 0,
-                            endLine = line,
-                            endColumn = length
-                          )
-                        },
-                        severity = LintSeverity.Warning
-                      )
-                    )
-                  }
-                  .asPatch
-            }
-        )
-        .asPatch
+    doc.tree.collect {
+      case t: Stat.WithCtor =>
+        p(t, doc.comments)
+      case t: Tree.WithParamClauseGroups =>
+        p(t, doc.comments)
     }.asPatch
+  }
+
+  private def p(t: Tree, comments: AssociatedComments)(implicit doc: SyntacticDocument): Patch = {
+    comments
+      .leading(t)
+      .flatMap(x =>
+        ScaladocParser
+          .parse(x.syntax)
+          .toSeq
+          .flatMap(_.para.flatMap(_.terms))
+          .collect { case c @ Scaladoc.Tag(TagType.Param, _, _) =>
+            (
+              x,
+              c.label.map(_.value.toLowerCase(Locale.ROOT)),
+              c.desc.collect { case text: Scaladoc.Text =>
+                text.parts.map(_.part.syntax.toLowerCase(Locale.ROOT))
+              }.flatten
+            )
+          }
+          .collect {
+            case (x, Some(x1), Seq(x2)) if x1 == x2 =>
+              PartialFunction
+                .condOpt(x.value.linesIterator.zipWithIndex.collect {
+                  case (str, i) if str.contains(s" ${x1} ") => (str.length + 1, i)
+                }.toList) { case List((length, index)) =>
+                  Patch.lint(
+                    Diagnostic(
+                      id = "",
+                      message = config.message,
+                      position = {
+                        val line = x.pos.startLine + index
+                        Position.Range(
+                          input = doc.input,
+                          startLine = line,
+                          startColumn = 0,
+                          endLine = line,
+                          endColumn = length
+                        )
+                      },
+                      severity = LintSeverity.Warning
+                    )
+                  )
+                }
+                .asPatch
+          }
+      )
+      .asPatch
   }
 }
