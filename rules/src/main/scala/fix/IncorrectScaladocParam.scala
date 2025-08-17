@@ -6,9 +6,11 @@ import scala.meta.Defn
 import scala.meta.Term
 import scala.meta.Tree
 import scala.meta.XtensionCollectionLikeUI
-import scala.meta.contrib.DocToken
-import scala.meta.contrib.XtensionCommentOps
+import scala.meta.XtensionSyntax
 import scala.meta.inputs.Position
+import scala.meta.internal.Scaladoc
+import scala.meta.internal.Scaladoc.TagType
+import scala.meta.internal.parsers.ScaladocParser
 import scalafix.Patch
 import scalafix.lint.Diagnostic
 import scalafix.lint.LintSeverity
@@ -43,14 +45,15 @@ class IncorrectScaladocParam extends SyntacticRule("IncorrectScaladocParam") {
     val names = paramsClauses.flatMap(_.values.map(_.name.value.trim)).toSet
 
     doc.comments.leading(t).toList.flatMap { x =>
-      val scaladocParamNames = x.docTokens.toList.flatten.flatMap(c =>
-        PartialFunction
-          .condOpt(c.kind) { case DocToken.Param =>
-            c.name
+      val scaladocParamNames =
+        ScaladocParser
+          .parse(x.syntax)
+          .toSeq
+          .flatMap(_.para.flatMap(_.terms))
+          .collect { case c @ Scaladoc.Tag(TagType.Param, _, _) =>
+            c.label.map(_.value.trim)
           }
           .flatten
-          .map(_.trim)
-      )
       val duplicateNames = scaladocParamNames.groupBy(identity).filter(_._2.size > 1).map(_._1).filter(names)
 
       def getPositions(paramName: String): List[Position] =
