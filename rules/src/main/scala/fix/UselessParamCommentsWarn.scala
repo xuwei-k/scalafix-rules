@@ -6,9 +6,11 @@ import metaconfig.Configured
 import metaconfig.generic.Surface
 import scala.meta.Defn
 import scala.meta.XtensionCollectionLikeUI
-import scala.meta.contrib.DocToken
-import scala.meta.contrib.XtensionCommentOps
+import scala.meta.XtensionSyntax
 import scala.meta.inputs.Position
+import scala.meta.internal.Scaladoc
+import scala.meta.internal.Scaladoc.TagType
+import scala.meta.internal.parsers.ScaladocParser
 import scalafix.Patch
 import scalafix.lint.Diagnostic
 import scalafix.lint.LintSeverity
@@ -49,13 +51,22 @@ class UselessParamCommentsWarn(config: UselessParamCommentsWarnConfig)
     doc.tree.collect { case t: Defn.Class =>
       doc.comments
         .leading(t)
-        .flatMap(x => x.docTokens.toList.flatten.map(x -> _))
-        .map { case (x, c) =>
-          PartialFunction
-            .condOpt(
-              (c.kind, c.name.map(_.toLowerCase(Locale.ROOT)), c.body.map(_.toLowerCase(Locale.ROOT)))
-            ) {
-              case (DocToken.Param, Some(x1), Some(x2)) if x1 == x2 =>
+        .flatMap(x =>
+          ScaladocParser
+            .parse(x.syntax)
+            .toSeq
+            .flatMap(_.para.flatMap(_.terms))
+            .collect { case c @ Scaladoc.Tag(TagType.Param, _, _) =>
+              (
+                x,
+                c.label.map(_.value.toLowerCase(Locale.ROOT)),
+                c.desc.collect { case text: Scaladoc.Text =>
+                  text.parts.map(_.part.syntax.toLowerCase(Locale.ROOT))
+                }.flatten
+              )
+            }
+            .collect {
+              case (x, Some(x1), Seq(x2)) if x1 == x2 =>
                 PartialFunction
                   .condOpt(x.value.linesIterator.zipWithIndex.collect {
                     case (str, i) if str.contains(s" ${x1} ") => (str.length + 1, i)
@@ -80,8 +91,7 @@ class UselessParamCommentsWarn(config: UselessParamCommentsWarnConfig)
                   }
                   .asPatch
             }
-            .asPatch
-        }
+        )
         .asPatch
     }.asPatch
   }
