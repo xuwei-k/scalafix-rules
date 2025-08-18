@@ -19,7 +19,7 @@ class UsingParamAnonymous extends SyntacticRule("UsingParamAnonymous") {
           _.mods.exists(_.is[Mod.Using])
         ) && paramClause.values.forall(
           !_.mods.exists(x => x.is[Mod.Inline] || x.is[Mod.Annot])
-        )
+        ) && paramClause.values.forall(_.default.isEmpty)
       }.map { paramClause =>
         val countOneNames = t.collect { case x: Term.Name =>
           x.value
