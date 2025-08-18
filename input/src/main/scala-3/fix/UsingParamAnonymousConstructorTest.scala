@@ -16,6 +16,8 @@ trait UsingParamAnonymousConstructorTest {
 
   class A5(using @annotation.nowarn x1: Int)
 
+  class A6(using x1: Int = 3)
+
   trait B1(using x1: Int)
 
   trait B2(using x1: Int) {
