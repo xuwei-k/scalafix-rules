@@ -1,8 +1,12 @@
 package fix
 
 import scala.meta.Defn
+import scala.meta.Init
 import scala.meta.Mod
+import scala.meta.Name
 import scala.meta.Stat
+import scala.meta.Term
+import scala.meta.Type
 import scala.meta.XtensionClassifiable
 import scala.meta.XtensionCollectionLikeUI
 import scala.meta.termParamClauseToValues
@@ -27,6 +31,36 @@ class UnusedConstructorParams extends SyntacticRule("UnusedConstructorParams") {
           .filterNot(_.mods.exists(_.is[Mod.Using]))
           .filterNot(_.mods.exists(_.is[Mod.VarParam]))
           .filterNot(_.mods.exists(_.is[Mod.ValParam]))
+          .filterNot(_.mods.exists {
+            case Mod.Annot(
+                  Init.After_4_6_0(
+                    Type.Select(
+                      Term.Select(
+                        Term.Select(
+                          Term.Name("_root_"),
+                          Term.Name("scala")
+                        ),
+                        Term.Name("annotation")
+                      ),
+                      Type.Name("unused")
+                    ) | Type.Select(
+                      Term.Select(
+                        Term.Name("scala"),
+                        Term.Name("annotation")
+                      ),
+                      Type.Name("unused")
+                    ) | Type.Select(
+                      Term.Name("annotation"),
+                      Type.Name("unused")
+                    ) | Type.Name("unused"),
+                    Name.Anonymous(),
+                    Nil
+                  )
+                ) =>
+              true
+            case _ =>
+              false
+          })
         val allTokens = {
           val values = x.templ.tokens.map(_.text).toSet
           values ++ values.filter(a => a.startsWith("`") && a.endsWith("`")).map(_.drop(1).dropRight(1))
