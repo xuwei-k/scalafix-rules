@@ -4,7 +4,9 @@ import metaconfig.ConfDecoder
 import metaconfig.Configured
 import metaconfig.generic.Surface
 import scala.meta.Defn
+import scala.meta.Init
 import scala.meta.Mod
+import scala.meta.Name
 import scala.meta.Term
 import scala.meta.Type
 import scala.meta.XtensionClassifiable
@@ -46,7 +48,41 @@ class UnusedTypeParams(config: UnusedTypeParamsConfig) extends SyntacticRule("Un
     doc.tree.collect {
       case t: Defn.Def if !t.mods.exists(_.is[Mod.Override]) =>
         val typeParams =
-          t.paramClauseGroups.flatMap(_.tparamClause).filter(p => p.bounds.context.isEmpty && p.bounds.view.isEmpty)
+          t.paramClauseGroups
+            .flatMap(_.tparamClause)
+            .filter(p => p.bounds.context.isEmpty && p.bounds.view.isEmpty)
+            .filterNot(
+              _.mods.exists {
+                case Mod.Annot(
+                      Init.After_4_6_0(
+                        Type.Select(
+                          Term.Select(
+                            Term.Select(
+                              Term.Name("_root_"),
+                              Term.Name("scala")
+                            ),
+                            Term.Name("annotation")
+                          ),
+                          Type.Name("unused")
+                        ) | Type.Select(
+                          Term.Select(
+                            Term.Name("scala"),
+                            Term.Name("annotation")
+                          ),
+                          Type.Name("unused")
+                        ) | Type.Select(
+                          Term.Name("annotation"),
+                          Type.Name("unused")
+                        ) | Type.Name("unused"),
+                        Name.Anonymous(),
+                        Nil
+                      )
+                    ) =>
+                  true
+                case _ =>
+                  false
+              }
+            )
         val typeParamsMap = typeParams.map(t => t.name.value -> t).toMap
         val names = t.collect {
           case x: Term.Name =>
