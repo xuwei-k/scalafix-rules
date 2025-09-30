@@ -155,6 +155,15 @@ lazy val rules = projectMatrix
 
 val dogfooding = taskKey[Unit]("")
 
+val scalafixRulesDependency = "com.github.xuwei-k" %% "scalafix-rules" % "0.6.15" % Test
+
+// for scala-steward
+lazy val dummy = project.settings(
+  commonSettings,
+  libraryDependencies += scalafixRulesDependency,
+  publish / skip := true
+)
+
 lazy val rules212 = rules
   .jvm(V.scala212)
   .enablePlugins(ScriptedPlugin)
@@ -203,7 +212,7 @@ lazy val rules212 = rules
       assert(rules.distinct.sorted == rules)
 
       val arg = rules
-        .map(x => s"dependency:${x}@com.github.xuwei-k:scalafix-rules:0.6.15")
+        .map(x => s"dependency:${x}@com.github.xuwei-k:scalafix-rules:${scalafixRulesDependency.revision}")
         .mkString(" ", " ", " --settings.lint.error.includes=.* --check")
       Def.task {
         (Compile / scalafix).toTask(arg).value
