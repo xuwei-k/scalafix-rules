@@ -247,7 +247,7 @@ lazy val inputOutputCommon = Def.settings(
   libraryDependencies += "com.google.inject" % "guice" % "6.0.0", // scala-steward:off
   libraryDependencies ++= {
     if (scalaBinaryVersion.value != "3") {
-      Seq(compilerPlugin("org.typelevel" %% "kind-projector" % "0.13.3" cross CrossVersion.full))
+      Seq(compilerPlugin("org.typelevel" %% "kind-projector" % "0.13.4" cross CrossVersion.full))
     } else {
       Nil
     }
