@@ -19,7 +19,7 @@ addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "<version>")
 `build.sbt`
 
 ```scala
-ThisBuild / scalafixDependencies += "com.github.xuwei-k" %% "scalafix-rules" % "0.6.15"
+ThisBuild / scalafixDependencies += "com.github.xuwei-k" %% "scalafix-rules" % "<version>"
 ```
 
 or
