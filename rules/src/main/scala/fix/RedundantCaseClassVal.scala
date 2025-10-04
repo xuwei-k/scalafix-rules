@@ -6,6 +6,7 @@ import metaconfig.generic.Surface
 import scala.meta.Ctor
 import scala.meta.Defn
 import scala.meta.Mod
+import scala.meta.Term
 import scala.meta.XtensionClassifiable
 import scala.meta.XtensionCollectionLikeUI
 import scala.meta.termParamClauseToValues
@@ -43,6 +44,35 @@ class RedundantCaseClassVal(config: RedundantCaseClassValConfig) extends Syntact
   }
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
+      case Defn.EnumCase.After_4_6_0(
+            _,
+            _,
+            _,
+            Ctor.Primary.After_4_6_0(
+              _,
+              _,
+              paramClause :: Nil
+            ),
+            _
+          ) =>
+        paramClause.values.collect {
+          case Term.Param(
+                List(
+                  valMod @ Mod.ValParam()
+                ),
+                _,
+                _,
+                _
+              ) =>
+            Patch.lint(
+              Diagnostic(
+                id = "",
+                message = "redundant enum case val",
+                position = valMod.pos,
+                severity = LintSeverity.Warning
+              )
+            )
+        }.asPatch
       case c @ Defn.Class.After_4_6_0(
             _,
             _,
