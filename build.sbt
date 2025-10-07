@@ -239,7 +239,7 @@ lazy val inputOutputCommon = Def.settings(
         Nil
     }
   },
-  libraryDependencies += "org.scala-lang.modules" %% "scala-collection-compat" % "2.13.0",
+  libraryDependencies += "org.scala-lang.modules" %% "scala-collection-compat" % "2.14.0",
   libraryDependencies += "com.google.inject" % "guice" % "6.0.0", // scala-steward:off
   libraryDependencies ++= {
     if (scalaBinaryVersion.value != "3") {
