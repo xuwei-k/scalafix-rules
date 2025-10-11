@@ -167,7 +167,7 @@ lazy val rules212 = rules
   .dependsOn(myRuleRule % ScalafixConfig)
   .settings(
     semanticdbEnabled := false,
-    Test / test := (Test / test).dependsOn(scripted.toTask("")).value,
+    scriptedSbt := "1.11.7",
     dogfooding := Def.taskDyn {
       val rules: Seq[String] = Seq(
         "CaseClassImplicitVal",
@@ -214,8 +214,8 @@ lazy val rules212 = rules
         (Compile / scalafix).toTask(arg).value
       }
     }.value,
-    Compile / compile := (Compile / compile).dependsOn((Compile / scalafix).toTask(" MyScalafixRuleRule")).value,
-    Compile / compile := (Compile / compile).dependsOn(dogfooding).value,
+    Compile / compile := Def.uncached((Compile / compile).dependsOn((Compile / scalafix).toTask(" MyScalafixRuleRule")).value),
+    Compile / compile := Def.uncached((Compile / compile).dependsOn(dogfooding).value),
     scriptedBufferLog := false,
     scriptedLaunchOpts += ("-Dscalafix-rules.version=" + version.value),
     scriptedLaunchOpts += ("-Dscalafix.version=" + _root_.scalafix.sbt.BuildInfo.scalafixVersion),
