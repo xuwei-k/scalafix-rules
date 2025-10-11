@@ -6,10 +6,6 @@ lazy val rulesCrossVersions = Seq(V.scala213, V.scala212)
 lazy val scala3Version = "3.3.7"
 
 val commonSettings = Def.settings(
-  (Compile / packageSrc / mappings) ++= (Compile / managedSources).value.map { f =>
-    // to merge generated sources into sources.jar as well
-    (f, f.relativeTo((Compile / sourceManaged).value).get.getPath)
-  },
   scalacOptions ++= {
     scalaBinaryVersion.value match {
       case "2.12" =>
