@@ -221,7 +221,7 @@ lazy val rules212 = rules
     scriptedLaunchOpts += ("-Dscalafix.version=" + _root_.scalafix.sbt.BuildInfo.scalafixVersion),
     sbtTestDirectory := (LocalRootProject / baseDirectory).value / "sbt-test",
     scriptedLaunchOpts ++= {
-      import scala.collection.JavaConverters.*
+      import scala.jdk.CollectionConverters.*
       val javaVmArgs: List[String] =
         java.lang.management.ManagementFactory.getRuntimeMXBean.getInputArguments.asScala.toList
       javaVmArgs.filter(a => Seq("-Xmx", "-Xms", "-XX", "-Dsbt.log.noformat").exists(a.startsWith))
