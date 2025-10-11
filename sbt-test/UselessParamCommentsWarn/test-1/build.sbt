@@ -8,3 +8,5 @@ TaskKey[Unit]("check") := {
     assert(IO.read(actual) == IO.read(file(expect)))
   }
 }
+
+scalaVersion := "2.12.21"
