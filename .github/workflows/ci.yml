@@ -15,9 +15,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - java: 8
+        - java: 17
           os: ubuntu-latest
-        - java: 8
+        - java: 17
           os: windows-latest
         - java: 25
           os: ubuntu-latest
@@ -33,7 +33,7 @@ jobs:
            -v
            --server
            publishLocal
-           test
+           testFull
     - if: matrix.os != 'windows-latest'
       run: sbt
            -v
@@ -54,4 +54,4 @@ jobs:
            --server
            -Dscalafix_rules_scala_3_latest
            "print scalaVersion"
-           testsTarget3/test
+           testsTarget3/testFull
