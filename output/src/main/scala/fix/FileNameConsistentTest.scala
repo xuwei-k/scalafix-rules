@@ -1,4 +1,0 @@
-package fix
-
-
-class OtherClassName
