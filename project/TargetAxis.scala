@@ -1,6 +1,7 @@
 import sbt._
-import sbt.internal.ProjectMatrix
-import sbtprojectmatrix.ProjectMatrixPlugin.autoImport._
+import sbt.given
+import sbt.Keys._
+import sbt.ProjectMatrix
 
 /** Use on ProjectMatrix rows to tag an affinity to a custom scalaVersion */
 case class TargetAxis(scalaVersion: String) extends VirtualAxis.WeakAxis {
