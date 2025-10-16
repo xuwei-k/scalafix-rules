@@ -1,5 +1,6 @@
 package fix
 
+import scala.meta.Decl
 import scala.meta.Defn
 import scala.meta.Mod
 import scala.meta.Term
@@ -15,7 +16,7 @@ import scalafix.v1.XtensionSeqPatch
 class UsingParamAnonymous extends SyntacticRule("UsingParamAnonymous") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
-      case t: WithParamClauses if t.is[Defn.Def] || t.is[Defn.GivenAlias] =>
+      case t: WithParamClauses if t.is[Decl.Def] || t.is[Defn.Def] || t.is[Defn.GivenAlias] =>
         t.paramClauses.filter { paramClause =>
           paramClause.values.forall(
             _.mods.exists(_.is[Mod.Using])
