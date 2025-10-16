@@ -8,6 +8,7 @@ trait UsingParamAnonymousTest {
   def f2(using a1: Int, a2: String): Int = summon[Int] + summon[String].size
   def f3(using @annotation.unused a1: Int): Int = summon[Int]
   def f4(using a1: Int, a2: Int = 3, a3: Int): Int = 9
+  def f5(using a1: Int, a2: String): Int
 
   given (using a1: Int): Int = 4
 }
