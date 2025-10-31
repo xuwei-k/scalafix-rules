@@ -300,7 +300,7 @@ lazy val tests = projectMatrix
   .settings(
     commonSettings,
     publish / skip := true,
-    libraryDependencies += "org.scala-lang.modules" % "scala-asm" % "9.8.0-scala-1",
+    libraryDependencies += "org.scala-lang.modules" % "scala-asm" % "9.9.0-scala-1",
     libraryDependencies += "ch.epfl.scala" % "scalafix-testkit" % V.scalafixVersion % Test cross CrossVersion.full,
     scalafixTestkitOutputSourceDirectories :=
       TargetAxis.resolve(output, Compile / unmanagedSourceDirectories).value,
