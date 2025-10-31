@@ -168,6 +168,7 @@ lazy val rules212 = rules
   .settings(
     semanticdbEnabled := false,
     Test / testFull := Def.uncached((Test / testFull).dependsOn(scripted.toTask("")).value),
+    scriptedSbt := "1.11.7",
     dogfooding := Def.taskDyn {
       val rules: Seq[String] = Seq(
         "CaseClassImplicitVal",
