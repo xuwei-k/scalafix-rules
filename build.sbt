@@ -214,7 +214,8 @@ lazy val rules212 = rules
         (Compile / scalafix).toTask(arg).value
       }
     }.value,
-    Compile / compile := Def.uncached((Compile / compile).dependsOn((Compile / scalafix).toTask(" MyScalafixRuleRule")).value),
+    Compile / compile := Def
+      .uncached((Compile / compile).dependsOn((Compile / scalafix).toTask(" MyScalafixRuleRule")).value),
     Compile / compile := Def.uncached((Compile / compile).dependsOn(dogfooding).value),
     scriptedBufferLog := false,
     scriptedLaunchOpts += ("-Dscalafix-rules.version=" + version.value),
