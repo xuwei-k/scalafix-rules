@@ -16,6 +16,7 @@ object ConstructorPrivateValTest {
     x6: Int,
     private val x7: Int,
     private val x8: Int,
+      x9: Int,
   )(
       y1: Int,
     protected val y2: Int,
@@ -28,5 +29,12 @@ object ConstructorPrivateValTest {
 
   object A3 {
     def bar(a: A3): Int = a.x8
+  }
+
+  object A4 {
+    def x9 = 9
+    object A3 {
+      def f: Int = A4.x9
+    }
   }
 }
