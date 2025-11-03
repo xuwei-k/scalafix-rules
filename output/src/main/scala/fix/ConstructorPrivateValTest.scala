@@ -14,11 +14,14 @@ object ConstructorPrivateValTest {
     @unused private val x4: Int,
     private[ConstructorPrivateValTest] val x5: Int,
     x6: Int,
+    private val x7: Int,
   )(
       y1: Int,
     protected val y2: Int,
   )(implicit
     private val z1: Int,
     protected val z2: Int,
-  )
+  ) {
+    def foo(that: A3): Int = that.x7
+  }
 }
