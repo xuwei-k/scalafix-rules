@@ -15,6 +15,7 @@ object ConstructorPrivateValTest {
     private[ConstructorPrivateValTest] val x5: Int,
     x6: Int,
     private val x7: Int,
+    private val x8: Int,
   )(
       y1: Int,
     protected val y2: Int,
@@ -23,5 +24,9 @@ object ConstructorPrivateValTest {
     protected val z2: Int,
   ) {
     def foo(that: A3): Int = that.x7
+  }
+
+  object A3 {
+    def bar(a: A3): Int = a.x8
   }
 }
