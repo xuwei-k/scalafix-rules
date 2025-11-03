@@ -24,7 +24,7 @@ class ConstructorPrivateVal extends SyntacticRule("ConstructorPrivateVal") {
               n.value
           },
           doc.tree.collect {
-            case o: Defn.Object if o.name.value == t.name.value =>
+            case o: Defn.Object if (o.name.value == t.name.value) && (o.parent == t.parent) =>
               o.collect {
                 case Term.Select(
                       _,
