@@ -15,13 +15,25 @@ class ConstructorPrivateVal extends SyntacticRule("ConstructorPrivateVal") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
       case t: Defn.Class if !t.mods.exists(m => m.is[Mod.Case] || m.is[Mod.Implicit]) =>
-        val names: Set[String] = t.collect {
-          case Term.Select(
-                _,
-                n: Term.Name
-              ) =>
-            n.value
-        }.toSet
+        val names: Set[String] = Seq(
+          t.collect {
+            case Term.Select(
+                  _,
+                  n: Term.Name
+                ) =>
+              n.value
+          },
+          doc.tree.collect {
+            case o: Defn.Object if o.name.value == t.name.value =>
+              o.collect {
+                case Term.Select(
+                      _,
+                      n: Term.Name
+                    ) =>
+                  n.value
+              }
+          }.flatten
+        ).flatten.toSet
 
         t.ctor.paramClauses
           .flatMap(_.values)
