@@ -8,7 +8,7 @@ import scala.annotation.unused
 object ConstructorPrivateValTest {
   case class A1(private val x1: Int)
 
-  implicit class A2(private val x1: Int) extends AnyVal
+  implicit class A2(private val x1: Int)
 
   class A3(
     private[this] val x1: Int,
@@ -40,4 +40,6 @@ object ConstructorPrivateValTest {
       def f: Int = A4.x9
     }
   }
+
+  class A5(private val x1: Int) extends AnyVal
 }
