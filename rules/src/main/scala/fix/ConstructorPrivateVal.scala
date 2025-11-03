@@ -1,9 +1,11 @@
 package fix
 
 import scala.meta.Defn
+import scala.meta.Init
 import scala.meta.Mod
 import scala.meta.Name
 import scala.meta.Term
+import scala.meta.Type
 import scala.meta.XtensionClassifiable
 import scala.meta.XtensionCollectionLikeUI
 import scalafix.Patch
@@ -14,7 +16,23 @@ import scalafix.v1.XtensionSeqPatch
 class ConstructorPrivateVal extends SyntacticRule("ConstructorPrivateVal") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
-      case t: Defn.Class if !t.mods.exists(m => m.is[Mod.Case] || m.is[Mod.Implicit]) =>
+      case t: Defn.Class if !t.mods.exists(m => m.is[Mod.Case] || m.is[Mod.Implicit]) && t.templ.inits.collectFirst {
+            case Init.After_4_6_0(
+                  Type.Name("AnyVal") | Type.Select(
+                    Term.Name("scala"),
+                    Type.Name("AnyVal")
+                  ) | Type.Select(
+                    Term.Select(
+                      Term.Name("_root_"),
+                      Term.Name("scala")
+                    ),
+                    Type.Name("AnyVal")
+                  ),
+                  Name.Anonymous(),
+                  Nil
+                ) =>
+              ()
+          }.isEmpty =>
         val names: Set[String] = Seq(
           t.collect {
             case Term.Select(
