@@ -6,12 +6,10 @@ trait ForTupleMatchTest {
 
   def f0: List[(String, Int)] = for {
     (b, c, _) <- x2
-    
   } yield (c, b)
 
   def f1: List[(String, Int)] = for {
     (b, c) <- x1
-    
   } yield (c, b)
 
   def f2: List[((Int, String), Int)] = for {
@@ -21,7 +19,6 @@ trait ForTupleMatchTest {
 
   def f3: Unit = for {
     (b, c) <- x1
-    
   } {
     println(b)
   }
