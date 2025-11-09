@@ -15,6 +15,7 @@ import scalafix.v1.XtensionSeqPatch
 
 /**
  * @see [[https://docs.scala-lang.org/scala3/book/methods-main-methods.html]]
+ * @see [[https://github.com/scala/scala3/pull/24242]]
  */
 class ScalaApp extends SyntacticRule("ScalaApp") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
