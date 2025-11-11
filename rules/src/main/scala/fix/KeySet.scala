@@ -1,5 +1,6 @@
 package fix
 
+import scala.annotation.nowarn
 import scala.meta.Term
 import scala.meta.XtensionCollectionLikeUI
 import scalafix.Patch
@@ -12,6 +13,7 @@ import scalafix.v1.XtensionSeqPatch
 import scalafix.v1.XtensionTreeScalafix
 
 class KeySet extends SemanticRule("KeySet") {
+  @nowarn("msg=AnyRefMap")
   private[this] val map2Types: Set[String] = Set[Class[?]](
     classOf[scala.collection.Map[?, ?]],
     classOf[scala.collection.immutable.Map[?, ?]],
