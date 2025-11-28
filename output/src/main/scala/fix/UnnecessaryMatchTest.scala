@@ -18,4 +18,11 @@ class UnnecessaryMatchTest {
       case 2 => a
     }
   }
+
+  List("a1").map(
+     {
+      case "a2" => 7 // comment 3
+      case "a3" => 8
+    }
+  )
 }
