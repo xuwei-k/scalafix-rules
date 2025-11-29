@@ -6,4 +6,5 @@ object FilterHeadOptionTest {
   def f3(x: Set[Int]): Option[Int] = x.find(_ == 3)
   def f4(x: Vector[Int]): Option[Int] = x.find(_ == 4)
   def f5(x: Map[Int, Int]): Option[(Int, Int)] = x.find(_._1 == 5)
+  def f6(x: Stream[Int]): Option[Int] = x.find(_ == 6)
 }
