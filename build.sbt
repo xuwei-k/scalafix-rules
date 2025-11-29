@@ -151,7 +151,7 @@ lazy val rules = projectMatrix
 
 val dogfooding = taskKey[Unit]("")
 
-val scalafixRulesDependency = "com.github.xuwei-k" %% "scalafix-rules" % "0.6.18" % Test
+val scalafixRulesDependency = "com.github.xuwei-k" %% "scalafix-rules" % "0.6.19" % Test
 
 // for scala-steward
 lazy val dummy = project.settings(
