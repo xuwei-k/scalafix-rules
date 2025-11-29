@@ -19,6 +19,8 @@ private object FilterHeadOption {
     "scala/collection/TraversableLike#filter().",
     "scala/collection/IterableOps#filter().",
     "scala/collection/immutable/List#filter().",
+    "scala/collection/immutable/LazyList#filter().",
+    "scala/collection/immutable/Stream#filter().",
     "scala/collection/StrictOptimizedIterableOps#filter()."
   )
 }
