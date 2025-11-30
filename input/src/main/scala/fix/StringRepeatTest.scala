@@ -19,4 +19,7 @@ object StringRepeatTest {
   def y2: String = Vector.fill(100)("a").mkString
   def y3: String = Seq.fill(100)("a").mkString
   def y4: String = Seq.fill(100)("a").mkString(",")
+
+  def z1: String = Seq.fill(3)('a').mkString
+  def z2: String = (100 to 300).map(e => 'a').mkString
 }

@@ -16,4 +16,7 @@ object StringRepeatTest {
   def y2: String = "a".repeat(100)
   def y3: String = "a".repeat(100)
   def y4: String = Seq.fill(100)("a").mkString(",")
+
+  def z1: String = "a".repeat(3)
+  def z2: String = "a".repeat(201)
 }
