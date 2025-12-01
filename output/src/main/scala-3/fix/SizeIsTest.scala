@@ -58,4 +58,8 @@ object SizeIsTest {
   trait MyClass[A] { def size: Int }
 
   def x1[A](x: MyClass[A], n: Int): Boolean = x.size == n
+
+  def x2[A](x: Array[A], n: Int): Boolean = x.length == n
+
+  def x3(x: String, n: Int): Boolean = x.length == n
 }
