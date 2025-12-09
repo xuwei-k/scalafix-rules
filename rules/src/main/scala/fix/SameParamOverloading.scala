@@ -73,7 +73,7 @@ class SameParamOverloading(config: SameParamOverloadingConfig) extends Syntactic
   override def withConfiguration(config: Configuration): Configured[Rule] = {
     config.conf.getOrElse("SameParamOverloading")(this.config).map(newConfig => new SameParamOverloading(newConfig))
   }
-  import SameParamOverloading.*
+  import SameParamOverloading._
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect { case t: Template =>
       val overloadMethods = t.body.stats.collect {

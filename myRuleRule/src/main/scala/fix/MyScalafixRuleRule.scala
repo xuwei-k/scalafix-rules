@@ -1,6 +1,7 @@
 package fix
 
 import scala.meta.Defn
+import scala.meta.Importee
 import scala.meta.Init
 import scala.meta.Lit
 import scala.meta.Mod
@@ -24,6 +25,15 @@ class MyScalafixRuleRule extends SyntacticRule("MyScalafixRuleRule") {
 
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
+      case t @ Importee.Wildcard() if t.toString() == "*" =>
+        Patch.lint(
+          Diagnostic(
+            id = "",
+            message = "Don't use new wildcard import syntax",
+            position = t.pos,
+            severity = LintSeverity.Error
+          )
+        )
       case Defn.Class.After_4_6_0(
             _,
             className,
