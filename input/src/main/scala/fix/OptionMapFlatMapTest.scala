@@ -4,6 +4,20 @@ rule = OptionMapFlatMap
 package fix
 
 sealed trait OptionMapFlatMapTest {
+  def f0(o: Option[String]): Int = {
+    val x = o match {
+      case Some(a) =>
+        if (a.length < 10) {
+          return a.length
+        } else {
+          Some(9)
+        }
+      case None =>
+        None
+    }
+    x.getOrElse(2)
+  }
+
   def f1[A](o: Option[A]): Option[(Int, A)] = o match { // assert: OptionMapFlatMap
     case Some(a) =>
       Option((2, a))

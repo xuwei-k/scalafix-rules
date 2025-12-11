@@ -7,6 +7,7 @@ import scala.meta.Case
 import scala.meta.Pat
 import scala.meta.Term
 import scala.meta.XtensionCollectionLikeUI
+import scala.meta.contrib.XtensionTreeOps
 import scalafix.Patch
 import scalafix.lint.Diagnostic
 import scalafix.lint.LintSeverity
@@ -42,10 +43,10 @@ class OptionMapFlatMap(config: OptionMapFlatMapConfig) extends SyntacticRule("Op
   private object CaseSome {
     def unapply(c: Case): Boolean = PartialFunction.cond(c) {
       case Case(
-            Pat.Extract.Initial(Term.Name("Some"), Pat.Var(Term.Name(a1)) :: Nil),
+            Pat.Extract.Initial(Term.Name("Some"), Pat.Var(Term.Name(_)) :: Nil),
             None,
-            _
-          ) =>
+            body
+          ) if body.collectFirst { case _: Term.Return => () }.isEmpty =>
         true
     }
   }
