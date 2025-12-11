@@ -6,6 +6,7 @@ import scala.meta.Term
 import scala.meta.Term.Block
 import scala.meta.XtensionClassifiable
 import scala.meta.XtensionCollectionLikeUI
+import scala.meta.contrib.XtensionTreeOps
 import scala.meta.tokens.Token
 import scalafix.Patch
 import scalafix.v1.SyntacticDocument
@@ -33,7 +34,7 @@ class OptionGetOrElse extends SyntacticRule("OptionGetOrElse") {
               )
             ),
             _
-          ) if a1 == a2 =>
+          ) if a1 == a2 && default.collectFirst { case _: Term.Return => () }.isEmpty =>
         val (open, close) = {
           default match {
             case Block(stats) if stats.size > 1 && !default.tokens.forall(_.is[Token.LeftBrace]) =>
