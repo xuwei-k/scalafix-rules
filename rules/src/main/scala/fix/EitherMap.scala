@@ -13,9 +13,18 @@ class EitherMap extends SyntacticRule("EitherMap") {
   private object RightMapIdentity {
     def unapply(c: Case): Boolean = PartialFunction.cond(c) {
       case Case(
-            Pat.Extract.Initial(Term.Name("Right"), a1 :: Nil),
+            Pat.Extract.After_4_6_0(
+              Term.Name("Right"),
+              Pat.ArgClause(a1 :: Nil)
+            ),
             None,
-            Term.Apply.Initial(Term.Name("Right"), a2 :: Nil)
+            Term.Apply.After_4_6_0(
+              Term.Name("Right"),
+              Term.ArgClause(
+                a2 :: Nil,
+                None
+              )
+            )
           ) if a1.toString == a2.toString =>
         true
     }
@@ -24,9 +33,18 @@ class EitherMap extends SyntacticRule("EitherMap") {
   private object LeftMapIdentity {
     def unapply(c: Case): Boolean = PartialFunction.cond(c) {
       case Case(
-            Pat.Extract.Initial(Term.Name("Left"), a1 :: Nil),
+            Pat.Extract.After_4_6_0(
+              Term.Name("Left"),
+              Pat.ArgClause(a1 :: Nil)
+            ),
             None,
-            Term.Apply.Initial(Term.Name("Left"), a2 :: Nil)
+            Term.Apply.After_4_6_0(
+              Term.Name("Left"),
+              Term.ArgClause(
+                a2 :: Nil,
+                None
+              )
+            )
           ) if a1.toString == a2.toString =>
         true
     }
@@ -35,9 +53,15 @@ class EitherMap extends SyntacticRule("EitherMap") {
   private object LeftToLeft {
     def unapply(c: Case): Option[(Term.Name, Term)] = PartialFunction.condOpt(c) {
       case Case(
-            Pat.Extract.Initial(Term.Name("Left"), Pat.Var(a1) :: Nil),
+            Pat.Extract.After_4_6_0(Term.Name("Left"), Pat.ArgClause(Pat.Var(a1) :: Nil)),
             None,
-            Term.Apply.Initial(Term.Name("Left"), arg :: Nil)
+            Term.Apply.After_4_6_0(
+              Term.Name("Left"),
+              Term.ArgClause(
+                arg :: Nil,
+                None
+              )
+            )
           ) =>
         (a1, arg)
     }
@@ -46,9 +70,15 @@ class EitherMap extends SyntacticRule("EitherMap") {
   private object RightToRight {
     def unapply(c: Case): Option[(Term.Name, Term)] = PartialFunction.condOpt(c) {
       case Case(
-            Pat.Extract.Initial(Term.Name("Right"), Pat.Var(a1) :: Nil),
+            Pat.Extract.After_4_6_0(Term.Name("Right"), Pat.ArgClause(Pat.Var(a1) :: Nil)),
             None,
-            Term.Apply.Initial(Term.Name("Right"), arg :: Nil)
+            Term.Apply.After_4_6_0(
+              Term.Name("Right"),
+              Term.ArgClause(
+                arg :: Nil,
+                None
+              )
+            )
           ) =>
         (a1, arg)
     }
