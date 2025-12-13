@@ -6,6 +6,7 @@ import scala.meta.Term
 import scala.meta.Term.Block
 import scala.meta.XtensionClassifiable
 import scala.meta.XtensionCollectionLikeUI
+import scala.meta.contrib.XtensionTreeOps
 import scala.meta.tokens.Token
 import scalafix.Patch
 import scalafix.v1.SyntacticDocument
@@ -30,7 +31,7 @@ class OptionOrElse extends SyntacticRule("OptionOrElse") {
               )
             ),
             _
-          ) if a1 == a2 =>
+          ) if (a1 == a2) && alternative.collectFirst { case _: Term.Return => () }.isEmpty =>
         val (open, close) = {
           alternative match {
             case Block(stats) if stats.size > 1 && !alternative.tokens.forall(_.is[Token.LeftBrace]) =>
