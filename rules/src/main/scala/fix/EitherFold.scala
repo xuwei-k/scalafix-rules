@@ -81,9 +81,9 @@ object EitherFold {
     def unapply(t: Term.Match): Option[(Term, Functions)] = PartialFunction.condOpt(t) {
       case Term.Match.After_4_4_5(
             expr,
-            ExtractFunctions(f),
+            cases @ ExtractFunctions(f),
             _
-          ) =>
+          ) if cases.forall(_.collectFirst { case _: Term.Return => () }.isEmpty) =>
         expr -> f
     }
   }
