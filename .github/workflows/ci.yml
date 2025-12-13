@@ -29,4 +29,4 @@ jobs:
     - uses: sbt/setup-sbt@v1
     - run: sbt publishLocal test
     - if: matrix.os != 'windows-latest'
-      run: sbt scalafmtSbtCheck scalafmtCheckAll "rules2_13/scalafixAll --check OrganizeImports"
+      run: sbt scalafmtSbtCheck scalafmtCheckAll

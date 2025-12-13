@@ -1,8 +1,8 @@
 package fix
 
-import scalafix.testkit.AbstractSemanticRuleSuite
 import org.scalatest.funsuite.AnyFunSuiteLike
 import scala.util.Properties
+import scalafix.testkit.AbstractSemanticRuleSuite
 
 class RuleSuite extends AbstractSemanticRuleSuite with AnyFunSuiteLike {
   private[this] val excludeWindows: Set[String] = Set(
