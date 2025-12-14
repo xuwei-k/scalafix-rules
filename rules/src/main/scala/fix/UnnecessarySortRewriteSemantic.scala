@@ -7,12 +7,13 @@ import scala.meta.tokens.Token
 import scalafix.Patch
 import scalafix.XtensionOptionPatch
 import scalafix.XtensionSeqPatch
+import scalafix.rule.RuleName
 import scalafix.v1.MethodSignature
 import scalafix.v1.SemanticDocument
 import scalafix.v1.SemanticRule
 import scalafix.v1.XtensionTreeScalafix
 
-private object SortedMaxMin {
+private object UnnecessarySortRewriteSemantic {
   object HeadOrLastSorted {
     def unapply(x: String): Option[String] = PartialFunction.condOpt(x) {
       case "head" => "min"
@@ -43,7 +44,14 @@ private object SortedMaxMin {
   )
 }
 
-class SortedMaxMin extends SemanticRule("SortedMaxMin") {
+class UnnecessarySortRewriteSemantic
+    extends SemanticRule(
+      RuleName("UnnecessarySortRewriteSemantic").withDeprecatedName(
+        "SortedMaxMin",
+        "Use UnnecessarySortRewriteSemantic instead",
+        "0.6.20"
+      )
+    ) {
   override def fix(implicit doc: SemanticDocument): Patch = {
     doc.tree.collect {
       case t1 @ Term.Select(
@@ -51,12 +59,13 @@ class SortedMaxMin extends SemanticRule("SortedMaxMin") {
               _,
               sorted @ Term.Name("sorted")
             ),
-            headOrLast @ Term.Name(SortedMaxMin.HeadOrLastSorted(newMethod))
+            headOrLast @ Term.Name(UnnecessarySortRewriteSemantic.HeadOrLastSorted(newMethod))
           ) =>
         sorted.symbol.info
           .map(_.signature)
           .collect {
-            case MethodSignature(_, List(x :: Nil), _) if SortedMaxMin.sortedValues(x.symbol.owner.value) =>
+            case MethodSignature(_, List(x :: Nil), _)
+                if UnnecessarySortRewriteSemantic.sortedValues(x.symbol.owner.value) =>
               Seq(
                 Patch.replaceTree(sorted, newMethod),
                 t1.tokens
@@ -78,7 +87,7 @@ class SortedMaxMin extends SemanticRule("SortedMaxMin") {
                 None
               )
             ),
-            headOrLast @ Term.Name(SortedMaxMin.HeadOrLastSortBy(newMethod))
+            headOrLast @ Term.Name(UnnecessarySortRewriteSemantic.HeadOrLastSortBy(newMethod))
           ) =>
         sortBy.symbol.info
           .map(_.signature)
@@ -87,7 +96,7 @@ class SortedMaxMin extends SemanticRule("SortedMaxMin") {
                   _,
                   List(x1 :: Nil, _),
                   _
-                ) if SortedMaxMin.sortByValues(x1.symbol.owner.value) =>
+                ) if UnnecessarySortRewriteSemantic.sortByValues(x1.symbol.owner.value) =>
               Seq(
                 Patch.replaceTree(sortBy, newMethod),
                 t1.tokens
