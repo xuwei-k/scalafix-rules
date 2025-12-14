@@ -1,9 +1,9 @@
 /*
-rule = SortedMaxMin
+rule = UnnecessarySortRewriteSemantic
  */
 package fix
 
-object SortedMaxMinTest2 {
+object UnnecessarySortRewriteSemanticTest2 {
   def f1(x: List[Int]): Option[Int] = x.sorted.headOption
   def f2(x: Vector[Int]): Option[Int] = x.sorted.lastOption
   def f3(x: Seq[Int], y: Int => String): Option[Int] = x.sortBy(y).headOption
