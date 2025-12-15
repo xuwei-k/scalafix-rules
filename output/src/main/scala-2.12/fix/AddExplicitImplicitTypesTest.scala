@@ -1,6 +1,5 @@
 package fix
 
-
 class AddExplicitImplicitTypesTest {
   class A
 

@@ -1,8 +1,8 @@
-package fix
-
 /*
 rule = RemoveEmptyObject
  */
+package fix
+
 object RemoveEmptyObjectTest1
 
 class RemoveEmptyObjectTest2

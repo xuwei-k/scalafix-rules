@@ -2,7 +2,6 @@ package fix
 
 
 
-
 class RemoveEmptyObjectTest2
 
 object RemoveEmptyObjectTest3 extends RemoveEmptyObjectTest2

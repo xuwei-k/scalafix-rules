@@ -1,8 +1,8 @@
-package fix
-
 /*
 rule = AddExplicitImplicitTypes
  */
+package fix
+
 class AddExplicitImplicitTypesTest {
   class A
 

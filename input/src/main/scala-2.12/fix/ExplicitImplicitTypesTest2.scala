@@ -1,11 +1,11 @@
-package fix
-
 /*
 rule = ExplicitImplicitTypes
 ExplicitImplicitTypes {
   excludeLocal = false
 }
  */
+package fix
+
 object ExplicitImplicitTypesTest2 {
   implicit def a1 = 2 // assert: ExplicitImplicitTypes
   implicit val a2 = 2 // assert: ExplicitImplicitTypes

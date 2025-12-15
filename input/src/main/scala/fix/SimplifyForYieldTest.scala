@@ -1,8 +1,8 @@
-package fix
-
 /*
 rule = SimplifyForYield
  */
+package fix
+
 object SimplifyForYieldTest {
   def x = for {
     y <- Option(2)

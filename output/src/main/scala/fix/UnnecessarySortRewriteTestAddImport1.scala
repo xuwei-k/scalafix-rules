@@ -1,7 +1,6 @@
 package fix
 
 
-
 import scala.collection.compat._
 abstract class UnnecessarySortRewriteTestAddImport1 {
   def seq: Seq[(Int, Int)]

@@ -1,9 +1,9 @@
-package fix
-
 /*
 rule = UnnecessarySortRewrite
 UnnecessarySortRewrite.rewriteConfig = addCompatImport
  */
+package fix
+
 abstract class UnnecessarySortRewriteTestAddImport2 {
   def seq: Seq[(Int, Int)]
 

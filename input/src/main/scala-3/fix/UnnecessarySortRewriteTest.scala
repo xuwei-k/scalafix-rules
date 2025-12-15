@@ -1,8 +1,8 @@
-package fix
-
 /*
 rule = UnnecessarySortRewrite
  */
+package fix
+
 abstract class UnnecessarySortRewriteTest {
   def seq: Seq[(Int, Int)]
 

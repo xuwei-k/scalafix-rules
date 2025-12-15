@@ -1,6 +1,5 @@
 package fix
 
-
 object ExplicitImplicitTypesTest2 {
   implicit def a1 = 2 
   implicit val a2 = 2 

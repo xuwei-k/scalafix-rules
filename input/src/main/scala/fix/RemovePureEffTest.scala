@@ -1,11 +1,11 @@
+/*
+rule = RemovePureEff
+ */
 package fix
 
 import org.atnos.eff.Eff
 import org.atnos.eff.syntax.eff.*
 
-/*
-rule = RemovePureEff
- */
 class RemovePureEffTest {
 
   def x[R]: Eff[R, (Int, Int, Eff[R, Int], Int, Int, String)] = for {

@@ -1,6 +1,5 @@
 package fix
 
-
 abstract class UnnecessarySortTest {
   def seq: Seq[(Int, Int)]
 
