@@ -1,6 +1,5 @@
 package fix
 
-
 abstract class UnnecessarySortRewriteTestOnly212 {
   def seq: Seq[(Int, Int)]
 

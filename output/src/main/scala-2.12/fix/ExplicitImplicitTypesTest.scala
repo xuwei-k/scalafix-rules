@@ -1,6 +1,5 @@
 package fix
 
-
 class ExplicitImplicitTypesTest {
   def this(x: Int) = {
     this()

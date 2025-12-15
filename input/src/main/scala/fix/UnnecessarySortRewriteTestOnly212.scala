@@ -1,9 +1,9 @@
-package fix
-
 /*
 rule = UnnecessarySortRewrite
 UnnecessarySortRewrite.rewriteConfig = only212methods
  */
+package fix
+
 abstract class UnnecessarySortRewriteTestOnly212 {
   def seq: Seq[(Int, Int)]
 

@@ -1,6 +1,5 @@
 package fix
 
-
 class LambdaParamParenthesesTest {
   def a1: Int => Int = { x => x }
 

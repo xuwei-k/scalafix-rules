@@ -1,8 +1,8 @@
-package fix
-
 /*
 rule = UnnecessarySort
  */
+package fix
+
 abstract class UnnecessarySortTest {
   def seq: Seq[(Int, Int)]
 
