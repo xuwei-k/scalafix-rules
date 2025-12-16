@@ -58,7 +58,9 @@ class IncorrectScaladocParam extends SyntacticRule("IncorrectScaladocParam") {
 
       def getPositions(paramName: String): List[Position] =
         x.value.linesIterator.zipWithIndex.collect {
-          case (str, i) if str.contains(s" ${paramName} ") => (str.length, i)
+          case (str, i)
+              if str.contains("@param") && (str.contains(s" ${paramName} ") || str.endsWith(s" ${paramName}")) =>
+            (str.length, i)
         }.toList.map { case (len, index) =>
           val line = x.pos.startLine + index
           Position.Range(

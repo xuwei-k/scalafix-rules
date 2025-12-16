@@ -50,17 +50,25 @@ class IncorrectScaladocParamTest extends AnyFunSuite {
           |   */
           |  def f4(aaa: Int): Int
           |}
+          |
+          |/**
+          |  * @param b
+          |  *   c
+          |  * @param a1
+          |  *   c
+          |  */
+          |case class Issue440(a1: Int, a2: Int)
           |""".stripMargin),
       scalaVersion = ScalaVersion.scala2
     )
     val result = x.fix0(in)
-    assert(result.size == 7)
+    assert(result.size == 8)
     result.foreach { x =>
       assert(x.severity == LintSeverity.Warning)
     }
-    assert(result.count(_.message == "incorrect @param") == 5)
+    assert(result.count(_.message == "incorrect @param") == 6)
     assert(result.count(_.message == "duplicate @param aaa") == 2)
-    assert(result.map(_.position.startLine).sorted == Seq(3, 8, 14, 20, 26, 31, 32))
+    assert(result.map(_.position.startLine).sorted == Seq(3, 8, 14, 20, 26, 31, 32, 38))
     val values =
       result.map(x => Input.Slice(input = in.input, start = x.position.start, end = x.position.end).text).toSet
     assert(
@@ -72,6 +80,7 @@ class IncorrectScaladocParamTest extends AnyFunSuite {
         "   * @param ggg hhh",
         "   * @param aaa bbb",
         "   * @param aaa ccc",
+        "  * @param b",
       )
     )
   }
