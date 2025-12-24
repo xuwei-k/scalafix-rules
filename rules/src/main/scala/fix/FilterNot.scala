@@ -25,34 +25,40 @@ object FilterNot {
 class FilterNot extends SyntacticRule("FilterNot") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
-      case Term.Apply.Initial(
+      case Term.Apply.After_4_6_0(
             Term.Select(
               _,
               filter @ FilterValue(inverse)
             ),
-            Term.AnonymousFunction(
-              ApplyUnary(
-                op @ Term.Name("!"),
-                _
-              )
-            ) :: Nil
+            Term.ArgClause(
+              Term.AnonymousFunction(
+                ApplyUnary(
+                  op @ Term.Name("!"),
+                  _
+                )
+              ) :: Nil,
+              None
+            )
           ) =>
         Seq(
           Patch.replaceTree(filter, inverse),
           Patch.removeTokens(op.tokens)
         ).asPatch
-      case Term.Apply.Initial(
+      case Term.Apply.After_4_6_0(
             Term.Select(
               _,
               filter @ FilterValue(inverse)
             ),
-            Term.Function.Initial(
-              _ :: Nil,
-              ApplyUnary(
-                op @ Term.Name("!"),
-                _
-              )
-            ) :: Nil
+            Term.ArgClause(
+              Term.Function.After_4_6_0(
+                Term.ParamClause(_ :: Nil, _),
+                ApplyUnary(
+                  op @ Term.Name("!"),
+                  _
+                )
+              ) :: Nil,
+              None
+            )
           ) =>
         Seq(
           Patch.replaceTree(filter, inverse),

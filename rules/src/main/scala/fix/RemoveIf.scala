@@ -40,18 +40,24 @@ class RemoveIf extends SyntacticRule("RemoveIf") {
         Patch.replaceTree(x, cond.toString)
       case x @ Term.If.After_4_4_0(cond, RemoveIf.False(), RemoveIf.True(), _) =>
         cond match {
-          case Term.ApplyInfix.Initial(
+          case Term.ApplyInfix.After_4_6_0(
                 a1,
                 Term.Name("=="),
                 _,
-                a2 :: Nil
+                Term.ArgClause(
+                  a2 :: Nil,
+                  None
+                )
               ) =>
             Patch.replaceTree(x, s"${a1} != ${a2}")
-          case Term.ApplyInfix.Initial(
+          case Term.ApplyInfix.After_4_6_0(
                 a1,
                 Term.Name("!="),
                 _,
-                a2 :: Nil
+                Term.ArgClause(
+                  a2 :: Nil,
+                  None
+                )
               ) =>
             Patch.replaceTree(x, s"${a1} == ${a2}")
           case Term.Select(

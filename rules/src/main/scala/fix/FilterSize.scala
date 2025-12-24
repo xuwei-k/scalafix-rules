@@ -11,12 +11,15 @@ class FilterSize extends SyntacticRule("FilterSize") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
       case t @ Term.Select(
-            Term.Apply.Initial(
+            Term.Apply.After_4_6_0(
               Term.Select(
                 obj,
                 Term.Name("filter")
               ),
-              f :: Nil
+              Term.ArgClause(
+                f :: Nil,
+                None
+              )
             ),
             Term.Name("size" | "length")
           ) =>

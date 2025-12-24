@@ -13,17 +13,23 @@ class MapToForeach extends SyntacticRule("MapToForeach") {
     doc.tree.collect {
       case t: Template =>
         t.body.stats.collect {
-          case Term.Apply.Initial(
+          case Term.Apply.After_4_6_0(
                 Term.Select(_, method @ Term.Name("map")),
-                _ :: Nil
+                Term.ArgClause(
+                  _ :: Nil,
+                  None
+                )
               ) =>
             Patch.replaceTree(method, "foreach")
         }.asPatch
       case Term.Block(xs :+ _) =>
         xs.collect {
-          case Term.Apply.Initial(
+          case Term.Apply.After_4_6_0(
                 Term.Select(_, method @ Term.Name("map")),
-                _ :: Nil
+                Term.ArgClause(
+                  _ :: Nil,
+                  None
+                )
               ) =>
             Patch.replaceTree(method, "foreach")
         }.asPatch

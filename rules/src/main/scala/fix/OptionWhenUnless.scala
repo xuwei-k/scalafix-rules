@@ -12,9 +12,23 @@ import scalafix.v1.XtensionSeqPatch
 object OptionWhenUnless {
   private object SomeValue {
     def unapply(x: Term): Option[Term] = PartialFunction.condOpt(x) {
-      case Block(Term.Apply.Initial(Term.Name("Some"), value :: Nil) :: Nil) =>
+      case Block(
+            Term.Apply.After_4_6_0(
+              Term.Name("Some"),
+              Term.ArgClause(
+                value :: Nil,
+                None
+              )
+            ) :: Nil
+          ) =>
         value
-      case Term.Apply.Initial(Term.Name("Some"), value :: Nil) =>
+      case Term.Apply.After_4_6_0(
+            Term.Name("Some"),
+            Term.ArgClause(
+              value :: Nil,
+              None
+            )
+          ) =>
         value
     }
   }
