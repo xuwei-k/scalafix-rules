@@ -11,30 +11,39 @@ class GroupMap extends SyntacticRule("GroupMap") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
       case t @ Term.Select(
-            Term.Apply.Initial(
+            Term.Apply.After_4_6_0(
               Term.Select(
                 Term.Select(
-                  Term.Apply.Initial(
+                  Term.Apply.After_4_6_0(
                     Term.Select(
                       obj,
                       Term.Name("groupBy")
                     ),
-                    f1 :: Nil
+                    Term.ArgClause(
+                      f1 :: Nil,
+                      None
+                    )
                   ),
                   Term.Name("view")
                 ),
                 Term.Name("mapValues")
               ),
-              List(
-                Term.AnonymousFunction(
-                  Term.Apply.Initial(
-                    Term.Select(
-                      Term.Placeholder(),
-                      Term.Name("map")
-                    ),
-                    f2 :: Nil
+              Term.ArgClause(
+                List(
+                  Term.AnonymousFunction(
+                    Term.Apply.After_4_6_0(
+                      Term.Select(
+                        Term.Placeholder(),
+                        Term.Name("map")
+                      ),
+                      Term.ArgClause(
+                        f2 :: Nil,
+                        None
+                      )
+                    )
                   )
-                )
+                ),
+                None
               )
             ),
             Term.Name("toMap")

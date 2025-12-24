@@ -10,23 +10,29 @@ import scalafix.v1.XtensionSeqPatch
 class FlatTraverse extends SyntacticRule("FlatTraverse") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
-      case t @ Term.Apply.Initial(
+      case t @ Term.Apply.After_4_6_0(
             Term.Select(
-              Term.Apply.Initial(
+              Term.Apply.After_4_6_0(
                 Term.Select(
                   qual,
                   Term.Name("traverse")
                 ),
-                arg :: Nil
+                Term.ArgClause(
+                  arg :: Nil,
+                  None
+                )
               ),
               Term.Name("map")
             ),
-            a @ Term.AnonymousFunction(
-              Term.Select(
-                Term.Placeholder(),
-                Term.Name("flatten")
-              )
-            ) :: Nil
+            Term.ArgClause(
+              a @ Term.AnonymousFunction(
+                Term.Select(
+                  Term.Placeholder(),
+                  Term.Name("flatten")
+                )
+              ) :: Nil,
+              None
+            )
           ) =>
         if (a.toString.trim.startsWith("{")) {
           Patch.replaceTree(t, s"${qual}.flatTraverse${arg}")

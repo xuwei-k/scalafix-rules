@@ -18,18 +18,24 @@ import scalafix.v1.XtensionSeqPatch
 class LazyZip extends SyntacticRule("LazyZip") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
-      case Term.Apply.Initial(
+      case Term.Apply.After_4_6_0(
             Term.Select(
-              Term.Apply.Initial(
+              Term.Apply.After_4_6_0(
                 Term.Select(
                   _,
                   zip @ Term.Name("zip")
                 ),
-                _ :: Nil
+                Term.ArgClause(
+                  _ :: Nil,
+                  None
+                )
               ),
               Term.Name("map" | "flatMap" | "filter" | "exists" | "forall" | "foreach")
             ),
-            fun :: Nil
+            Term.ArgClause(
+              fun :: Nil,
+              None
+            )
           ) =>
         PartialFunction
           .condOpt(fun) { case f: Term.PartialFunction =>

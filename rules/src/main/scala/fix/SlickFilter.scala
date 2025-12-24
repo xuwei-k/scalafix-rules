@@ -18,9 +18,9 @@ object SlickFilter {
   private object CaseSome {
     def unapply(c: Case): Option[(String, Term)] = PartialFunction.condOpt(c) {
       case Case(
-            Pat.Extract.Initial(
+            Pat.Extract.After_4_6_0(
               Term.Name("Some"),
-              Pat.Var(Term.Name(a)) :: Nil
+              Pat.ArgClause(Pat.Var(Term.Name(a)) :: Nil)
             ),
             None,
             body
@@ -82,7 +82,7 @@ object SlickFilter {
   private object InfixAndValues {
     def unapply(x: Term): Option[List[Term]] = {
       PartialFunction.condOpt(x) {
-        case ApplyInfix.Initial(left, Term.Name("&&"), Nil, right :: Nil) =>
+        case ApplyInfix.After_4_6_0(left, Term.Name("&&"), Type.ArgClause(Nil), Term.ArgClause(right :: Nil, None)) =>
           unapply(left).toList.flatten ++ unapply(right).toList.flatten
         case _ =>
           x :: Nil
@@ -94,9 +94,23 @@ object SlickFilter {
     def unapply(t: Term): Option[(String, Term, String, Boolean)] = PartialFunction.condOpt(t) {
       case Term.PartialFunction(Case(p1, None, x) :: Nil) =>
         (p1.toString, x, "case ", true)
-      case Term.Block(Term.Function.Initial(p1 :: Nil, x) :: Nil) =>
+      case Term.Block(
+            Term.Function.After_4_6_0(
+              Term.ParamClause(
+                p1 :: Nil,
+                None
+              ),
+              x
+            ) :: Nil
+          ) =>
         (p1.toString, x, "", true)
-      case Term.Function.Initial(p1 :: Nil, x) =>
+      case Term.Function.After_4_6_0(
+            Term.ParamClause(
+              p1 :: Nil,
+              None
+            ),
+            x
+          ) =>
         (p1.toString, x, "", false)
     }
   }
@@ -107,9 +121,12 @@ class SlickFilter extends SyntacticRule("SlickFilter") {
 
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
-      case t @ Term.Apply.Initial(
+      case t @ Term.Apply.After_4_6_0(
             Term.Select(obj, Term.Name("filter")),
-            Func(p1, InfixAndValues(values), caseOpt, block) :: Nil
+            Term.ArgClause(
+              Func(p1, InfixAndValues(values), caseOpt, block) :: Nil,
+              None
+            )
           ) if obj.collect {
             case ReplaceFilterIf(_) =>
               ()

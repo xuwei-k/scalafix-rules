@@ -43,7 +43,7 @@ class OptionMapFlatMap(config: OptionMapFlatMapConfig) extends SyntacticRule("Op
   private object CaseSome {
     def unapply(c: Case): Boolean = PartialFunction.cond(c) {
       case Case(
-            Pat.Extract.Initial(Term.Name("Some"), Pat.Var(Term.Name(_)) :: Nil),
+            Pat.Extract.After_4_6_0(Term.Name("Some"), Pat.ArgClause(Pat.Var(Term.Name(_)) :: Nil)),
             None,
             body
           ) if body.collectFirst { case _: Term.Return => () }.isEmpty =>

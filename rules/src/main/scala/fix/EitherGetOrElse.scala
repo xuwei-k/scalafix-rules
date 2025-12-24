@@ -15,7 +15,7 @@ object EitherGetOrElse {
   private abstract class Value(x: String) {
     def unapply(c: Case): Boolean = PartialFunction.cond(c) {
       case Case(
-            Pat.Extract.Initial(Term.Name(y), Pat.Var(Term.Name(a1)) :: Nil),
+            Pat.Extract.After_4_6_0(Term.Name(y), Pat.ArgClause(Pat.Var(Term.Name(a1)) :: Nil)),
             None,
             Term.Name(a2)
           ) =>
@@ -38,13 +38,13 @@ object EitherGetOrElse {
 
     def unapply(c: Case): Option[String] = PartialFunction.condOpt(c) {
       case Case(
-            Pat.Extract.Initial(Term.Name(y), Pat.Var(Term.Name(a1)) :: Nil),
+            Pat.Extract.After_4_6_0(Term.Name(y), Pat.ArgClause(Pat.Var(Term.Name(a1)) :: Nil)),
             None,
             body
           ) if (x == y) && body.collectFirst { case Term.Name(a2) if a1 == a2 => () }.isEmpty =>
         asString(body)
       case Case(
-            Pat.Extract.Initial(Term.Name(y), Pat.Wildcard() :: Nil),
+            Pat.Extract.After_4_6_0(Term.Name(y), Pat.ArgClause(Pat.Wildcard() :: Nil)),
             None,
             body
           ) if x == y =>

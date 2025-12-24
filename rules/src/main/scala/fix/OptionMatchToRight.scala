@@ -13,9 +13,15 @@ class OptionMatchToRight extends SyntacticRule("OptionMatchToRight") {
   private object SomeToRight {
     def unapply(c: Case): Boolean = PartialFunction.cond(c) {
       case Case(
-            Pat.Extract.Initial(Term.Name("Some"), Pat.Var(Term.Name(a1)) :: Nil),
+            Pat.Extract.After_4_6_0(Term.Name("Some"), Pat.ArgClause(Pat.Var(Term.Name(a1)) :: Nil)),
             None,
-            Term.Apply.Initial(Term.Name("Right"), Term.Name(a2) :: Nil)
+            Term.Apply.After_4_6_0(
+              Term.Name("Right"),
+              Term.ArgClause(
+                Term.Name(a2) :: Nil,
+                None
+              )
+            )
           ) if a1 == a2 =>
         true
 
@@ -27,7 +33,13 @@ class OptionMatchToRight extends SyntacticRule("OptionMatchToRight") {
       case Case(
             Term.Name("None") | Pat.Wildcard(),
             None,
-            Term.Apply.Initial(Term.Name("Left"), leftArg :: Nil)
+            Term.Apply.After_4_6_0(
+              Term.Name("Left"),
+              Term.ArgClause(
+                leftArg :: Nil,
+                None
+              )
+            )
           ) =>
         leftArg
     }

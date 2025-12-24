@@ -5,6 +5,7 @@ import scala.meta.Lit
 import scala.meta.Pat
 import scala.meta.Term
 import scala.meta.Term.ApplyInfix
+import scala.meta.Type
 import scala.meta.XtensionCollectionLikeUI
 import scalafix.Patch
 import scalafix.v1.SyntacticDocument
@@ -22,7 +23,7 @@ class OptionContains extends SyntacticRule("OptionContains") {
             expr,
             List(
               Case(
-                Pat.Extract.Initial(Term.Name("Some"), Pat.Var(Term.Name(a1)) :: Nil),
+                Pat.Extract.After_4_6_0(Term.Name("Some"), Pat.ArgClause(Pat.Var(Term.Name(a1)) :: Nil)),
                 None,
                 body
               ),
@@ -36,9 +37,19 @@ class OptionContains extends SyntacticRule("OptionContains") {
           ) =>
         PartialFunction
           .condOpt(body) {
-            case ApplyInfix.Initial(Term.Name(a2), Term.Name("=="), Nil, b :: Nil) if a1 == a2 =>
+            case ApplyInfix.After_4_6_0(
+                  Term.Name(a2),
+                  Term.Name("=="),
+                  Type.ArgClause(Nil),
+                  Term.ArgClause(b :: Nil, None)
+                ) if a1 == a2 =>
               b
-            case ApplyInfix.Initial(b, Term.Name("=="), Nil, Term.Name(a2) :: Nil) if a1 == a2 =>
+            case ApplyInfix.After_4_6_0(
+                  b,
+                  Term.Name("=="),
+                  Type.ArgClause(Nil),
+                  Term.ArgClause(Term.Name(a2) :: Nil, None)
+                ) if a1 == a2 =>
               b
           }
           .map { b =>

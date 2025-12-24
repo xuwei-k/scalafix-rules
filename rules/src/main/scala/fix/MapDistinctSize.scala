@@ -12,12 +12,15 @@ class MapDistinctSize extends SyntacticRule("MapDistinctSize") {
     doc.tree.collect {
       case t @ Term.Select(
             Term.Select(
-              Term.Apply.Initial(
+              Term.Apply.After_4_6_0(
                 Term.Select(
                   x,
                   Term.Name("map")
                 ),
-                fun :: Nil
+                Term.ArgClause(
+                  fun :: Nil,
+                  None
+                )
               ),
               Term.Name("distinct")
             ),

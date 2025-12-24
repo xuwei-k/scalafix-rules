@@ -47,7 +47,13 @@ class LambdaParamParentheses(config: LambdaParamParenthesesConfig) extends Synta
 
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
-      case t1 @ Term.Function.Initial(param :: Nil, _) if param.decltpe.nonEmpty && param.mods.isEmpty =>
+      case t1 @ Term.Function.After_4_6_0(
+            Term.ParamClause(
+              param :: Nil,
+              None
+            ),
+            _
+          ) if param.decltpe.nonEmpty && param.mods.isEmpty =>
         if (t1.tokens.find(_.is[Token.LeftParen]).exists(_.pos.start <= param.pos.start)) {
           Patch.empty
         } else {

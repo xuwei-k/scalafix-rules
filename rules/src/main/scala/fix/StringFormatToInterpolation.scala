@@ -21,12 +21,15 @@ private object StringFormatToInterpolation {
               args
             ) =>
           (s, args)
-        case Term.Apply.Initial(
+        case Term.Apply.After_4_6_0(
               Term.Select(
                 s: Lit.String,
                 Term.Name("format")
               ),
-              args
+              Term.ArgClause(
+                args,
+                None
+              )
             ) =>
           (s, args)
       }
