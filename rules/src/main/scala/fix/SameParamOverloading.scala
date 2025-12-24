@@ -77,9 +77,9 @@ class SameParamOverloading(config: SameParamOverloadingConfig) extends Syntactic
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect { case t: Template =>
       val overloadMethods = t.body.stats.collect {
-        case a: Defn.Def =>
+        case a: Defn.Def if !a.mods.exists(_.is[Mod.Override]) =>
           a.name -> Method(a)
-        case a: Decl.Def =>
+        case a: Decl.Def if !a.mods.exists(_.is[Mod.Override]) =>
           a.name -> Method(a)
       }.groupBy(a => (a._1.value, a._2.noImplicitParams)).values.map(_.map(_._2)).filter(_.size > 1)
 
