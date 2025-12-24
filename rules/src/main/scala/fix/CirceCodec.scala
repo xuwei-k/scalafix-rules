@@ -26,13 +26,13 @@ object CirceCodec {
   private case object Decoder extends TypeClass
 
   private object TypeClass {
-    def unapply(args: List[List[Term]]): Option[CirceCodec.TypeClass] =
-      PartialFunction.condOpt(args) {
+    def unapply(args: Seq[Term.ArgClause]): Option[CirceCodec.TypeClass] =
+      PartialFunction.condOpt(args.map(_.values)) {
         case Nil =>
           CirceCodec.Both
-        case List(Term.Assign(Term.Name("encodeOnly"), Lit.Boolean(true)) :: Nil) =>
+        case Seq(Term.Assign(Term.Name("encodeOnly"), Lit.Boolean(true)) :: Nil) =>
           CirceCodec.Encoder
-        case List(Term.Assign(Term.Name("decodeOnly"), Lit.Boolean(true)) :: Nil) =>
+        case Seq(Term.Assign(Term.Name("decodeOnly"), Lit.Boolean(true)) :: Nil) =>
           CirceCodec.Decoder
       }
   }
@@ -43,7 +43,7 @@ class CirceCodec extends SyntacticRule("CirceCodec") {
     doc.tree.collect { case src: Source =>
       val result = src.collect { case clazz: Defn.Class =>
         clazz.mods.collect {
-          case annotation @ Annot(Init.Initial(Type.Name("JsonCodec"), _, CirceCodec.TypeClass(t))) =>
+          case annotation @ Annot(Init.After_4_6_0(Type.Name("JsonCodec"), _, CirceCodec.TypeClass(t))) =>
             val objectOpt = src.collect {
               case obj: Defn.Object if obj.name.value == clazz.name.value => obj
             }.headOption

@@ -20,8 +20,16 @@ import scalafix.v1.XtensionSeqPatch
 class ScalaApp extends SyntacticRule("ScalaApp") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
-      case x1 @ Defn.Object(_, _, Template.Initial(_, (app @ Init.Initial(Type.Name("App"), _, _)) :: tail, _, stats))
-          if x1.parent.exists(_.is[Pkg.Body]) || x1.parent.isEmpty =>
+      case x1 @ Defn.Object(
+            _,
+            _,
+            Template.After_4_9_9(
+              _,
+              (app @ Init.After_4_6_0(Type.Name("App"), _, _)) :: tail,
+              Template.Body(_, stats),
+              _
+            )
+          ) if x1.parent.exists(_.is[Pkg.Body]) || x1.parent.isEmpty =>
         val (classes, newBody) = stats.partition(s => s.is[Defn.Trait] || s.is[Defn.Class] || s.is[Defn.Object])
 
         // TODO

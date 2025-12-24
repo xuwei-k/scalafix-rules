@@ -46,8 +46,8 @@ class ImplicitValueClass extends SyntacticRule("ImplicitValueClass") {
             _,
             _,
             _,
-            Ctor.Primary.Initial(_, _, List(p1 :: Nil)),
-            Template.Initial(Nil, Nil, _, stats)
+            Ctor.Primary.After_4_6_0(_, _, List(Term.ParamClause(p1 :: Nil, _))),
+            Template.After_4_9_9(None, Nil, Template.Body(_, stats), _)
           )
           if c.mods.exists(_.is[Mod.Implicit]) && stats.forall(s =>
             s.is[Defn.Def] || s.is[Import] || s.is[Defn.Type]

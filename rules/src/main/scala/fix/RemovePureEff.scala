@@ -18,7 +18,12 @@ class RemovePureEff extends SyntacticRule("RemovePureEff") {
         .collect {
           case x @ Enumerator.Generator(
                 _,
-                ApplyType.Initial(Term.Select(rhs, Term.Name("pureEff")), Type.Name(_) :: Nil)
+                ApplyType.After_4_6_0(
+                  Term.Select(rhs, Term.Name("pureEff")),
+                  Type.ArgClause(
+                    Type.Name(_) :: Nil
+                  )
+                )
               ) =>
             Patch.replaceTree(x, Enumerator.Val(x.pat, rhs).toString)
           case x @ Enumerator.Generator(
