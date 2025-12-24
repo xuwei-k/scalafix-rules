@@ -24,7 +24,7 @@ class OptionForallExists extends SyntacticRule("OptionForallExists") {
             expr,
             List(
               Case(
-                Pat.Extract.Initial(Term.Name("Some"), Pat.Var(Term.Name(a1)) :: Nil),
+                Pat.Extract.After_4_6_0(Term.Name("Some"), Pat.ArgClause(Pat.Var(Term.Name(a1)) :: Nil)),
                 None,
                 predicate
               ),

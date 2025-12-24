@@ -28,18 +28,24 @@ private object LazyZipSemantic {
 class LazyZipSemantic extends SemanticRule("LazyZipSemantic") {
   override def fix(implicit doc: SemanticDocument): Patch = {
     doc.tree.collect {
-      case Term.Apply.Initial(
+      case Term.Apply.After_4_6_0(
             Term.Select(
-              Term.Apply.Initial(
+              Term.Apply.After_4_6_0(
                 Term.Select(
                   _,
                   zip @ Term.Name("zip")
                 ),
-                _ :: Nil
+                Term.ArgClause(
+                  _ :: Nil,
+                  None
+                )
               ),
               Term.Name("map" | "flatMap" | "filter" | "exists" | "forall" | "foreach")
             ),
-            fun :: Nil
+            Term.ArgClause(
+              fun :: Nil,
+              None
+            )
           ) if zip.symbol.info.map(_.signature).exists {
             case MethodSignature(_, List(x :: Nil), _) =>
               LazyZipSemantic.zipValues(x.symbol.owner.value)
