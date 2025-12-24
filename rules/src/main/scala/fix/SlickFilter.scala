@@ -33,9 +33,11 @@ object SlickFilter {
     def unapply(x: Term): Boolean = PartialFunction.cond(x) {
       case Term.Ascribe(
             Lit.Boolean(true),
-            Type.Apply.Initial(
+            Type.Apply.After_4_6_0(
               Type.Name("Rep"),
-              Type.Name("Boolean") :: Nil
+              Type.ArgClause(
+                Type.Name("Boolean") :: Nil
+              )
             )
           ) =>
         true

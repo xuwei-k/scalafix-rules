@@ -2,6 +2,7 @@ package fix
 
 import scala.meta.Lit
 import scala.meta.Term
+import scala.meta.Type
 import scala.meta.XtensionClassifiable
 import scala.meta.XtensionCollectionLikeUI
 import scala.meta.XtensionSyntax
@@ -14,11 +15,11 @@ private object StringFormatToInterpolation {
   private object Extract {
     def unapply(t: Term): Option[(Boolean, String, List[Term])] = PartialFunction
       .condOpt(t) {
-        case Term.ApplyInfix.Initial(
+        case Term.ApplyInfix.After_4_6_0(
               s: Lit.String,
               Term.Name("format"),
-              Nil,
-              args
+              Type.ArgClause(Nil),
+              Term.ArgClause(args, None)
             ) =>
           (s, args)
         case Term.Apply.After_4_6_0(

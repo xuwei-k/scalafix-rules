@@ -2,6 +2,7 @@ package fix
 
 import scala.meta.Mod
 import scala.meta.Term
+import scala.meta.Type
 import scala.meta.XtensionClassifiable
 import scala.meta.XtensionCollectionLikeUI
 import scalafix.Patch
@@ -41,7 +42,12 @@ class ReplacePlaceholder extends SyntacticRule("ReplacePlaceholder") {
               Term.Param(mods, Term.Name(a1), None, _) :: Nil,
               None
             ),
-            Term.ApplyInfix.Initial(Term.Select(Term.Name(a2), method), op, Nil, x :: Nil)
+            Term.ApplyInfix.After_4_6_0(
+              Term.Select(Term.Name(a2), method),
+              op,
+              Type.ArgClause(Nil),
+              Term.ArgClause(x :: Nil, None)
+            )
           ) if a1 == a2 && !mods.exists(_.is[Mod.Implicit]) && x.collect {
             case Term.Name(a3) if a3 == a1 => ()
           }.isEmpty =>
