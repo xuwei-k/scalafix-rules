@@ -25,6 +25,11 @@ object SameParamOverloadingTest {
     def tuple(c: (Int, Char, Long)): String
   }
 
+  abstract class A3 extends A1 {
+    override def x1[A: ClassTag](a: A): Int = 2
+    override def x1[A](b: A): String = "jjj"
+  }
+
   trait A2 {
     def x1(a1: Int, a2: Int): Int
     def x1(a1: Int): Int
