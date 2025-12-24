@@ -1,7 +1,9 @@
 package fix
 
 import scala.meta.Term
+import scala.meta.XtensionClassifiable
 import scala.meta.XtensionCollectionLikeUI
+import scala.meta.tokens.Token
 import scalafix.Patch
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
@@ -17,7 +19,7 @@ class FlatTraverse extends SyntacticRule("FlatTraverse") {
                   qual,
                   Term.Name("traverse")
                 ),
-                Term.ArgClause(
+                a @ Term.ArgClause(
                   arg :: Nil,
                   None
                 )
@@ -25,7 +27,7 @@ class FlatTraverse extends SyntacticRule("FlatTraverse") {
               Term.Name("map")
             ),
             Term.ArgClause(
-              a @ Term.AnonymousFunction(
+              Term.AnonymousFunction(
                 Term.Select(
                   Term.Placeholder(),
                   Term.Name("flatten")
@@ -34,7 +36,7 @@ class FlatTraverse extends SyntacticRule("FlatTraverse") {
               None
             )
           ) =>
-        if (a.toString.trim.startsWith("{")) {
+        if (a.tokens.dropWhile(_.is[Token.Whitespace]).headOption.exists(_.is[Token.LeftBrace])) {
           Patch.replaceTree(t, s"${qual}.flatTraverse${arg}")
         } else {
           Patch.replaceTree(t, s"${qual}.flatTraverse(${arg})")
