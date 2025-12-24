@@ -27,9 +27,19 @@ class ReplaceFill extends SyntacticRule("ReplaceFill") {
 
     object Size {
       def unapply(x: Term): Option[Int] = PartialFunction.condOpt(x) {
-        case Term.ApplyInfix.Initial(Lit.Int(x1), Term.Name("to"), _, Lit.Int(x2) :: Nil) =>
+        case Term.ApplyInfix.After_4_6_0(
+              Lit.Int(x1),
+              Term.Name("to"),
+              _,
+              Term.ArgClause(Lit.Int(x2) :: Nil, None)
+            ) =>
           x2 - x1 + 1
-        case Term.ApplyInfix.Initial(Lit.Int(x1), Term.Name("until"), _, Lit.Int(x2) :: Nil) =>
+        case Term.ApplyInfix.After_4_6_0(
+              Lit.Int(x1),
+              Term.Name("until"),
+              _,
+              Term.ArgClause(Lit.Int(x2) :: Nil, None)
+            ) =>
           x2 - x1
       }
     }
