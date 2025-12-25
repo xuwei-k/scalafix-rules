@@ -170,6 +170,7 @@ lazy val rules212 = rules
     Test / test := (Test / test).dependsOn(scripted.toTask("")).value,
     dogfooding := Def.taskDyn {
       val rules: Seq[String] = Seq(
+        "CaseClassExplicitCopy",
         "CaseClassImplicitVal",
         "CompareSameValue",
         "DirectoryAndPackageName",
@@ -178,6 +179,7 @@ lazy val rules212 = rules
         "FileNameConsistent",
         "FilterSize",
         "FinalObjectWarn",
+        "FlatMapCollect",
         "FutureUnit",
         "ImplicitClassNoParent",
         "ImplicitClassOnlyDef",
@@ -193,6 +195,9 @@ lazy val rules212 = rules
         "MapToForeach",
         "ObjectSelfType",
         "PartialFunctionCondOpt",
+        "RemoveUselessParamComments",
+        "RepeatedRewrite",
+        "ReplaceFill",
         "SameParamOverloading",
         "Scala3Keyword",
         "SimplifyForYield",
