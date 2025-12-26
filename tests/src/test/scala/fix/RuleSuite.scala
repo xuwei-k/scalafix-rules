@@ -14,6 +14,7 @@ class RuleSuite extends AbstractSemanticRuleSuite with AnyFunSuiteLike {
     "PartialFunctionCondOptTest",
     "RemoveUselessParamCommentsTest",
     "ScaladocEmptyParamTest",
+    "ScaladocEmptyReturnTest",
     "UnnecessarySortTest",
   ).map(_ + ".scala")
 
