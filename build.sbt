@@ -3,7 +3,9 @@ import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
 lazy val V = _root_.scalafix.sbt.BuildInfo
 
 lazy val rulesCrossVersions = Seq(V.scala213, V.scala212)
-lazy val scala3Version = "3.3.7"
+lazy val scala3lts = "3.3.7"
+lazy val scala3latest = "3.8.0-RC4"
+lazy val scala3versions = Seq(scala3lts, scala3latest)
 
 val commonSettings = Def.settings(
   scalacOptions ++= {
@@ -290,7 +292,7 @@ lazy val input = projectMatrix
     publish / skip := true
   )
   .defaultAxes(VirtualAxis.jvm)
-  .jvmPlatform(scalaVersions = rulesCrossVersions :+ scala3Version)
+  .jvmPlatform(scalaVersions = rulesCrossVersions ++ scala3versions)
 
 lazy val output = projectMatrix
   .settings(
@@ -299,7 +301,7 @@ lazy val output = projectMatrix
     publish / skip := true
   )
   .defaultAxes(VirtualAxis.jvm)
-  .jvmPlatform(scalaVersions = rulesCrossVersions :+ scala3Version)
+  .jvmPlatform(scalaVersions = rulesCrossVersions ++ scala3versions)
 
 lazy val testsAggregate = Project("tests", file("target/testsAggregate"))
   .aggregate(tests.projectRefs *)
@@ -357,10 +359,17 @@ lazy val tests = projectMatrix
     (rulesCrossVersions.map(VirtualAxis.scalaABIVersion) :+ VirtualAxis.jvm) *
   )
   .customRow(
+    autoScalaLibrary = true,
+    crossVersion = Some(CrossVersion.full),
     scalaVersions = Seq(V.scala212),
-    axisValues = Seq(TargetAxis(scala3Version), VirtualAxis.jvm),
-    settings = Seq()
-  )
+    axisValues = Seq(TargetAxis(scala3latest), VirtualAxis.jvm),
+  )(_.withId("testsTarget3latest"))
+  .customRow(
+    autoScalaLibrary = true,
+    crossVersion = Some(CrossVersion.full),
+    scalaVersions = Seq(V.scala213),
+    axisValues = Seq(TargetAxis(scala3lts), VirtualAxis.jvm),
+  )(_.withId("testsTarget3lts"))
   .customRow(
     scalaVersions = Seq(V.scala213),
     axisValues = Seq(TargetAxis(V.scala213), VirtualAxis.jvm),
