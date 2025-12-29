@@ -316,7 +316,34 @@ lazy val tests = projectMatrix
     scalafixTestkitInputScalacOptions :=
       TargetAxis.resolve(input, Compile / scalacOptions).value,
     scalafixTestkitInputScalaVersion :=
-      TargetAxis.resolve(input, Compile / scalaVersion).value
+      TargetAxis.resolve(input, Compile / scalaVersion).value,
+    Test / sourceGenerators += Def.task {
+      val inputFiles = scalafixTestkitInputSourceDirectories.value.flatMap(dir => (dir ** "*.scala").get)
+      val duplicate = inputFiles.groupBy(_.getName).filter(_._2.size > 1)
+      if (duplicate.nonEmpty) {
+        sys.error(duplicate.toString)
+      }
+      val result = inputFiles.map { f =>
+        val testName = {
+          val x = s"${f.getName.split('.').head}"
+          if (x.endsWith("Test")) {
+            x
+          } else {
+            s"${x}Test"
+          }
+        }
+        val testFile = (Test / sourceManaged).value / s"${testName}.scala"
+        val src =
+          s"""|package fix
+              |
+              |class ${testName} extends RuleSuiteBase("${f.getName}")
+              |""".stripMargin
+        IO.write(testFile, src)
+        testFile
+      }
+      assert(result.nonEmpty)
+      result
+    }.taskValue
   )
   .defaultAxes(
     (rulesCrossVersions.map(VirtualAxis.scalaABIVersion) :+ VirtualAxis.jvm) *
