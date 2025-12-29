@@ -22,7 +22,7 @@ import scalafix.v1.XtensionTreeScalafix
 
 object ForeachEntry {
   @nowarn("msg=AnyRefMap")
-  private val map2Types: Set[String] = Set[Class[?]](
+  private val map2Types: Set[String] = (Set[Class[?]](
     classOf[scala.collection.Map[?, ?]],
     classOf[scala.collection.immutable.Map[?, ?]],
     classOf[scala.collection.immutable.HashMap[?, ?]],
@@ -34,7 +34,9 @@ object ForeachEntry {
     classOf[scala.collection.mutable.SortedMap[?, ?]],
     classOf[scala.collection.mutable.AnyRefMap[?, ?]],
     classOf[scala.collection.concurrent.TrieMap[?, ?]],
-  ).map(_.getName + ".")
+  ).map(_.getName) ++ Set(
+    "scala.Predef.Map"
+  )).map(_ + ".")
 
   private val map1Types: Set[String] = Set[Class[?]](
     classOf[scala.collection.immutable.IntMap[?]],

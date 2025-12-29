@@ -15,6 +15,11 @@ import scalafix.v1.XtensionTreeScalafix
 
 private object SizeIs {
   val ScalaCollectionLength: Set[String] = Set(
+    "scala/package.Seq#",
+    "scala/package.Range#",
+    "scala/package.List#",
+    "scala/package.Vector#",
+    "scala/package.LazyList#",
     "scala/collection/immutable/Seq#",
     "scala/collection/immutable/List#",
     "scala/collection/immutable/Vector#",
@@ -23,6 +28,8 @@ private object SizeIs {
     "scala/collection/Seq#",
   )
   val ScalaCollectionSize: Set[String] = Set(
+    "scala/Predef.Map#",
+    "scala/Predef.Set#",
     "scala/collection/immutable/Map#",
     "scala/collection/immutable/Set#",
     "scala/collection/mutable/Map#",

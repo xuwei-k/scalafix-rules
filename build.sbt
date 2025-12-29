@@ -234,6 +234,14 @@ lazy val rules212 = rules
   )
 
 lazy val inputOutputCommon = Def.settings(
+  Compile / unmanagedSourceDirectories ++= {
+    scalaBinaryVersion.value match {
+      case "3" | "2.13" =>
+        Seq((Compile / scalaSource).value.getParentFile / "scala-2.13+")
+      case _ =>
+        Nil
+    }
+  },
   scalacOptions ++= {
     scalaBinaryVersion.value match {
       case "2.13" =>

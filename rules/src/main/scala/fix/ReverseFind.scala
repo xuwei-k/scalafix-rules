@@ -15,6 +15,11 @@ import scalafix.v1.XtensionTreeScalafix
 
 private object ReverseFind {
   private val ScalaCollectionSeq: Set[String] = Set(
+    "scala/package.Seq#",
+    "scala/package.Range#",
+    "scala/package.List#",
+    "scala/package.Vector#",
+    "scala/package.LazyList#",
     "scala/collection/immutable/Seq#",
     "scala/collection/immutable/List#",
     "scala/collection/immutable/Vector#",
