@@ -7,7 +7,6 @@ import scala.meta.XtensionClassifiable
 import scala.meta.XtensionCollectionLikeUI
 import scala.meta.tokens.Token
 import scalafix.Patch
-import scalafix.v1.MethodSignature
 import scalafix.v1.SemanticDocument
 import scalafix.v1.SemanticRule
 import scalafix.v1.XtensionOptionPatch
@@ -46,12 +45,7 @@ class LazyZipSemantic extends SemanticRule("LazyZipSemantic") {
               fun :: Nil,
               None
             )
-          ) if zip.symbol.info.map(_.signature).exists {
-            case MethodSignature(_, List(x :: Nil), _) =>
-              LazyZipSemantic.zipValues(x.symbol.owner.value)
-            case _ =>
-              false
-          } =>
+          ) if LazyZipSemantic.zipValues(zip.symbol.value) =>
         PartialFunction
           .condOpt(fun) { case f: Term.PartialFunction =>
             Seq(
