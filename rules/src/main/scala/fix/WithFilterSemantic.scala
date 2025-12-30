@@ -3,8 +3,6 @@ package fix
 import scala.meta.Term
 import scala.meta.XtensionCollectionLikeUI
 import scalafix.Patch
-import scalafix.XtensionOptionPatch
-import scalafix.v1.MethodSignature
 import scalafix.v1.SemanticDocument
 import scalafix.v1.SemanticRule
 import scalafix.v1.XtensionSeqPatch
@@ -33,14 +31,8 @@ class WithFilterSemantic extends SemanticRule("WithFilterSemantic") {
               Term.Name("map" | "flatMap" | "foreach")
             ),
             Term.ArgClause(_ :: Nil, _)
-          ) =>
-        filter.symbol.info
-          .map(_.signature)
-          .collect {
-            case MethodSignature(_, List(x :: Nil), _) if WithFilterSemantic.filterValues(x.symbol.owner.value) =>
-              Patch.replaceTree(filter, "withFilter")
-          }
-          .asPatch
+          ) if WithFilterSemantic.filterValues(filter.symbol.value) =>
+        Patch.replaceTree(filter, "withFilter")
     }.asPatch
   }
 }
