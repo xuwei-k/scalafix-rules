@@ -3,7 +3,15 @@ import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
 lazy val V = _root_.scalafix.sbt.BuildInfo
 
 lazy val rulesCrossVersions = Seq(V.scala213, V.scala212)
-lazy val scala3Version = "3.3.7"
+lazy val scala3latest = "3.8.0-RC4"
+lazy val isScala3Latest: Boolean = sys.props.isDefinedAt("scalafix_rules_scala_3_latest")
+lazy val scala3Version = {
+  if (isScala3Latest) {
+    scala3latest
+  } else {
+    "3.3.7"
+  }
+}
 
 val commonSettings = Def.settings(
   scalacOptions ++= {
@@ -154,9 +162,15 @@ val dogfooding = taskKey[Unit]("")
 val scalafixRulesDependency = "com.github.xuwei-k" %% "scalafix-rules" % "0.6.22" % Test
 
 // for scala-steward
-lazy val dummy = project.settings(
+lazy val dummy1 = project.settings(
   commonSettings,
   libraryDependencies += scalafixRulesDependency,
+  publish / skip := true
+)
+// for scala-steward
+lazy val dummy2 = project.settings(
+  commonSettings,
+  scalaVersion := scala3latest,
   publish / skip := true
 )
 
@@ -329,6 +343,19 @@ lazy val tests = projectMatrix
       TargetAxis.resolve(input, Compile / scalacOptions).value,
     scalafixTestkitInputScalaVersion :=
       TargetAxis.resolve(input, Compile / scalaVersion).value,
+    Test / testOptions ++= {
+      if (isScala3Latest) {
+        Seq(
+          Tests.Exclude(
+            Set(
+              "fix.NamedParamOrderTest" // TODO
+            )
+          )
+        )
+      } else {
+        Nil
+      }
+    },
     Test / sourceGenerators += Def.task {
       val inputFiles = scalafixTestkitInputSourceDirectories.value.flatMap(dir => (dir ** "*.scala").get)
       val duplicate = inputFiles.groupBy(_.getName).filter(_._2.size > 1)
