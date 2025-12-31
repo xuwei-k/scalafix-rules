@@ -27,9 +27,7 @@ class RandomShuffleHead extends SemanticRule("RandomShuffleHead") {
               )
             ),
             Term.Name("head" | "last")
-          )
-          if random.symbol.info
-            .exists(_.symbol.value == "scala/util/Random.") || random.symbol.info.map(_.signature).exists {
+          ) if (random.symbol.value == "scala/util/Random.") || random.symbol.info.map(_.signature).exists {
             case ValueSignature(TypeRef(_, symbol, Nil)) =>
               symbol.value == "scala/util/Random#"
             case _ =>
