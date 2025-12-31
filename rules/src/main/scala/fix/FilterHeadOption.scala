@@ -7,22 +7,26 @@ import scala.meta.tokens.Token
 import scalafix.Patch
 import scalafix.XtensionOptionPatch
 import scalafix.XtensionSeqPatch
-import scalafix.v1.MethodSignature
 import scalafix.v1.SemanticDocument
 import scalafix.v1.SemanticRule
-import scalafix.v1.TypeRef
-import scalafix.v1.ValueSignature
 import scalafix.v1.XtensionTreeScalafix
 
 private object FilterHeadOption {
   private val filterValues: Set[String] = Set(
-    "scala/collection/TraversableLike#filter().",
-    "scala/collection/IterableOps#filter().",
-    "scala/collection/immutable/List#filter().",
-    "scala/collection/immutable/LazyList#filter().",
-    "scala/collection/immutable/Stream#filter().",
-    "scala/collection/StrictOptimizedIterableOps#filter()."
-  )
+    "scala/collection/TraversableLike",
+    "scala/collection/IterableOps",
+    "scala/collection/immutable/List",
+    "scala/collection/immutable/LazyList",
+    "scala/collection/immutable/Stream",
+    "scala/collection/StrictOptimizedIterableOps"
+  ).map(_ + "#filter().")
+
+  private val headOptionValues: Set[String] = Set(
+    "scala/collection/TraversableLike",
+    "scala/collection/IterableOps",
+    "scala/collection/LinearSeqOps",
+    "scala/collection/IndexedSeqOps",
+  ).map(_ + "#headOption().")
 }
 
 class FilterHeadOption extends SemanticRule("FilterHeadOption") {
@@ -40,26 +44,21 @@ class FilterHeadOption extends SemanticRule("FilterHeadOption") {
               )
             ),
             headOption @ Term.Name("headOption")
+          )
+          if FilterHeadOption.filterValues(
+            filter.symbol.value
+          ) && FilterHeadOption.headOptionValues(
+            headOption.symbol.value
           ) =>
-        PartialFunction
-          .condOpt((filter.symbol.info.map(_.signature), headOption.symbol.info.map(_.signature))) {
-            case (Some(MethodSignature(Nil, List(x :: Nil), _)), Some(MethodSignature(Nil, Nil, _)))
-                if FilterHeadOption.filterValues(x.symbol.owner.value) =>
-              x.signature match {
-                case ValueSignature(tpe: TypeRef) if tpe.symbol.value == "scala/Function1#" =>
-                  Seq(
-                    Patch.replaceTree(filter, "find"),
-                    t1.tokens
-                      .find(n => n.is[Token.Dot] && (n.pos.start >= t2.pos.end) && (n.pos.end <= headOption.pos.start))
-                      .map(Patch.removeToken)
-                      .asPatch,
-                    Patch.removeTokens(headOption.tokens)
-                  ).asPatch
-                case _ =>
-                  Patch.empty
-              }
-          }
-          .asPatch
+
+        Seq(
+          Patch.replaceTree(filter, "find"),
+          t1.tokens
+            .find(n => n.is[Token.Dot] && (n.pos.start >= t2.pos.end) && (n.pos.end <= headOption.pos.start))
+            .map(Patch.removeToken)
+            .asPatch,
+          Patch.removeTokens(headOption.tokens)
+        ).asPatch
     }.asPatch
   }
 }
