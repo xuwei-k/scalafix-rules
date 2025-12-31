@@ -247,7 +247,11 @@ lazy val inputOutputCommon = Def.settings(
       case "2.13" =>
         Seq("-Wconf:cat=scala3-migration:info")
       case "3" =>
-        Seq("-Ykind-projector")
+        if (scalaVersion.value.startsWith("3.3")) {
+          Seq("-Ykind-projector")
+        } else {
+          Seq("-Xkind-projector")
+        }
       case _ =>
         Nil
     }
