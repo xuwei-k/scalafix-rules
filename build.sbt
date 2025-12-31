@@ -406,3 +406,34 @@ lazy val tests = projectMatrix
   .enablePlugins(ScalafixTestkitPlugin)
 
 scalaVersion := V.scala212
+
+TaskKey[Unit]("printAllRules") := {
+  val fileName = "scalafix.v1.Rule"
+  val p = rules.jvm(V.scala213)
+  val ruleNames = IO.readLines(
+    (rules.jvm(V.scala213) / Compile / resources).value.find(_.getName == fileName).getOrElse(sys.error(fileName))
+  )
+  val prefix = "fix."
+  val unexpected = ruleNames.filterNot(_.startsWith(prefix))
+  assert(unexpected.isEmpty, unexpected)
+  scala.util.Using.resource(
+    new java.net.URLClassLoader((rules.jvm(V.scala213) / Compile / fullClasspath).value.map(_.data.toURI.toURL).toArray)
+  ) { loader =>
+    import scala.collection.compat._
+    val (semantic, syntactic) = ruleNames.partitionMap { c =>
+      loader.loadClass(c).getSuperclass.getName match {
+        case "scalafix.v1.SyntacticRule" =>
+          Right(c.drop(prefix.length))
+        case "scalafix.v1.SemanticRule" =>
+          Left(c.drop(prefix.length))
+        case other =>
+          sys.error(s"$c $other")
+      }
+    }
+    println("### Semantic")
+    semantic.map("- " + _).foreach(println)
+    println()
+    println("### Syntactic")
+    syntactic.map("- " + _).foreach(println)
+  }
+}
