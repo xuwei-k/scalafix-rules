@@ -9,7 +9,7 @@ import scalafix.v1.SyntacticRule
 import scalafix.v1.XtensionSeqPatch
 
 object RemoveIf {
-  object True {
+  private object True {
     def unapply(t: Term): Boolean = PartialFunction.cond(t) {
       case Lit.Boolean(true) =>
         true
@@ -18,7 +18,7 @@ object RemoveIf {
     }
   }
 
-  object False {
+  private object False {
     def unapply(t: Term): Boolean = PartialFunction.cond(t) {
       case Lit.Boolean(false) =>
         true

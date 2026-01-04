@@ -14,7 +14,7 @@ import scalafix.v1.ValueSignature
 import scalafix.v1.XtensionTreeScalafix
 
 private object SizeIs {
-  val ScalaCollectionLength: Set[String] = Set(
+  private val ScalaCollectionLength: Set[String] = Set(
     "scala/package.Seq#",
     "scala/package.Range#",
     "scala/package.List#",
@@ -27,7 +27,7 @@ private object SizeIs {
     "scala/collection/mutable/Seq#",
     "scala/collection/Seq#",
   )
-  val ScalaCollectionSize: Set[String] = Set(
+  private val ScalaCollectionSize: Set[String] = Set(
     "scala/Predef.Map#",
     "scala/Predef.Set#",
     "scala/collection/immutable/Map#",
@@ -39,7 +39,7 @@ private object SizeIs {
     "scala/collection/Set#",
   ) ++ ScalaCollectionLength
 
-  object IntType {
+  private object IntType {
     def unapply(t: Term)(implicit doc: SemanticDocument): Boolean = PartialFunction.cond(t) {
       case _: Lit.Int =>
         true
