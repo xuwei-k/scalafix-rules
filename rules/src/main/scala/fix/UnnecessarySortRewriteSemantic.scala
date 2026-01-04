@@ -13,7 +13,7 @@ import scalafix.v1.SemanticRule
 import scalafix.v1.XtensionTreeScalafix
 
 private object UnnecessarySortRewriteSemantic {
-  object HeadOrLastSorted {
+  private object HeadOrLastSorted {
     def unapply(x: String): Option[String] = PartialFunction.condOpt(x) {
       case "head" => "min"
       case "last" => "max"
@@ -22,7 +22,7 @@ private object UnnecessarySortRewriteSemantic {
     }
   }
 
-  object HeadOrLastSortBy {
+  private object HeadOrLastSortBy {
     def unapply(x: String): Option[String] = PartialFunction.condOpt(x) {
       case "head" => "minBy"
       case "last" => "maxBy"
