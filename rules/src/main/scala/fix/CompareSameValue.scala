@@ -66,7 +66,7 @@ class CompareSameValue(config: CompareSameValueConfig) extends SyntacticRule("Co
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
       case t @ CompareSameValue.X(a1, a2) if a1.structure == a2.structure && t.collect {
-            case t if t.is[Term.Placeholder] => ()
+            case x if x.is[Term.Placeholder] => ()
           }.isEmpty =>
         Patch.lint(
           Diagnostic(
