@@ -76,9 +76,9 @@ class UselessParamCommentsWarn(config: UselessParamCommentsWarnConfig)
             )
           }
           .collect {
-            case (x, Some(x1), Seq(x2)) if x1 == x2 =>
+            case (y, Some(x1), Seq(x2)) if x1 == x2 =>
               PartialFunction
-                .condOpt(x.value.linesIterator.zipWithIndex.collect {
+                .condOpt(y.value.linesIterator.zipWithIndex.collect {
                   case (str, i) if str.contains(s" ${x1} ") => (str.length + 1, i)
                 }.toList) { case List((length, index)) =>
                   Patch.lint(
@@ -86,7 +86,7 @@ class UselessParamCommentsWarn(config: UselessParamCommentsWarnConfig)
                       id = "",
                       message = config.message,
                       position = {
-                        val line = x.pos.startLine + index
+                        val line = y.pos.startLine + index
                         Position.Range(
                           input = doc.input,
                           startLine = line,
