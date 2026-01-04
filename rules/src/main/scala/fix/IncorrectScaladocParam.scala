@@ -54,7 +54,7 @@ class IncorrectScaladocParam extends SyntacticRule("IncorrectScaladocParam") {
             c.label.map(_.value.trim)
           }
           .flatten
-      val duplicateNames = scaladocParamNames.groupBy(identity).filter(_._2.size > 1).map(_._1).filter(names)
+      val duplicateNames = scaladocParamNames.groupBy(identity).filter(_._2.size > 1).keys.filter(names)
 
       def getPositions(paramName: String): List[Position] =
         x.value.linesIterator.zipWithIndex.collect {
