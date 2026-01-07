@@ -3,6 +3,7 @@ package fix
 import scala.meta.Defn
 import scala.meta.Init
 import scala.meta.Pkg
+import scala.meta.Source
 import scala.meta.Template
 import scala.meta.Type
 import scala.meta.XtensionClassifiable
@@ -29,7 +30,7 @@ class ScalaApp extends SyntacticRule("ScalaApp") {
               Template.Body(_, stats),
               _
             )
-          ) if x1.parent.exists(_.is[Pkg.Body]) || x1.parent.isEmpty =>
+          ) if x1.parent.exists(p => p.is[Pkg.Body] || p.is[Source]) || x1.parent.isEmpty =>
         val (classes, newBody) = stats.partition(s => s.is[Defn.Trait] || s.is[Defn.Class] || s.is[Defn.Object])
 
         // TODO
