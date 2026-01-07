@@ -3,6 +3,7 @@ package fix
 import fix.FileNameConsistent._
 import scala.meta.Defn
 import scala.meta.Pkg
+import scala.meta.Source
 import scala.meta.Tree
 import scala.meta.XtensionClassifiable
 import scala.meta.XtensionCollectionLikeUI
@@ -84,6 +85,6 @@ object FileNameConsistent {
 
   implicit class TreeOps(private val self: Defn) extends AnyVal {
     def isTopLevel: Boolean =
-      self.parent.exists(_.is[Pkg.Body]) || self.parent.isEmpty
+      self.parent.exists(p => p.is[Pkg.Body] || p.is[Source]) || self.parent.isEmpty
   }
 }
