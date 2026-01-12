@@ -12,4 +12,21 @@ object UnnecessaryReturnTest {
     }
     return y2
   }
+
+  def f2(x1: Boolean, x2: Int, x3: Int): Int = {
+    if (x1) {
+      return x2
+    } else {
+      return x3
+    }
+  }
+
+  def f3(x1: Int, x2: Int, x3: Int): Int = {
+    x1 match {
+      case 1 =>
+        return x2
+      case _ =>
+        return x3
+    }
+  }
 }
