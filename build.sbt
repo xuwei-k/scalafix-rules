@@ -91,6 +91,10 @@ lazy val rules = projectMatrix
     publishTo := (if (isSnapshot.value) None else localStaging.value),
     libraryDependencies += "ch.epfl.scala" %% "scalafix-core" % V.scalafixVersion,
     libraryDependencies += "org.scalatest" %% "scalatest-funsuite" % "3.2.19" % Test,
+    libraryDependencies += "org.scala-lang" % "scala-compiler" % scalaVersion.value % Test,
+    libraryDependencies += "org.scala-sbt" %% "io" % "1.10.5" % Test,
+    Test / fork := true,
+    Test / baseDirectory := (LocalRootProject / baseDirectory).value,
     scalacOptions += {
       scalaBinaryVersion.value match {
         case "2.12" =>
@@ -99,6 +103,24 @@ lazy val rules = projectMatrix
           "-Wunused:imports"
       }
     },
+    Test / resourceGenerators += Def.task {
+      val f = (Test / resourceManaged).value / "scalac-options.txt"
+      IO.writeLines(f, scalacOptions.value.sorted)
+      Seq(f)
+    }.taskValue,
+    Test / resourceGenerators += Def.task {
+      val f = (Test / resourceManaged).value / "main-external-classpath.txt"
+      IO.writeLines(f, (Compile / externalDependencyClasspath).value.map(_.data.getCanonicalPath))
+      Seq(f)
+    }.taskValue,
+    Test / resourceGenerators += Def.task {
+      val fileNames = (Compile / sources).value
+        .map(x => IO.relativize((LocalRootProject / baseDirectory).value, x).getOrElse(x.getAbsolutePath))
+        .sorted
+      val f = (Test / resourceManaged).value / "main-sources.txt"
+      IO.writeLines(f, fileNames)
+      Seq(f)
+    }.taskValue,
     Compile / sourceGenerators += task {
       val dir = (Compile / sourceManaged).value
       Seq[(String, Seq[String])](
