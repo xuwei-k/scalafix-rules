@@ -24,6 +24,11 @@ private object StringToString {
         other
     }
   }
+
+  private val stringTypes: String => Boolean = Set(
+    "java.lang.String.",
+    "scala.Predef.String."
+  )
 }
 
 class StringToString extends SemanticRule("StringToString") {
@@ -36,7 +41,7 @@ class StringToString extends SemanticRule("StringToString") {
         a.symbol.info
           .map(_.signature)
           .collect {
-            case ValueSignature(tpe: TypeRef) if tpe.symbol.normalized.value == "scala.Predef.String." =>
+            case ValueSignature(tpe: TypeRef) if StringToString.stringTypes(tpe.symbol.normalized.value) =>
               Seq(
                 Patch.removeTokens(s.tokens),
                 t.tokens.reverseIterator.find(_.is[Token.Dot]).map(Patch.removeToken).asPatch
