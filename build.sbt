@@ -3,7 +3,7 @@ import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
 lazy val V = _root_.scalafix.sbt.BuildInfo
 
 lazy val rulesCrossVersions = Seq(V.scala213, V.scala212)
-lazy val scala3latest = "3.8.2-RC1"
+lazy val scala3latest = "3.8.2-RC2"
 lazy val isScala3Latest: Boolean = sys.props.isDefinedAt("scalafix_rules_scala_3_latest")
 lazy val scala3Version = {
   if (isScala3Latest) {
