@@ -1,8 +1,12 @@
 import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
 
+def scala213 = "2.13.19-bin-aeda558"
+
+ThisBuild / resolvers += Resolver.scalaNightlyRepository
+
 lazy val V = _root_.scalafix.sbt.BuildInfo
 
-lazy val rulesCrossVersions = Seq(V.scala213, V.scala212)
+lazy val rulesCrossVersions = Seq(scala213, V.scala212)
 lazy val scala3latest = "3.8.2-RC2"
 lazy val isScala3Latest: Boolean = sys.props.isDefinedAt("scalafix_rules_scala_3_latest")
 lazy val scala3Version = {
@@ -54,6 +58,10 @@ val commonSettings = Def.settings(
     "MIT License" -> url("https://opensource.org/licenses/mit-license")
   ),
   semanticdbEnabled := true,
+  semanticdbCompilerPlugin := {
+    val v = semanticdbVersion.value
+    "org.scalameta" % "semanticdb-scalac_2.13.18" % v
+  },
   semanticdbVersion := scalafixSemanticdb.revision,
 )
 
@@ -296,7 +304,7 @@ lazy val inputOutputCommon = Def.settings(
   libraryDependencies += "com.google.inject" % "guice" % "6.0.0", // scala-steward:off
   libraryDependencies ++= {
     if (scalaBinaryVersion.value != "3") {
-      Seq(compilerPlugin("org.typelevel" %% "kind-projector" % "0.13.4" cross CrossVersion.full))
+      Seq(compilerPlugin("org.typelevel" % "kind-projector_2.13.18" % "0.13.4"))
     } else {
       Nil
     }
@@ -353,8 +361,8 @@ lazy val tests = projectMatrix
   .settings(
     commonSettings,
     publish / skip := true,
-    libraryDependencies += "org.scala-lang.modules" % "scala-asm" % "9.9.0-scala-1",
-    libraryDependencies += "ch.epfl.scala" % "scalafix-testkit" % V.scalafixVersion % Test cross CrossVersion.full,
+    libraryDependencies := Seq("org.scala-lang.modules" % "scala-asm" % "9.9.0-scala-1"),
+    libraryDependencies += "ch.epfl.scala" % "scalafix-testkit_2.13.18" % V.scalafixVersion % Test,
     scalafixTestkitOutputSourceDirectories :=
       TargetAxis.resolve(output, Compile / unmanagedSourceDirectories).value,
     scalafixTestkitInputSourceDirectories :=
@@ -415,8 +423,8 @@ lazy val tests = projectMatrix
     settings = Seq()
   )
   .customRow(
-    scalaVersions = Seq(V.scala213),
-    axisValues = Seq(TargetAxis(V.scala213), VirtualAxis.jvm),
+    scalaVersions = Seq(scala213),
+    axisValues = Seq(TargetAxis(scala213), VirtualAxis.jvm),
     settings = Seq()
   )
   .customRow(
