@@ -13,9 +13,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - java: 8
+        - java: 17
           os: ubuntu-latest
-        - java: 8
+        - java: 17
           os: windows-latest
         - java: 25
           os: ubuntu-latest
@@ -27,9 +27,9 @@ jobs:
         distribution: zulu
     - uses: coursier/cache-action@v8
     - uses: sbt/setup-sbt@v1
-    - run: sbt publishLocal test
+    - run: sbt "publishLocal ; testFull"
     - if: matrix.os != 'windows-latest'
-      run: sbt scalafmtSbtCheck scalafmtCheckAll
+      run: sbt "scalafmtSbtCheck ; scalafmtCheckAll"
   latest:
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -40,4 +40,4 @@ jobs:
         java-version: 25
         distribution: zulu
     - uses: sbt/setup-sbt@v1
-    - run: sbt -Dscalafix_rules_scala_3_latest scalaVersion testsTarget3/test
+    - run: sbt -Dscalafix_rules_scala_3_latest "print scalaVersion ; testsTarget3/test"
