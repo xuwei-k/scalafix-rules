@@ -379,7 +379,7 @@ lazy val tests = projectMatrix
       }
     },
     Test / sourceGenerators += Def.task {
-      val inputFiles = scalafixTestkitInputSourceDirectories.value.flatMap(dir => (dir ** "*.scala").get)
+      val inputFiles = scalafixTestkitInputSourceDirectories.value.flatMap(dir => (dir ** "*.scala").get())
       val duplicate = inputFiles.groupBy(_.getName).filter(_._2.size > 1)
       if (duplicate.nonEmpty) {
         sys.error(duplicate.toString)
