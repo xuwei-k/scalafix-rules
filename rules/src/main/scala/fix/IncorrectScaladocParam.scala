@@ -44,7 +44,7 @@ class IncorrectScaladocParam extends SyntacticRule("IncorrectScaladocParam") {
   private def p(t: Tree, paramsClauses: Seq[Term.ParamClause])(implicit doc: SyntacticDocument): List[Diagnostic] = {
     val names = paramsClauses.flatMap(_.values.map(_.name.value.trim)).toSet
 
-    doc.comments.leading(t).toList.flatMap { x =>
+    t.begComment.toList.flatMap(_.values).flatMap { x =>
       val scaladocParamNames =
         ScaladocParser
           .parse(x.syntax)
@@ -57,7 +57,7 @@ class IncorrectScaladocParam extends SyntacticRule("IncorrectScaladocParam") {
       val duplicateNames = scaladocParamNames.groupBy(identity).filter(_._2.size > 1).keys.filter(names)
 
       def getPositions(paramName: String): List[Position] =
-        x.value.linesIterator.zipWithIndex.collect {
+        x.pos.text.linesIterator.zipWithIndex.collect {
           case (str, i)
               if str.contains("@param") && (str.contains(s" ${paramName} ") || str.endsWith(s" ${paramName}")) =>
             (str.length, i)

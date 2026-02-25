@@ -33,7 +33,7 @@ object UnmooredDocComment {
 class UnmooredDocComment extends SyntacticRule("UnmooredDocComment") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect { case t @ UnmooredDocComment.Unmoored() =>
-      doc.comments.leading(t).toSeq.filter(_.value.startsWith("*")).map(_ -> t)
+      t.begComment.toSeq.filter(_.pos.text.startsWith("/**")).map(_ -> t)
     }.flatten
       .groupBy(_._1)
       .view
