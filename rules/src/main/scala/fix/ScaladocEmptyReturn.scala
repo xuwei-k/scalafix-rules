@@ -4,11 +4,9 @@ import scala.meta.Decl
 import scala.meta.Defn
 import scala.meta.Tree
 import scala.meta.XtensionCollectionLikeUI
-import scala.meta.XtensionSyntax
 import scala.meta.internal.Scaladoc
 import scala.meta.internal.Scaladoc.TagType
 import scala.meta.internal.parsers.ScaladocParser
-import scala.meta.tokens.Token
 import scalafix.Patch
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
@@ -24,17 +22,17 @@ class ScaladocEmptyReturn extends SyntacticRule("ScaladocEmptyReturn") {
       case t: Defn.Macro =>
         p(t)
     }.flatten.map { case (comment, line) =>
-      Patch.replaceToken(
+      Patch.replaceTree(
         comment,
-        comment.value.linesIterator.zipWithIndex.collect { case x if line != x._2 => x._1 }.mkString("/*", "\n", "*/")
+        comment.pos.text.linesIterator.zipWithIndex.collect { case x if line != x._2 => x._1 }.mkString("\n")
       )
     }.asPatch
   }
 
-  private def p(t: Tree)(implicit doc: SyntacticDocument): List[(Token.Comment, Int)] = {
-    doc.comments.leading(t).toList.flatMap { x =>
+  private def p(t: Tree): List[(Tree.Comments, Int)] = {
+    t.begComment.toList.flatMap { x =>
       val hasEmptyReturn =
-        ScaladocParser.parse(x.syntax).toSeq.flatMap(_.para.flatMap(_.terms)).exists {
+        ScaladocParser.parse(x.pos.text).toSeq.flatMap(_.para.flatMap(_.terms)).exists {
           case c @ Scaladoc.Tag(TagType.Return, _, _) =>
             c.desc.isEmpty
           case _ =>
@@ -43,7 +41,7 @@ class ScaladocEmptyReturn extends SyntacticRule("ScaladocEmptyReturn") {
 
       if (hasEmptyReturn) {
         PartialFunction.condOpt(
-          x.value.linesIterator.zipWithIndex.collect {
+          x.pos.text.linesIterator.zipWithIndex.collect {
             case (str, i) if str.contains(" @return") =>
               i
           }.toList

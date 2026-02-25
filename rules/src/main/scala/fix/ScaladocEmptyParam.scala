@@ -5,11 +5,9 @@ import scala.meta.Decl
 import scala.meta.Defn
 import scala.meta.Tree
 import scala.meta.XtensionCollectionLikeUI
-import scala.meta.XtensionSyntax
 import scala.meta.internal.Scaladoc
 import scala.meta.internal.Scaladoc.TagType
 import scala.meta.internal.parsers.ScaladocParser
-import scala.meta.tokens.Token
 import scalafix.Patch
 import scalafix.v1.SyntacticDocument
 import scalafix.v1.SyntacticRule
@@ -19,15 +17,14 @@ class ScaladocEmptyParam extends SyntacticRule("ScaladocEmptyParam") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
     fix0(doc).map { case (comment, lines) =>
       val linesSet = lines.toSet
-      Patch.replaceToken(
+      Patch.replaceTree(
         comment,
-        comment.value.linesIterator.zipWithIndex.collect { case x if !linesSet(x._2) => x._1 }
-          .mkString("/*", "\n", "*/")
+        comment.pos.text.linesIterator.zipWithIndex.collect { case x if !linesSet(x._2) => x._1 }.mkString("\n")
       )
     }.asPatch
   }
 
-  private[fix] def fix0(implicit doc: SyntacticDocument): List[(Token.Comment, Seq[Int])] = {
+  private[fix] def fix0(implicit doc: SyntacticDocument): List[(Tree.Comments, Seq[Int])] = {
     doc.tree.collect {
       case t: Defn.Class =>
         p(t)
@@ -46,34 +43,30 @@ class ScaladocEmptyParam extends SyntacticRule("ScaladocEmptyParam") {
     }.flatten
   }
 
-  private def p(t: Tree)(implicit doc: SyntacticDocument): List[(Token.Comment, Seq[Int])] = {
-    doc.comments
-      .leading(t)
-      .toList
-      .map { x =>
-        val scaladocParamNames =
-          ScaladocParser
-            .parse(x.syntax)
-            .toSeq
-            .flatMap(_.para.flatMap(_.terms))
-            .collect {
-              case c @ Scaladoc.Tag(TagType.Param, _, _) if c.desc.isEmpty =>
-                c.label.map(_.value.trim)
-            }
-            .flatten
-
-        def getPositions(paramName: String): List[Int] =
-          x.value.linesIterator.zipWithIndex.collect {
-            case (str, i) if str.contains(" @param ") && str.contains(s" ${paramName}") =>
-              i
-          }.toList
-
-        x -> scaladocParamNames.flatMap(paramName =>
-          PartialFunction.condOpt(getPositions(paramName)) { case pos :: Nil =>
-            pos
+  private def p(t: Tree): List[(Tree.Comments, Seq[Int])] = {
+    t.begComment.toList.map { x =>
+      val scaladocParamNames =
+        ScaladocParser
+          .parse(x.pos.text)
+          .toSeq
+          .flatMap(_.para.flatMap(_.terms))
+          .collect {
+            case c @ Scaladoc.Tag(TagType.Param, _, _) if c.desc.isEmpty =>
+              c.label.map(_.value.trim)
           }
-        )
-      }
-      .filter(_._2.nonEmpty)
+          .flatten
+
+      def getPositions(paramName: String): List[Int] =
+        x.pos.text.linesIterator.zipWithIndex.collect {
+          case (str, i) if str.contains(" @param ") && str.contains(s" ${paramName}") =>
+            i
+        }.toList
+
+      x -> scaladocParamNames.flatMap(paramName =>
+        PartialFunction.condOpt(getPositions(paramName)) { case pos :: Nil =>
+          pos
+        }
+      )
+    }.filter(_._2.nonEmpty)
   }
 }

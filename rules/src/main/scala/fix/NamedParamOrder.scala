@@ -3,9 +3,10 @@ package fix
 import fix.NamedParamOrder.ApplyOrNew
 import scala.meta.Term
 import scala.meta.Tree
+import scala.meta.XtensionClassifiable
 import scala.meta.XtensionCollectionLikeUI
 import scala.meta.XtensionSyntax
-import scala.meta.contrib.XtensionTreeOps
+import scala.meta.tokens.Token
 import scalafix.Patch
 import scalafix.v1.ClassSignature
 import scalafix.v1.MethodSignature
@@ -32,7 +33,7 @@ class NamedParamOrder extends SemanticRule("NamedParamOrder") {
   }
   private[this] def getPatch(t: Tree)(implicit doc: SemanticDocument): List[Patch] = {
     t.collect {
-      case t @ ApplyOrNew(methodName, fun, args) if args.nonEmpty && !t.exists(doc.comments.hasComment) =>
+      case t @ ApplyOrNew(methodName, fun, args) if args.nonEmpty && !t.tokens.exists(_.is[Token.Comment]) =>
         val named = args.collect {
           case Term.Assign(k: Term.Name, v) if getPatch(v).isEmpty =>
             k -> v

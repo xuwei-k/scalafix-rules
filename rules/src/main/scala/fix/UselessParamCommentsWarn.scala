@@ -8,7 +8,6 @@ import scala.meta.Stat
 import scala.meta.Tree
 import scala.meta.XtensionCollectionLikeUI
 import scala.meta.XtensionSyntax
-import scala.meta.contrib.AssociatedComments
 import scala.meta.inputs.Position
 import scala.meta.internal.Scaladoc
 import scala.meta.internal.Scaladoc.TagType
@@ -52,15 +51,14 @@ class UselessParamCommentsWarn(config: UselessParamCommentsWarnConfig)
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
       case t: Stat.WithCtor =>
-        p(t, doc.comments)
+        p(t)
       case t: Tree.WithParamClauseGroups =>
-        p(t, doc.comments)
+        p(t)
     }.asPatch
   }
 
-  private def p(t: Tree, comments: AssociatedComments)(implicit doc: SyntacticDocument): Patch = {
-    comments
-      .leading(t)
+  private def p(t: Tree)(implicit doc: SyntacticDocument): Patch = {
+    t.begComment.toSeq
       .flatMap(x =>
         ScaladocParser
           .parse(x.syntax)
@@ -78,7 +76,7 @@ class UselessParamCommentsWarn(config: UselessParamCommentsWarnConfig)
           .collect {
             case (y, Some(x1), Seq(x2)) if x1 == x2 =>
               PartialFunction
-                .condOpt(y.value.linesIterator.zipWithIndex.collect {
+                .condOpt(y.pos.text.linesIterator.zipWithIndex.collect {
                   case (str, i) if str.contains(s" ${x1} ") => (str.length + 1, i)
                 }.toList) { case List((length, index)) =>
                   Patch.lint(

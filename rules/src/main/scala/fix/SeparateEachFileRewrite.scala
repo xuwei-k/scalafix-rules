@@ -75,7 +75,7 @@ class SeparateEachFileRewrite(config: SeparateEachFileConfig) extends SyntacticR
               (header + "\n\n" + v
                 .sortBy(_.getClass.getName)
                 .map { x =>
-                  (doc.comments.leading(x).toSeq.sortBy(_.pos.start).map(_.toString) :+ x.toString).mkString("\n")
+                  (x.begComment.toSeq.sortBy(_.pos.start).map(_.toString) :+ x.toString).mkString("\n")
                 }
                 .mkString("\n", "\n\n", "\n")).getBytes(StandardCharsets.UTF_8)
             )
