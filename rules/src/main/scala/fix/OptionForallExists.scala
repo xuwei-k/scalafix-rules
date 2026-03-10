@@ -14,8 +14,8 @@ import scalafix.v1.SyntacticRule
 import scalafix.v1.XtensionSeqPatch
 
 /**
- * [[https://github.com/scala/scala/blob/v2.13.12/src/library/scala/Option.scala#L396-L402]]
- * [[https://github.com/scala/scala/blob/v2.13.12/src/library/scala/Option.scala#L411-L417]]
+ * [[https://github.com/scala/scala3/blob/3.8.2/library/src/scala/Option.scala#L398-L404]]
+ * [[https://github.com/scala/scala3/blob/3.8.2/library/src/scala/Option.scala#L413-L419]]
  */
 class OptionForallExists extends SyntacticRule("OptionForallExists") {
   override def fix(implicit doc: SyntacticDocument): Patch = {

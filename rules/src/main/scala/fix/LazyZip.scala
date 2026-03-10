@@ -13,7 +13,7 @@ import scalafix.v1.XtensionOptionPatch
 import scalafix.v1.XtensionSeqPatch
 
 /**
-  * [[https://github.com/scala/scala/blob/v2.13.12/src/library/scala/collection/LazyZipOps.scala]]
+  * [[https://github.com/scala/scala3/blob/3.8.2/library/src/scala/collection/LazyZipOps.scala]]
   */
 class LazyZip extends SyntacticRule("LazyZip") {
   override def fix(implicit doc: SyntacticDocument): Patch = {

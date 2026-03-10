@@ -22,7 +22,7 @@ private object LazyZipSemantic {
 }
 
 /**
- * [[https://github.com/scala/scala/blob/v2.13.18/src/library/scala/collection/LazyZipOps.scala]]
+ * [[https://github.com/scala/scala3/blob/3.8.2/library/src/scala/collection/LazyZipOps.scala]]
  */
 class LazyZipSemantic extends SemanticRule("LazyZipSemantic") {
   override def fix(implicit doc: SemanticDocument): Patch = {
