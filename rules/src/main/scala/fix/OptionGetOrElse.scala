@@ -14,7 +14,7 @@ import scalafix.v1.SyntacticRule
 import scalafix.v1.XtensionSeqPatch
 
 /**
- * [[https://github.com/scala/scala/blob/v2.13.12/src/library/scala/Option.scala#L190-L196]]
+ * [[https://github.com/scala/scala3/blob/3.8.2/library/src/scala/Option.scala#L192-L198]]
  */
 class OptionGetOrElse extends SyntacticRule("OptionGetOrElse") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
