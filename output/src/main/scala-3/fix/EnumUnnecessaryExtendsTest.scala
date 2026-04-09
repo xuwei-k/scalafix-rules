@@ -9,6 +9,7 @@ object EnumUnnecessaryExtendsTest {
     case A3[B](x: B)
     case A4 extends A with F
     case A5 extends A, F
+    case A6(x: Int)
 
     trait C1
     class C2 extends C1
