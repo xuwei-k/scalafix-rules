@@ -270,6 +270,13 @@ lazy val rules212 = rules
   )
 
 lazy val inputOutputCommon = Def.settings(
+  Compile / sources ~= { values =>
+    if (scala.util.Properties.isJavaAtLeast("11")) {
+      values
+    } else {
+      values.filterNot(_.getName == "JavaNioFileFilesWriteStringTest.scala")
+    }
+  },
   Compile / unmanagedSourceDirectories ++= {
     scalaBinaryVersion.value match {
       case "3" | "2.13" =>
@@ -379,7 +386,15 @@ lazy val tests = projectMatrix
       }
     },
     Test / sourceGenerators += Def.task {
-      val inputFiles = scalafixTestkitInputSourceDirectories.value.flatMap(dir => (dir ** "*.scala").get())
+      val inputFiles = scalafixTestkitInputSourceDirectories.value
+        .flatMap(dir => (dir ** "*.scala").get())
+        .filter(f =>
+          if (scala.util.Properties.isJavaAtLeast("11")) {
+            true
+          } else {
+            f.getName != "JavaNioFileFilesWriteStringTest.scala"
+          }
+        )
       val duplicate = inputFiles.groupBy(_.getName).filter(_._2.size > 1)
       if (duplicate.nonEmpty) {
         sys.error(duplicate.toString)
