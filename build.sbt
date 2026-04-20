@@ -54,6 +54,10 @@ val commonSettings = Def.settings(
     "MIT License" -> url("https://opensource.org/licenses/mit-license")
   ),
   semanticdbEnabled := true,
+  Compile / doc / sources := {
+    // https://github.com/sbt/sbt/issues/8740
+    Nil
+  },
   semanticdbVersion := scalafixSemanticdb.revision,
 )
 
@@ -71,9 +75,11 @@ releaseProcess := Seq[ReleaseStep](
   pushChanges
 )
 
-commonSettings
-
-publish / skip := true
+val root = rootProject.autoAggregate.settings(
+  commonSettings,
+  scalaVersion := V.scala212,
+  publish / skip := true
+)
 
 lazy val myRuleRule = project
   .settings(
@@ -110,7 +116,13 @@ lazy val rules = projectMatrix
     }.taskValue,
     Test / resourceGenerators += Def.task {
       val f = (Test / resourceManaged).value / "main-external-classpath.txt"
-      IO.writeLines(f, (Compile / externalDependencyClasspath).value.map(_.data.getCanonicalPath))
+      IO.writeLines(
+        f,
+        (Compile / externalDependencyClasspath).value
+          .map(_.data)
+          .map(fileConverter.value.toPath)
+          .map(_.toFile.getCanonicalPath)
+      )
       Seq(f)
     }.taskValue,
     Test / resourceGenerators += Def.task {
@@ -162,7 +174,7 @@ lazy val rules = projectMatrix
       }
     },
     Compile / doc / scalacOptions ++= {
-      val hash = sys.process.Process("git rev-parse HEAD").lineStream_!.head
+      val hash = sys.process.Process("git rev-parse HEAD").lazyLines_!.head
       if (scalaBinaryVersion.value != "3") {
         Seq(
           "-sourcepath",
@@ -186,6 +198,7 @@ val scalafixRulesDependency = "com.github.xuwei-k" %% "scalafix-rules" % "0.6.24
 // for scala-steward
 lazy val dummy1 = project.settings(
   commonSettings,
+  scalaVersion := V.scala212,
   libraryDependencies += scalafixRulesDependency,
   publish / skip := true
 )
@@ -203,7 +216,8 @@ lazy val rules212 = rules
   .dependsOn(myRuleRule % ScalafixConfig)
   .settings(
     semanticdbEnabled := false,
-    Test / test := (Test / test).dependsOn(scripted.toTask("")).value,
+    Test / testFull := Def.uncached((Test / testFull).dependsOn(scripted.toTask("")).value),
+    scriptedSbt := "1.12.9",
     dogfooding := Def.taskDyn {
       val rules: Seq[String] = Seq(
         "CaseClassExplicitCopy",
@@ -255,8 +269,9 @@ lazy val rules212 = rules
         (Compile / scalafix).toTask(arg).value
       }
     }.value,
-    Compile / compile := (Compile / compile).dependsOn((Compile / scalafix).toTask(" MyScalafixRuleRule")).value,
-    Compile / compile := (Compile / compile).dependsOn(dogfooding).value,
+    Compile / compile := Def
+      .uncached((Compile / compile).dependsOn((Compile / scalafix).toTask(" MyScalafixRuleRule")).value),
+    Compile / compile := Def.uncached((Compile / compile).dependsOn(dogfooding).value),
     scriptedBufferLog := false,
     scriptedLaunchOpts += ("-Dscalafix-rules.version=" + version.value),
     scriptedLaunchOpts += ("-Dscalafix.version=" + _root_.scalafix.sbt.BuildInfo.scalafixVersion),
@@ -303,7 +318,7 @@ lazy val inputOutputCommon = Def.settings(
   libraryDependencies += "com.google.inject" % "guice" % "6.0.0", // scala-steward:off
   libraryDependencies ++= {
     if (scalaBinaryVersion.value != "3") {
-      Seq(compilerPlugin("org.typelevel" %% "kind-projector" % "0.13.4" cross CrossVersion.full))
+      Seq(compilerPlugin(("org.typelevel" %% "kind-projector" % "0.13.4").cross(CrossVersion.full)))
     } else {
       Nil
     }
@@ -361,11 +376,13 @@ lazy val tests = projectMatrix
     commonSettings,
     publish / skip := true,
     libraryDependencies += "org.scala-lang.modules" % "scala-asm" % "9.9.0-scala-1",
-    libraryDependencies += "ch.epfl.scala" % "scalafix-testkit" % V.scalafixVersion % Test cross CrossVersion.full,
-    scalafixTestkitOutputSourceDirectories :=
-      TargetAxis.resolve(output, Compile / unmanagedSourceDirectories).value,
-    scalafixTestkitInputSourceDirectories :=
-      TargetAxis.resolve(input, Compile / unmanagedSourceDirectories).value,
+    libraryDependencies += ("ch.epfl.scala" % "scalafix-testkit" % V.scalafixVersion % Test).cross(CrossVersion.full),
+    scalafixTestkitOutputSourceDirectories := Def.uncached(
+      TargetAxis.resolve(output, Compile / unmanagedSourceDirectories).value
+    ),
+    scalafixTestkitInputSourceDirectories := Def.uncached(
+      TargetAxis.resolve(input, Compile / unmanagedSourceDirectories).value
+    ),
     scalafixTestkitInputClasspath :=
       TargetAxis.resolve(input, Compile / fullClasspath).value,
     scalafixTestkitInputScalacOptions :=
@@ -441,5 +458,3 @@ lazy val tests = projectMatrix
   )
   .dependsOn(rules)
   .enablePlugins(ScalafixTestkitPlugin)
-
-scalaVersion := V.scala212
