@@ -269,12 +269,17 @@ lazy val rules212 = rules
     }
   )
 
+val jdk11File = Set(
+  "JavaNioFileFilesWriteStringTest.scala",
+  "JavaNioFileFilesReadStringTest.scala",
+)
+
 lazy val inputOutputCommon = Def.settings(
   Compile / sources ~= { values =>
     if (scala.util.Properties.isJavaAtLeast("11")) {
       values
     } else {
-      values.filterNot(_.getName == "JavaNioFileFilesWriteStringTest.scala")
+      values.filterNot(x => jdk11File(x.getName))
     }
   },
   Compile / unmanagedSourceDirectories ++= {
@@ -392,7 +397,7 @@ lazy val tests = projectMatrix
           if (scala.util.Properties.isJavaAtLeast("11")) {
             true
           } else {
-            f.getName != "JavaNioFileFilesWriteStringTest.scala"
+            !jdk11File(f.getName)
           }
         )
       val duplicate = inputFiles.groupBy(_.getName).filter(_._2.size > 1)
