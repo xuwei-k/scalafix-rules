@@ -14,4 +14,5 @@ class JavaNioFileFilesWriteStringTest {
   def f3(p: Path, s: String): Path = Files.write(p, s.getBytes(UTF_8))
   def f4(p: Path, s: String): Path = Files.write(p, s.getBytes(StandardCharsets.UTF_16))
   def f5(p: Path, s: String): Path = java.nio.file.Files.write(p, s.getBytes(UTF_8))
+  def f6(p: Path, s: String): Path = Files.write(p, s.getBytes("UTF-16"))
 }

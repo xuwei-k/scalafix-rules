@@ -11,7 +11,9 @@ object JavaNioFileFilesReadString {
 
     case object UTF8 extends CharsetValue
 
-    final case class Other(value: String) extends CharsetValue
+    final case class OtherString(value: String) extends CharsetValue
+
+    final case class OtherCharset(value: Term.Select) extends CharsetValue
 
     def unapply(t: Term): Option[CharsetValue] = PartialFunction.condOpt(t) {
       case Term.Name("UTF_8") | Term.Select(
@@ -20,7 +22,12 @@ object JavaNioFileFilesReadString {
           ) | Lit.String("UTF-8") =>
         UTF8
       case Lit.String(other) =>
-        Other(other)
+        OtherString(other)
+      case x @ Term.Select(
+            Term.Name("StandardCharsets"),
+            _: Term.Name
+          ) =>
+        OtherCharset(x)
     }
   }
 }
@@ -72,8 +79,11 @@ class JavaNioFileFilesReadString extends SyntacticRule("JavaNioFileFilesReadStri
           Patch.replaceTree(readAllByes, "readString"),
           Patch.removeTokens(t.tokens.reverse.takeWhile(_.pos.end > x.pos.end)),
           PartialFunction
-            .condOpt(c) { case CharsetValue.Other(other) =>
-              Patch.addRight(path, s""", java.nio.charset.Charset.forName("$other")""")
+            .condOpt(c) {
+              case CharsetValue.OtherString(other) =>
+                Patch.addRight(path, s""", java.nio.charset.Charset.forName("$other")""")
+              case CharsetValue.OtherCharset(other) =>
+                Patch.addRight(path, s""", ${other}""")
             }
             .asPatch
         ).asPatch
