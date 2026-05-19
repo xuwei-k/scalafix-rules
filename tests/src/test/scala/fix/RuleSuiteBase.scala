@@ -15,6 +15,7 @@ abstract class RuleSuiteBase(inputName: String) extends AbstractSemanticRuleSuit
     "DuplicateWildcardImportTest",
     "PartialFunctionCondOptTest",
     "RemoveUselessParamCommentsTest",
+    "ScalaUtilUsingResource",
     "ScaladocEmptyParamTest",
     "ScaladocEmptyReturnTest",
     "UnnecessarySortTest",
