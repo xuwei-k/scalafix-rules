@@ -10,5 +10,15 @@ trait UsingParamAnonymousTest {
   def f4(using a1: Int, a2: Int = 3, a3: Int): Int = 9
   def f5(using a1: Int, a2: String): Int
 
+  /**
+   * @param a1 aaa
+   */
+  def f6(using a1: Int, a2: String): Int = 2
+
+  /**
+   * @param b1 bbb
+   */
+  def f7(b1: Int)(using a1: Int, a2: String): Int = 2
+
   given (using a1: Int): Int = 4
 }
