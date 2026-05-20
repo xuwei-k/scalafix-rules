@@ -7,6 +7,10 @@ import scala.meta.Term
 import scala.meta.Tree.WithParamClauses
 import scala.meta.XtensionClassifiable
 import scala.meta.XtensionCollectionLikeUI
+import scala.meta.XtensionSyntax
+import scala.meta.internal.Scaladoc
+import scala.meta.internal.Scaladoc.TagType
+import scala.meta.internal.parsers.ScaladocParser
 import scala.meta.tokens.Token
 import scalafix.Patch
 import scalafix.v1.SyntacticDocument
@@ -17,6 +21,20 @@ class UsingParamAnonymous extends SyntacticRule("UsingParamAnonymous") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
       case t: WithParamClauses if t.is[Decl.Def] || t.is[Defn.Def] || t.is[Defn.GivenAlias] =>
+        val scaladocParamNames: Set[String] = t.begComment.toList
+          .flatMap(_.values)
+          .flatMap { x =>
+            ScaladocParser
+              .parse(x.syntax)
+              .toSeq
+              .flatMap(_.para.flatMap(_.terms))
+              .collect { case c @ Scaladoc.Tag(TagType.Param, _, _) =>
+                c.label.map(_.value.trim)
+              }
+              .flatten
+          }
+          .toSet
+
         t.paramClauses.filter { paramClause =>
           paramClause.values.forall(
             _.mods.exists(_.is[Mod.Using])
@@ -27,7 +45,7 @@ class UsingParamAnonymous extends SyntacticRule("UsingParamAnonymous") {
           val countOneNames = t.collect { case x: Term.Name =>
             x.value
           }.groupBy(identity).filter(_._2.size == 1).keySet
-          if (paramClause.values.forall(a => countOneNames(a.name.value))) {
+          if (paramClause.values.forall(a => countOneNames(a.name.value) && !scaladocParamNames(a.name.value))) {
             paramClause.values
               .map(p =>
                 Seq(
