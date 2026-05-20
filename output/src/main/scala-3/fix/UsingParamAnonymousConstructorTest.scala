@@ -15,6 +15,16 @@ trait UsingParamAnonymousConstructorTest {
 
   class A6(using x1: Int = 3)
 
+  /**
+   * @param a2 aaa
+   */
+  class A7(a1: Int)(using a2: Int, a3: Int)
+
+  /**
+   * @param a1 aaa
+   */
+  class A8(a1: Int)(using  Int,  Int)
+
   trait B1(using  Int)
 
   trait B2(using x1: Int) {
