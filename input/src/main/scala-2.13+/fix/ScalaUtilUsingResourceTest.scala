@@ -46,4 +46,15 @@ object ScalaUtilUsingResourceTest {
     } finally
       a1.close()
   }
+
+  def f5: String = {
+    val a = new FileInputStream("a")
+    val x =
+      try
+        a.toString
+      finally
+        a.close()
+
+    s"${x}b"
+  }
 }

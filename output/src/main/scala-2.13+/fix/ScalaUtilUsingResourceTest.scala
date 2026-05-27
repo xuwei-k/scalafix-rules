@@ -42,4 +42,15 @@ object ScalaUtilUsingResourceTest {
     } finally
       a1.close()
   }
+
+  def f5: String = {
+    
+    val x =      Using.resource(new FileInputStream("a")) { a =>
+
+        a.toString
+      }
+        
+
+    s"${x}b"
+  }
 }

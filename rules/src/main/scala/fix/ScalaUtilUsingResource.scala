@@ -29,6 +29,15 @@ object ScalaUtilUsingResource {
         x
     }
   }
+
+  private object ValOr {
+    def unapply(value: Stat): Option[Stat] = PartialFunction.condOpt(value) {
+      case Defn.Val(_, Pat.Var(_: Term.Name) :: Nil, _, body) =>
+        body
+      case _ =>
+        value
+    }
+  }
 }
 
 class ScalaUtilUsingResource extends SyntacticRule("ScalaUtilUsingResource") {
@@ -47,12 +56,14 @@ class ScalaUtilUsingResource extends SyntacticRule("ScalaUtilUsingResource") {
                 _,
                 _
               ),
-              a2 @ Term.Try.After_4_9_9(
-                _,
-                None,
-                Some(
-                  finallyTerm @ ScalaUtilUsingResource.SingleBlockOr(
-                    ScalaUtilUsingResource.Close(x2)
+              ScalaUtilUsingResource.ValOr(
+                a2 @ Term.Try.After_4_9_9(
+                  _,
+                  None,
+                  Some(
+                    finallyTerm @ ScalaUtilUsingResource.SingleBlockOr(
+                      ScalaUtilUsingResource.Close(x2)
+                    )
                   )
                 )
               )
