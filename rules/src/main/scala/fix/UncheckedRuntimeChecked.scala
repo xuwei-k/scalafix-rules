@@ -4,6 +4,9 @@ import scala.meta._
 import scala.meta.tokens.Token
 import scalafix.v1._
 
+/**
+ * [[https://docs.scala-lang.org/scala3/reference/other-new-features/runtimeChecked.html]]
+ */
 class UncheckedRuntimeChecked extends SyntacticRule("UncheckedRuntimeChecked") {
   override def fix(implicit doc: SyntacticDocument): Patch = {
     doc.tree.collect {
