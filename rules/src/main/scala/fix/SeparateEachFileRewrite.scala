@@ -72,12 +72,7 @@ class SeparateEachFileRewrite(config: SeparateEachFileConfig) extends SyntacticR
                 input.getParentFile,
                 s"${k}.scala"
               ).toPath,
-              (header + "\n\n" + v
-                .sortBy(_.getClass.getName)
-                .map { x =>
-                  (x.begComment.toSeq.sortBy(_.pos.start).map(_.toString) :+ x.toString).mkString("\n")
-                }
-                .mkString("\n", "\n\n", "\n")).getBytes(StandardCharsets.UTF_8)
+              (header + "\n" + v.sortBy(_.getClass.getName).mkString("\n", "\n", "\n")).getBytes(StandardCharsets.UTF_8)
             )
           }
         }
