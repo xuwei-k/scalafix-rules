@@ -308,7 +308,7 @@ lazy val inputOutputCommon = Def.settings(
   libraryDependencies += "com.google.inject" % "guice" % "6.0.0", // scala-steward:off
   libraryDependencies ++= {
     if (scalaBinaryVersion.value != "3") {
-      Seq(compilerPlugin("org.typelevel" %% "kind-projector" % "0.13.4" cross CrossVersion.full))
+      Seq(compilerPlugin(("org.typelevel" %% "kind-projector" % "0.13.4").cross(CrossVersion.full)))
     } else {
       Nil
     }
@@ -366,7 +366,7 @@ lazy val tests = projectMatrix
     commonSettings,
     publish / skip := true,
     libraryDependencies += "org.scala-lang.modules" % "scala-asm" % "9.9.0-scala-1",
-    libraryDependencies += "ch.epfl.scala" % "scalafix-testkit" % V.scalafixVersion % Test cross CrossVersion.full,
+    libraryDependencies += ("ch.epfl.scala" % "scalafix-testkit" % V.scalafixVersion % Test).cross(CrossVersion.full),
     scalafixTestkitOutputSourceDirectories :=
       TargetAxis.resolve(output, Compile / unmanagedSourceDirectories).value,
     scalafixTestkitInputSourceDirectories :=
