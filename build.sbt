@@ -9,7 +9,7 @@ lazy val scala3Version = {
   if (isScala3Latest) {
     scala3latest
   } else {
-    "3.3.7"
+    "3.3.8"
   }
 }
 
