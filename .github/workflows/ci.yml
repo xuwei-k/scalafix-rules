@@ -29,9 +29,16 @@ jobs:
         distribution: zulu
     - uses: coursier/cache-action@v8
     - uses: sbt/setup-sbt@v1
-    - run: sbt publishLocal test
+    - run: sbt
+           -v
+           --server
+           publishLocal
+           test
     - if: matrix.os != 'windows-latest'
-      run: sbt scalafmtSbtCheck scalafmtCheckAll
+      run: sbt
+           -v
+           --server
+           "all scalafmtSbtCheck scalafmtCheckAll"
   latest:
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -42,4 +49,9 @@ jobs:
         java-version: 25
         distribution: zulu
     - uses: sbt/setup-sbt@v1
-    - run: sbt -Dscalafix_rules_scala_3_latest scalaVersion testsTarget3/test
+    - run: sbt
+           -v
+           --server
+           -Dscalafix_rules_scala_3_latest
+           "print scalaVersion"
+           testsTarget3/test
