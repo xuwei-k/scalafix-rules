@@ -97,6 +97,14 @@ lazy val rules = projectMatrix
     libraryDependencies += "org.scala-sbt" %% "io" % "1.12.2" % Test,
     Test / fork := true,
     Test / baseDirectory := (LocalRootProject / baseDirectory).value,
+    scalacOptions ++= {
+      scalaBinaryVersion.value match {
+        case "2.12" | "2.13" =>
+          Seq("-release:8")
+        case "3" =>
+          Nil
+      }
+    },
     scalacOptions += {
       scalaBinaryVersion.value match {
         case "2.12" =>
