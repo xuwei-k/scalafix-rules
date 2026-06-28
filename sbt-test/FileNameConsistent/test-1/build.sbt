@@ -27,4 +27,4 @@ TaskKey[Unit]("check") := {
   assert(actual == expect, s"$actual != $expect")
 }
 
-scalaVersion := "2.12.21"
+scalaVersion := "2.13.18"

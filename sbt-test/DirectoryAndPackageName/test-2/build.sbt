@@ -2,4 +2,4 @@ ThisBuild / scalafixDependencies += "com.github.xuwei-k" %% "scalafix-rules" % s
 
 Compile / unmanagedSourceDirectories += baseDirectory.value / "my-src-dir"
 
-scalaVersion := "2.12.21"
+scalaVersion := "2.13.18"
