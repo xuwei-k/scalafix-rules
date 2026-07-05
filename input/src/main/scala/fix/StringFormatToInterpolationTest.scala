@@ -35,4 +35,6 @@ class StringFormatToInterpolationTest {
   " %s \" ".format("x")
 
   "\n %s aaa \n %s bbb".format(1, 2)
+
+  "%s $ ".format("a")
 }

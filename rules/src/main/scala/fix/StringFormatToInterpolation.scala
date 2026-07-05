@@ -38,6 +38,7 @@ private object StringFormatToInterpolation {
         case (s, args)
             if args.nonEmpty &&
               args.lengthCompare(s.value.sliding(2).count(_ == "%s")) == 0 &&
+              !s.value.contains('$') && // TODO escape
               s.value.forall(_ != '\\') && // TODO support backslash
               (s.value.forall(_ != '"') || s.syntax.startsWith("\"\"\"")) && // TODO support double-quote
               !args.exists(_.is[Term.Placeholder]) =>
