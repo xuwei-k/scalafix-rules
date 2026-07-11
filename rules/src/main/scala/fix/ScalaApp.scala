@@ -2,8 +2,10 @@ package fix
 
 import scala.meta.Defn
 import scala.meta.Init
+import scala.meta.Mod
 import scala.meta.Pkg
 import scala.meta.Source
+import scala.meta.Stat
 import scala.meta.Template
 import scala.meta.Type
 import scala.meta.XtensionClassifiable
@@ -31,11 +33,12 @@ class ScalaApp extends SyntacticRule("ScalaApp") {
               _
             )
           ) if x1.parent.exists(p => p.is[Pkg.Body] || p.is[Source]) || x1.parent.isEmpty =>
-        val (classes, newBody) = stats.partition(s => s.is[Defn.Trait] || s.is[Defn.Class] || s.is[Defn.Object])
-
-        // TODO
-        // - exclude override def, val
-        // - "final val" to "val"
+        val (classes, newBody) = stats.partition(s =>
+          s.is[Defn.Trait] || s.is[Defn.Class] || s.is[Defn.Object] || PartialFunction.cond(s) {
+            case x: Stat.WithMods =>
+              x.mods.exists(m => m.is[Mod.Override] || m.is[Mod.Protected] || m.is[Mod.Private] || m.is[Mod.Final])
+          }
+        )
 
         Seq(
           {
