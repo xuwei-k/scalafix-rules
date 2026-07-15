@@ -49,9 +49,9 @@ val commonSettings = Def.settings(
   ),
   description := "scalafix rules",
   organization := "com.github.xuwei-k",
-  homepage := Some(url("https://github.com/xuwei-k/scalafix-rules")),
+  homepage := Some(uri("https://github.com/xuwei-k/scalafix-rules")),
   licenses := List(
-    "MIT License" -> url("https://opensource.org/licenses/mit-license")
+    "MIT License" -> uri("https://opensource.org/licenses/mit-license")
   ),
   semanticdbEnabled := true,
   semanticdbVersion := scalafixSemanticdb.revision,
