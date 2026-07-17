@@ -221,7 +221,7 @@ lazy val rules212 = rules
   .settings(
     semanticdbEnabled := false,
     Test / testFull := Def.uncached((Test / testFull).dependsOn(scripted.toTask("")).value),
-    scriptedSbt := "1.12.13",
+    scriptedSbt := "1.12.14",
     dogfooding := Def.taskDyn {
       val rules: Seq[String] = Seq(
         "CaseClassExplicitCopy",
