@@ -1,7 +1,9 @@
 package fix
 
 import scala.meta.Term
+import scala.meta.Tree
 import scala.meta.XtensionCollectionLikeUI
+import scala.meta.contrib.XtensionTreeOps
 import scala.meta.tokens.Token.LeftBrace
 import scala.meta.tokens.Token.RightBrace
 import scalafix.Patch
@@ -10,8 +12,11 @@ import scalafix.v1.SyntacticRule
 import scalafix.v1.XtensionSeqPatch
 
 class MapSequenceTraverse extends SyntacticRule("MapSequenceTraverse") {
-  override def fix(implicit doc: SyntacticDocument): Patch = {
-    doc.tree.collect {
+  override def fix(implicit doc: SyntacticDocument): Patch =
+    doc.tree.collect { case t => patch(t) }.flatten.asPatch
+
+  private def patch(tree: Tree): Option[Patch] =
+    PartialFunction.condOpt(tree) {
       case t @ Term.Select(
             Term.Apply.After_4_6_0(
               Term.Select(
@@ -24,11 +29,10 @@ class MapSequenceTraverse extends SyntacticRule("MapSequenceTraverse") {
               )
             ),
             Term.Name("sequence")
-          ) =>
+          ) if qual.forall(x => patch(x).isEmpty) && arg.forall(x => patch(x).isEmpty) =>
         (arg.tokens.headOption, arg.tokens.lastOption) match {
           case (Some(LeftBrace()), Some(RightBrace())) => Patch.replaceTree(t, s"${qual}.traverse${arg}")
           case _ => Patch.replaceTree(t, s"${qual}.traverse(${arg})")
         }
     }
-  }.asPatch
 }
