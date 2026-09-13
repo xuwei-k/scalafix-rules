@@ -1,6 +1,6 @@
 addSbtPlugin("com.eed3si9n" % "sbt-salad-days" % "0.2.0")
 
-addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.14.8")
+addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.14.9")
 
 addSbtPlugin("com.github.sbt" % "sbt-pgp" % "2.3.2")
 
