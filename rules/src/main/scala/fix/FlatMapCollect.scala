@@ -48,7 +48,7 @@ class FlatMapCollect extends SyntacticRule("FlatMapCollect") {
             Patch.replaceTree(flatMap, "collect"),
             Patch.removeTokens(noneCase.tokens),
             pf.tokens.reverseIterator
-              .find(t => t.is[Token.LF] && t.pos.start < noneCase.pos.start)
+              .find(t => t.is[Token.EOL] && t.pos.start < noneCase.pos.start)
               .map { t =>
                 Seq(
                   Patch.removeToken(t),

@@ -83,7 +83,7 @@ class ScalaUtilUsingResource extends SyntacticRule("ScalaUtilUsingResource") {
           Seq(
             Patch.removeTokens(a1.tokens),
             if (a1.pos.endLine < a2.pos.startLine) {
-              t.tokens.filter(_.is[Token.LF]).find(_.pos.start > a1.pos.end).map(Patch.removeToken).asPatch
+              t.tokens.filter(_.is[Token.EOL]).find(_.pos.start > a1.pos.end).map(Patch.removeToken).asPatch
             } else {
               Patch.empty
             },

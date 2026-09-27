@@ -38,7 +38,7 @@ class PartialFunctionCondOpt extends SyntacticRule("PartialFunctionCondOpt") {
                   values.asPatch,
                   Patch.removeTokens(last.tokens),
                   t.tokens.reverseIterator
-                    .find(x => x.is[Token.LF] && (x.pos.start < last.pos.start))
+                    .find(x => x.is[Token.EOL] && (x.pos.start < last.pos.start))
                     .map(x =>
                       Seq(
                         Patch.removeToken(x),

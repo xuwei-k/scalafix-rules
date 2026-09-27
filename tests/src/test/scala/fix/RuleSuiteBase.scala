@@ -8,14 +8,10 @@ import scalafix.testkit.RuleTest
 
 abstract class RuleSuiteBase(inputName: String) extends AbstractSemanticRuleSuite with AnyFunSuiteLike {
   private[this] val excludeWindows: Set[String] = Set(
-    "FlatMapCollectTest",
     "FileNameConsistentTest",
     "FileNameConsistentTest2",
     "package",
-    "DuplicateWildcardImportTest",
-    "PartialFunctionCondOptTest",
     "RemoveUselessParamCommentsTest",
-    "ScalaUtilUsingResourceTest",
     "ScaladocEmptyParamTest",
     "ScaladocEmptyReturnTest",
     "UnnecessarySortTest",
