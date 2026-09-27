@@ -64,7 +64,7 @@ class DuplicateWildcardImport(conf: DuplicateWildcardImportConfig) extends Synta
           Seq(
             Patch.removeTokens(x._1.tokens),
             Patch.removeTokens(
-              doc.tree.tokens.dropWhile(_.pos.start < x._1.tokens.last.pos.end).headOption.filter(_.is[Token.LF])
+              doc.tree.tokens.dropWhile(_.pos.start < x._1.tokens.last.pos.end).headOption.filter(_.is[Token.EOL])
             )
           ).asPatch
         }
