@@ -6,7 +6,6 @@ import metaconfig.generic.Surface
 import scala.meta.Decl
 import scala.meta.Defn
 import scala.meta.Stat
-import scala.meta.Template
 import scala.meta.Term
 import scala.meta.Tree
 import scala.meta.XtensionCollectionLikeUI
@@ -60,11 +59,8 @@ class DiscardValue(config: DiscardValueConfig) extends SemanticRule("DiscardValu
 
 object DiscardValue {
   private object BlockOrTemplate {
-    def unapply(x: Tree): Option[List[Stat]] = PartialFunction.condOpt(x) {
-      case t: Term.Block =>
-        t.stats
-      case t: Template =>
-        t.body.stats
+    def unapply(x: Tree): Option[List[Stat]] = PartialFunction.condOpt(x) { case t: Tree.WithStats =>
+      t.stats
     }
   }
 
