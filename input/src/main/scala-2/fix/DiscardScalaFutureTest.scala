@@ -60,6 +60,17 @@ trait DiscardScalaFutureTest {
 
     mutableValue = x1
 
+    def x3(y1: Future[Int], y2: Int): Future[Int] = for {
+      _ <- Future.successful(2)
+      a <- Future.successful(3)
+      _ = Future.successful(4) // assert: DiscardScalaFuture
+      b <- Future.successful(5)
+      _ = y1 // assert: DiscardScalaFuture
+      _ <- Future.successful(6)
+      _ = y2
+      c <- Future.successful(7)
+    } yield (a + b + c)
+
     x1
   }
 }
