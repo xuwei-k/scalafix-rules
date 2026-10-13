@@ -5,6 +5,8 @@ import metaconfig.Configured
 import metaconfig.generic.Surface
 import scala.meta.Decl
 import scala.meta.Defn
+import scala.meta.Enumerator
+import scala.meta.Pat
 import scala.meta.Stat
 import scala.meta.Template
 import scala.meta.Term
@@ -119,6 +121,31 @@ object DiscardValue {
     filter: SemanticType => Boolean
   )(implicit doc: SemanticDocument): Patch = {
     doc.tree.collect {
+      case Enumerator.Val(
+            Pat.Wildcard(),
+            x
+          ) =>
+        x.symbol.info.map { info =>
+          PartialFunction
+            .condOpt(info.signature) {
+              case m: MethodSignature =>
+                m.returnType
+              case v: ValueSignature =>
+                v.tpe
+            }
+            .filter(filter)
+            .map { tpe =>
+              Patch.lint(
+                Diagnostic(
+                  id = "",
+                  message = message(tpe),
+                  position = x.pos,
+                  severity = severity,
+                )
+              )
+            }
+            .asPatch
+        }.asPatch
       case BlockOrTemplate(values :+ _) => // ignore last
         values.filter {
           case _: Defn | _: Term.Assign | _: Decl =>
