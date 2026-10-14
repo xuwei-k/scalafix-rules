@@ -372,7 +372,7 @@ lazy val output = projectMatrix
   .jvmPlatform(scalaVersions = rulesCrossVersions :+ scala3Version)
 
 lazy val testsAggregate = Project("tests", file("target/testsAggregate"))
-  .aggregate(tests.projectRefs *)
+  .aggregate(tests.projectRefs*)
   .settings(
     commonSettings,
     scalaVersion := V.scala212,
@@ -445,7 +445,7 @@ lazy val tests = projectMatrix
     }.taskValue
   )
   .defaultAxes(
-    (rulesCrossVersions.map(VirtualAxis.scalaABIVersion) :+ VirtualAxis.jvm) *
+    (rulesCrossVersions.map(VirtualAxis.scalaABIVersion) :+ VirtualAxis.jvm)*
   )
   .customRow(
     scalaVersions = Seq(V.scala212),
