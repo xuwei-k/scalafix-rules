@@ -339,7 +339,14 @@ lazy val inputOutputCommon = Def.settings(
     }
   },
   libraryDependencies += "com.typesafe.slick" %% "slick" % "3.6.1",
-  libraryDependencies += "io.monix" %% "monix-eval" % "3.4.1",
+  libraryDependencies += {
+    scalaBinaryVersion.value match {
+      case "2.12" =>
+        "io.monix" %% "monix-eval" % "3.4.1"
+      case _ =>
+        "io.monix" %% "monix-eval" % "3.5.2"
+    }
+  },
   libraryDependencies += "org.mockito" % "mockito-subclass" % "5.24.0",
   libraryDependencies += "org.atnos" %% "eff-core" % "7.0.6"
 )
