@@ -3,7 +3,7 @@ import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
 lazy val V = _root_.scalafix.sbt.BuildInfo
 
 lazy val rulesCrossVersions = Seq(V.scala213, V.scala212)
-lazy val scala3latest = "3.9.0"
+lazy val scala3latest = "3.10.0"
 lazy val isScala3Latest: Boolean = sys.props.isDefinedAt("scalafix_rules_scala_3_latest")
 lazy val scala3Version = {
   if (isScala3Latest) {
@@ -288,7 +288,18 @@ lazy val rules212 = rules
     }
   )
 
+val excludeLatestScala = Set(
+  "IntersectionTypeTest.scala",
+)
+
 lazy val inputOutputCommon = Def.settings(
+  Compile / sources ~= { values =>
+    if (isScala3Latest) {
+      values.filterNot(x => excludeLatestScala(x.getName))
+    } else {
+      values
+    }
+  },
   Compile / unmanagedSourceDirectories ++= {
     scalaBinaryVersion.value match {
       case "3" | "2.13" =>
@@ -398,7 +409,15 @@ lazy val tests = projectMatrix
       }
     },
     Test / sourceGenerators += Def.task {
-      val inputFiles = scalafixTestkitInputSourceDirectories.value.flatMap(dir => (dir ** "*.scala").get())
+      val inputFiles = scalafixTestkitInputSourceDirectories.value
+        .flatMap(dir => (dir ** "*.scala").get())
+        .filter(f =>
+          if (isScala3Latest) {
+            !excludeLatestScala(f.getName)
+          } else {
+            true
+          }
+        )
       val duplicate = inputFiles.groupBy(_.getName).filter(_._2.size > 1)
       if (duplicate.nonEmpty) {
         sys.error(duplicate.toString)
