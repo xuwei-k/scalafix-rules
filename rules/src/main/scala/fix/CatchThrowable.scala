@@ -12,7 +12,7 @@ class CatchThrowable extends SyntacticRule("CatchThrowable") {
     doc.tree.collect { case t: Term.Try =>
       t.cases.collect {
         case Case(
-              t @ Pat.Typed(
+              p @ Pat.Typed(
                 _,
                 Type.Name("Throwable")
               ),
@@ -23,7 +23,7 @@ class CatchThrowable extends SyntacticRule("CatchThrowable") {
             Diagnostic(
               id = "",
               message = "Catching Throwable can lead to unexpected behavior",
-              position = t.pos,
+              position = p.pos,
               severity = LintSeverity.Warning
             )
           )
