@@ -347,7 +347,7 @@ lazy val inputOutputCommon = Def.settings(
         "io.monix" %% "monix-eval" % "3.5.2"
     }
   },
-  libraryDependencies += "org.mockito" % "mockito-subclass" % "5.24.0",
+  libraryDependencies += "org.mockito" % "mockito-subclass" % "5.25.0",
   libraryDependencies += "org.atnos" %% "eff-core" % "7.0.6"
 )
 
